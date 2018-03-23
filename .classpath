@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-9">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="libs/hadoop-annotations.jar"/>
+	<classpathentry kind="lib" path="/home/davide/Scrivania/Projects/big-data-project/libs/hadoop-annotations.jar"/>
+	<classpathentry kind="lib" path="/home/davide/Scrivania/Projects/big-data-project/libs/hadoop-common.jar"/>
+	<classpathentry kind="lib" path="/home/davide/Scrivania/Projects/big-data-project/libs/hadoop-core-2.6.0-mr1-cdh5.7.0.jar"/>
+	<classpathentry kind="lib" path="/home/davide/Scrivania/Projects/big-data-project/libs/hadoop-hdfs.jar"/>
+	<classpathentry kind="lib" path="/home/davide/Scrivania/Projects/big-data-project/libs/log4j-1.2.17.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
