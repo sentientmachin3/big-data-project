@@ -41,7 +41,7 @@ public class Authorship extends Configured implements Tool {
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
         private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
         private final static IntWritable ONE = new IntWritable(1);
-        private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*");
+        private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*"); //\ string* \ blank \\ string*\\
 
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
