@@ -20,7 +20,8 @@ import java.util.regex.Pattern;
 
 
 public class Authorship extends Configured implements Tool {
-    public static int TEXT_LENGTH = 0;
+    private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
+
     public static void main(String[] args) throws Exception {
         int res = ToolRunner.run(new Authorship(), args);
         System.exit(res);
@@ -39,7 +40,7 @@ public class Authorship extends Configured implements Tool {
     }
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
-        private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
+
         private final static IntWritable ONE = new IntWritable(1);
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*"); //\ string* \ blank \\ string*\\
 
@@ -48,10 +49,7 @@ public class Authorship extends Configured implements Tool {
             String line = lineText.toString();
             for (String word : WORD_BOUNDARY.split(line)) {
                 if (!word.isEmpty()) {
-                    TEXT_LENGTH++;
-                    if (CONJUNCTIONS.contains(word)) {
-                        context.write(new Text(word), ONE);
-                    }
+                    context.write(new Text(word), ONE);
                 }
             }
         }
@@ -59,14 +57,23 @@ public class Authorship extends Configured implements Tool {
 
 
     public static class Reduce extends Reducer<Text, IntWritable, Text, FloatWritable> {
+        public static int TEXT_LENGTH = 0;
+
         @Override
         public void reduce(Text word, Iterable<IntWritable> counts, Context context)
                 throws IOException, InterruptedException {
             int sum = 0;
+            int conj_sum = 0;
+
+
             for (IntWritable count : counts) {
+                if (Authorship.CONJUNCTIONS.contains(word.toString()))
+                    conj_sum += count.get();
+
                 sum += count.get();
+                TEXT_LENGTH += sum;
             }
-            context.write(word, new FloatWritable(sum / TEXT_LENGTH));
+            context.write(word, new FloatWritable(conj_sum / TEXT_LENGTH));
         }
     }
 }
