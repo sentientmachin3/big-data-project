@@ -1,5 +1,6 @@
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -19,10 +20,8 @@ import java.util.regex.Pattern;
 
 
 public class Authorship extends Configured implements Tool {
+    public static int TEXT_LENGTH = 0;
     public static void main(String[] args) throws Exception {
-
-        private List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
-
         int res = ToolRunner.run(new Authorship(), args);
         System.exit(res);
     }
@@ -40,25 +39,26 @@ public class Authorship extends Configured implements Tool {
     }
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
-        public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
-            private final static IntWritable one = new IntWritable(1);
-            private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*");
+        private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
+        private final static IntWritable ONE = new IntWritable(1);
+        private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*");
 
-            public void map (LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
-                String line = lineText.toString();
-                Text currentWord = new Text();
-                for (String word : WORD_BOUNDARY.split(line)) {
-                    if (word.isEmpty()) {
-                        continue;
+        @Override
+        public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
+            String line = lineText.toString();
+            for (String word : WORD_BOUNDARY.split(line)) {
+                if (!word.isEmpty()) {
+                    TEXT_LENGTH++;
+                    if (CONJUNCTIONS.contains(word)) {
+                        context.write(new Text(word), ONE);
                     }
-                    currentWord = new Text(word);
-                    context.write(currentWord, one);
                 }
             }
         }
     }
 
-    public static class Reduce extends Reducer<Text, IntWritable, Text, IntWritable> {
+
+    public static class Reduce extends Reducer<Text, IntWritable, Text, FloatWritable> {
         @Override
         public void reduce(Text word, Iterable<IntWritable> counts, Context context)
                 throws IOException, InterruptedException {
@@ -66,7 +66,7 @@ public class Authorship extends Configured implements Tool {
             for (IntWritable count : counts) {
                 sum += count.get();
             }
-            context.write(word, new IntWritable(sum));
+            context.write(word, new FloatWritable(sum / TEXT_LENGTH));
         }
     }
 }
