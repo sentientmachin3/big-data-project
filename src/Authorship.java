@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 
 public class Authorship extends Configured implements Tool {
+    private static long TEXT_LENGTH = 0;
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
 
     public static void main(String[] args) throws Exception {
@@ -30,18 +31,16 @@ public class Authorship extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Job job = Job.getInstance(this.getConf(), "authorship");
         job.setJarByClass(this.getClass());
-        TextInputFormat.setInputPaths(job, new Path(args[1]));
-        TextOutputFormat.setOutputPath(job, new Path(args[2]));
+        TextInputFormat.setInputPaths(job, new Path("/user/davide/authorship/input"));
+        TextOutputFormat.setOutputPath(job, new Path("/user/davide/authorship/output"));
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
+        job.setOutputValueClass(WordValue.class);
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
-    public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
-
-        private final static IntWritable ONE = new IntWritable(1);
+    public static class Map extends Mapper<LongWritable, Text, Text, WordValue> {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*"); //\ string* \ blank \\ string*\\
 
         @Override
@@ -49,31 +48,24 @@ public class Authorship extends Configured implements Tool {
             String line = lineText.toString();
             for (String word : WORD_BOUNDARY.split(line)) {
                 if (!word.isEmpty()) {
-                    context.write(new Text(word), ONE);
+                    context.write(new Text(word), new WordValue(word));
                 }
             }
         }
     }
 
 
-    public static class Reduce extends Reducer<Text, IntWritable, Text, FloatWritable> {
-        public static int TEXT_LENGTH = 0;
-
+    public static class Reduce extends Reducer<Text, WordValue, Text, FloatWritable> {
         @Override
-        public void reduce(Text word, Iterable<IntWritable> counts, Context context)
-                throws IOException, InterruptedException {
-            int sum = 0;
-            int conj_sum = 0;
-
-
-            for (IntWritable count : counts) {
-                if (Authorship.CONJUNCTIONS.contains(word.toString()))
-                    conj_sum += count.get();
-
-                sum += count.get();
-                TEXT_LENGTH += sum;
+        protected void reduce(Text key, Iterable<WordValue> values, Context context) throws IOException, InterruptedException {
+            for (WordValue w : values) {
+                int conjSum = 0;
+                Authorship.TEXT_LENGTH += w.getLength().get();
+                if (Authorship.CONJUNCTIONS.contains(key.toString())) {
+                    conjSum += w.getOne().get();
+                    context.write(key, new FloatWritable(conjSum / Authorship.TEXT_LENGTH));
+                }
             }
-            context.write(word, new FloatWritable(conj_sum / TEXT_LENGTH));
         }
     }
 }
