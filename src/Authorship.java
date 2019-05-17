@@ -1,6 +1,7 @@
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.FloatWritable;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -20,6 +21,9 @@ import java.util.regex.Pattern;
 
 public class Authorship extends Configured implements Tool {
     private static long TEXT_LENGTH = 0;
+    private static IntWritable ONE = new IntWritable(1);
+    private static final String INPUT_PATH = "/user/davide/authorship/input";
+    private static final String OUTPUT_PATH = "/user/davide/authorship/output";
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
 
     public static void main(String[] args) throws Exception {
@@ -30,8 +34,8 @@ public class Authorship extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Job job = Job.getInstance(this.getConf(), "authorship");
         job.setJarByClass(this.getClass());
-        TextInputFormat.setInputPaths(job, new Path("/user/davide/authorship/input"));
-        TextOutputFormat.setOutputPath(job, new Path("/user/davide/authorship/output"));
+        TextInputFormat.setInputPaths(job, new Path(INPUT_PATH));
+        TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
         job.setOutputKeyClass(Text.class);
@@ -46,7 +50,7 @@ public class Authorship extends Configured implements Tool {
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
             String line = lineText.toString();
             for (String word : WORD_BOUNDARY.split(line)) {
-                if (!word.isEmpty()) {
+                if (!word.isEmpty() && Authorship.CONJUNCTIONS.contains(word)) {
                     context.write(new Text(word), new WordValue(word));
                 }
             }
@@ -57,14 +61,14 @@ public class Authorship extends Configured implements Tool {
     public static class Reduce extends Reducer<Text, WordValue, Text, FloatWritable> {
         @Override
         protected void reduce(Text key, Iterable<WordValue> values, Context context) throws IOException, InterruptedException {
+            int conjSum = 0;
             for (WordValue w : values) {
-                int conjSum = 0;
                 Authorship.TEXT_LENGTH += w.getLength().get();
                 if (Authorship.CONJUNCTIONS.contains(key.toString())) {
-                    conjSum += w.getOne().get();
-                    context.write(key, new FloatWritable(conjSum / Authorship.TEXT_LENGTH));
+                    conjSum += ONE.get();
                 }
             }
+            context.write(key, new FloatWritable(conjSum / Authorship.TEXT_LENGTH));
         }
     }
 }
