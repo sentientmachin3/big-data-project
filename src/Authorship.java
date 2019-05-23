@@ -18,10 +18,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+public class Globals {
+    static public long TEXT_LENGTH;
+}
 
 public class Authorship extends Configured implements Tool {
-    private static long TEXT_LENGTH = 0;
-    private static IntWritable ONE = new IntWritable(1);
+    private static final IntWritable ONE = new IntWritable(1);
     private static final String INPUT_PATH = "/user/davide/authorship/input";
     private static final String OUTPUT_PATH = "/user/davide/authorship/output";
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
@@ -34,41 +36,47 @@ public class Authorship extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Job job = Job.getInstance(this.getConf(), "authorship");
         job.setJarByClass(this.getClass());
+
+        // job setup
         TextInputFormat.setInputPaths(job, new Path(INPUT_PATH));
         TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
+
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(WordValue.class);
+        job.setOutputValueClass(FloatWritable.class);
+
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
-    public static class Map extends Mapper<LongWritable, Text, Text, WordValue> {
+    public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*"); //\ string* \ blank \\ string*\\
-
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
             String line = lineText.toString();
             for (String word : WORD_BOUNDARY.split(line)) {
+                //  todo: increment counter
                 if (!word.isEmpty() && Authorship.CONJUNCTIONS.contains(word)) {
-                    context.write(new Text(word), new WordValue(word));
+                    context.write(new Text(word), ONE);
                 }
             }
         }
     }
 
 
-    public static class Reduce extends Reducer<Text, WordValue, Text, FloatWritable> {
+    public static class Reduce extends Reducer<Text, IntWritable, Text, FloatWritable> {
         @Override
-        protected void reduce(Text key, Iterable<WordValue> values, Context context) throws IOException, InterruptedException {
+        protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             int conjSum = 0;
-            for (WordValue w : values) {
-                Authorship.TEXT_LENGTH += w.getLength().get();
+            for (IntWritable value : values) {
                 if (Authorship.CONJUNCTIONS.contains(key.toString())) {
-                    conjSum += ONE.get();
+                    conjSum += value.get();
                 }
             }
-            context.write(key, new FloatWritable(conjSum / Authorship.TEXT_LENGTH));
+            // todo: fix counter division
+            context.write(key, new FloatWritable(conjSum / context.getCounter(TextUtils.TEXT_LENGTH).getValue()));
         }
     }
 }
