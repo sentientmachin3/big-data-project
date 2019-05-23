@@ -18,9 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class Globals {
-    static public long TEXT_LENGTH;
-}
 
 public class Authorship extends Configured implements Tool {
     private static final IntWritable ONE = new IntWritable(1);
@@ -57,7 +54,8 @@ public class Authorship extends Configured implements Tool {
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
             String line = lineText.toString();
             for (String word : WORD_BOUNDARY.split(line)) {
-                //  todo: increment counter
+                Globals.setTextLength(0);
+                Globals.incrementTextLength(1);
                 if (!word.isEmpty() && Authorship.CONJUNCTIONS.contains(word)) {
                     context.write(new Text(word), ONE);
                 }
@@ -75,8 +73,7 @@ public class Authorship extends Configured implements Tool {
                     conjSum += value.get();
                 }
             }
-            // todo: fix counter division
-            context.write(key, new FloatWritable(conjSum / context.getCounter(TextUtils.TEXT_LENGTH).getValue()));
+            context.write(key, new FloatWritable(conjSum / Globals.getTextLength()));
         }
     }
 }
