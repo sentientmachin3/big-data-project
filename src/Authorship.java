@@ -54,8 +54,8 @@ public class Authorship extends Configured implements Tool {
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
             String line = lineText.toString();
             for (String word : WORD_BOUNDARY.split(line)) {
-                Globals.setTextLength(0);
-                Globals.incrementTextLength(1);
+                Globals.resetTextLength();
+                Globals.incrementTextLength();
                 if (!word.isEmpty() && Authorship.CONJUNCTIONS.contains(word)) {
                     context.write(new Text(word), ONE);
                 }
