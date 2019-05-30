@@ -26,6 +26,7 @@ public class Authorship extends Configured implements Tool {
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
 
     public static void main(String[] args) throws Exception {
+        Globals.resetTextLength();
         int res = ToolRunner.run(new Authorship(), args);
         System.exit(res);
     }
@@ -50,11 +51,11 @@ public class Authorship extends Configured implements Tool {
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*"); //\ string* \ blank \\ string*\\
+
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
             String line = lineText.toString();
             for (String word : WORD_BOUNDARY.split(line)) {
-                Globals.resetTextLength();
                 Globals.incrementTextLength();
                 if (!word.isEmpty() && Authorship.CONJUNCTIONS.contains(word)) {
                     context.write(new Text(word), ONE);
@@ -65,6 +66,7 @@ public class Authorship extends Configured implements Tool {
 
 
     public static class Reduce extends Reducer<Text, IntWritable, Text, FloatWritable> {
+
         @Override
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             int conjSum = 0;
