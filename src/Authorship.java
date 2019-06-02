@@ -24,9 +24,9 @@ public class Authorship extends Configured implements Tool {
     private static final String INPUT_PATH = "/user/davide/authorship/input";
     private static final String OUTPUT_PATH = "/user/davide/authorship/output";
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
+    private static final Globals GLOBALS = new Globals();
 
     public static void main(String[] args) throws Exception {
-        Globals.resetTextLength();
         int res = ToolRunner.run(new Authorship(), args);
         System.exit(res);
     }
@@ -56,7 +56,7 @@ public class Authorship extends Configured implements Tool {
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
             String line = lineText.toString();
             for (String word : WORD_BOUNDARY.split(line)) {
-                Globals.incrementTextLength();
+                GLOBALS.incrementTextLength();
                 if (!word.isEmpty() && Authorship.CONJUNCTIONS.contains(word)) {
                     context.write(new Text(word), ONE);
                 }
@@ -75,7 +75,7 @@ public class Authorship extends Configured implements Tool {
                     conjSum += value.get();
                 }
             }
-            context.write(key, new FloatWritable(conjSum / Globals.getTextLength()));
+            context.write(key, new FloatWritable(conjSum / GLOBALS.getTextLength()));
         }
     }
 }

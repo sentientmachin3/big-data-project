@@ -1,18 +1,16 @@
 class Globals {
 
-    public Globals() {}
+    public Globals() {
+    }
 
-    private static long TEXT_LENGTH;
+    private static long TEXT_LENGTH = 0;
 
-    static long getTextLength() {
+    long getTextLength() {
         return TEXT_LENGTH;
     }
 
-    static void resetTextLength() {
-        TEXT_LENGTH = 0;
-    }
 
-    static void incrementTextLength() {
+    void incrementTextLength() {
         TEXT_LENGTH += 1;
     }
 }
