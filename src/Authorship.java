@@ -20,17 +20,17 @@ import java.util.regex.Pattern;
 
 
 public class Authorship extends Configured implements Tool {
-    private static final IntWritable ONE = new IntWritable(1);
     private static final String INPUT_PATH = "/user/davide/authorship/input";
     private static final String OUTPUT_PATH = "/user/davide/authorship/output";
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
-    private static final Globals GLOBALS = new Globals();
+    private static final Globals GLOBALS = Globals.getInstance();
 
     public static void main(String[] args) throws Exception {
         int res = ToolRunner.run(new Authorship(), args);
         System.exit(res);
     }
 
+    @Override
     public int run(String[] args) throws Exception {
         Job job = Job.getInstance(this.getConf(), "authorship");
         job.setJarByClass(this.getClass());
@@ -58,7 +58,7 @@ public class Authorship extends Configured implements Tool {
             for (String word : WORD_BOUNDARY.split(line)) {
                 GLOBALS.incrementTextLength();
                 if (!word.isEmpty() && Authorship.CONJUNCTIONS.contains(word)) {
-                    context.write(new Text(word), ONE);
+                    context.write(new Text(word), new IntWritable(1));
                 }
             }
         }

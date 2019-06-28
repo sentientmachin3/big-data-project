@@ -1,9 +1,14 @@
 class Globals {
+    private static Globals instance = new Globals();
+    private static long TEXT_LENGTH;
 
-    public Globals() {
+    private Globals() {
+        TEXT_LENGTH = 0;
     }
 
-    private static long TEXT_LENGTH = 0;
+    public static Globals getInstance() {
+        return instance;
+    }
 
     long getTextLength() {
         return TEXT_LENGTH;
@@ -11,6 +16,6 @@ class Globals {
 
 
     void incrementTextLength() {
-        TEXT_LENGTH += 1;
+        TEXT_LENGTH++;
     }
 }
