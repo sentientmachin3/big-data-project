@@ -11,10 +11,12 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.apache.hadoop.util.hash.Hash;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -23,7 +25,8 @@ public class Authorship extends Configured implements Tool {
     private static final String INPUT_PATH = "/user/davide/authorship/input";
     private static final String OUTPUT_PATH = "/user/davide/authorship/output";
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
-    private static final Globals GLOBALS = Globals.getInstance();
+    private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("il", "lo", "la", "i", "gli", "le"));
+    private static final List<String> SPEECH_PARTS = new ArrayList<>(Arrays.asList("conjunction", "article", "name", "verb", "pronoun"));
 
     public static void main(String[] args) throws Exception {
         int res = ToolRunner.run(new Authorship(), args);
@@ -50,32 +53,44 @@ public class Authorship extends Configured implements Tool {
     }
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
-        private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*"); //\ string* \ blank \\ string*\\
+        Pattern PERIOD = Pattern.compile(".*[.!?]");
 
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
-            String line = lineText.toString();
-            for (String word : WORD_BOUNDARY.split(line)) {
-                GLOBALS.incrementTextLength();
-                if (!word.isEmpty() && Authorship.CONJUNCTIONS.contains(word)) {
-                    context.write(new Text(word), new IntWritable(1));
+            for (String word : PERIOD.split(lineText.toString())) {
+                if (!word.isEmpty()) {
+                    if (Authorship.CONJUNCTIONS.contains(word)) {
+                        context.write(new Text("conjunction"), new IntWritable(1));
+                    }
+
+                    if (Authorship.ARTICLES.contains(word)) {
+                        context.write(new Text("article"), new IntWritable(1));
+                    }
+
                 }
             }
         }
     }
 
 
-    public static class Reduce extends Reducer<Text, IntWritable, Text, FloatWritable> {
-
+    public static class Reduce extends Reducer<Text, IntWritable, String, Integer> {
         @Override
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            int conjSum = 0;
-            for (IntWritable value : values) {
-                if (Authorship.CONJUNCTIONS.contains(key.toString())) {
-                    conjSum += value.get();
+            HashMap<String, IntWritable> map = new HashMap<String, IntWritable>();
+            for (String part : SPEECH_PARTS) {
+                map.put(part, new IntWritable(0));
+            }
+
+            for (String part : SPEECH_PARTS) {
+                if (key.toString().equals(part)) {
+                    map.put(part, new IntWritable(map.get(part).get() + 1));
                 }
             }
-            context.write(key, new FloatWritable(conjSum / GLOBALS.getTextLength()));
+
+            for (String k : map.keySet()) {
+                context.write(k, map.get(k).get());
+            }
+
         }
     }
 }
