@@ -27,6 +27,27 @@ public class Authorship extends Configured implements Tool {
     public static void main(String[] args) throws Exception {
         Authorship authorship = new Authorship();
         int res = ToolRunner.run(authorship, args);
+        System.exit(res);
+    }
+
+    @Override
+    public int run(String[] args) throws Exception {
+        Job job = Job.getInstance(this.getConf(), "authorship");
+        job.setJarByClass(this.getClass());
+
+        // job setup
+        TextInputFormat.setInputPaths(job, new Path(INPUT_PATH));
+        TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
+
+        job.setMapperClass(Map.class);
+        job.setReducerClass(Reduce.class);
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(IntWritable.class);
+        job.setOutputKeyClass(String.class);
+        job.setOutputValueClass(Integer.class);
+        job.getConfiguration().set("mapreduce.output.basename", "dante");
+
+        int res = job.waitForCompletion(true) ? 0 : 1;
 
         HashMap<String, Integer> mappings = new HashMap<>();
         Scanner fileScanner = new Scanner(new File(OUTPUT_PATH + "/dante-r-00000"));
@@ -51,27 +72,7 @@ public class Authorship extends Configured implements Tool {
             fw.write(sp + "," + authorRatios.get(sp));
         }
 
-        System.exit(res);
-    }
-
-    @Override
-    public int run(String[] args) throws Exception {
-        Job job = Job.getInstance(this.getConf(), "authorship");
-        job.setJarByClass(this.getClass());
-
-        // job setup
-        TextInputFormat.setInputPaths(job, new Path(INPUT_PATH));
-        TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
-
-        job.setMapperClass(Map.class);
-        job.setReducerClass(Reduce.class);
-        job.setMapOutputKeyClass(Text.class);
-        job.setMapOutputValueClass(IntWritable.class);
-        job.setOutputKeyClass(String.class);
-        job.setOutputValueClass(Integer.class);
-        job.getConfiguration().set("mapreduce.output.basename", "dante");
-
-        return job.waitForCompletion(true) ? 0 : 1;
+        return res;
     }
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
@@ -99,7 +100,6 @@ public class Authorship extends Configured implements Tool {
     public static class Reduce extends Reducer<Text, IntWritable, String, Integer> {
         @Override
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            HashMap<String, IntWritable> map = new HashMap<>();
             int sum = 0;
             for (IntWritable count : values) {
                 sum += count.get();
