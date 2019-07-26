@@ -1,4 +1,6 @@
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -11,9 +13,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -47,32 +47,7 @@ public class Authorship extends Configured implements Tool {
         job.setOutputValueClass(Integer.class);
         job.getConfiguration().set("mapreduce.output.basename", "dante");
 
-        int res = job.waitForCompletion(true) ? 0 : 1;
-
-        HashMap<String, Integer> mappings = new HashMap<>();
-        Scanner fileScanner = new Scanner(new File(OUTPUT_PATH + "/dante-r-00000"));
-
-        while (fileScanner.hasNext()) {
-            String str = fileScanner.next();
-            mappings.put(str.split(" ")[0], Integer.valueOf(str.split(" ")[1]));
-        }
-
-        HashMap<String, Float> authorRatios = new HashMap<>();
-        for (String sp : mappings.keySet()) {
-            if (sp.equals("nwords"))
-                continue;
-
-            authorRatios.put(sp, (float) (mappings.get(sp) / mappings.get("nwords")));
-        }
-
-        File ratios = new File(OUTPUT_PATH + "/dante_ratios.txt");
-        FileWriter fw = new FileWriter(ratios);
-        ratios.createNewFile();
-        for (String sp : authorRatios.keySet()) {
-            fw.write(sp + "," + authorRatios.get(sp));
-        }
-
-        return res;
+        return job.waitForCompletion(true) ? 0 : 1;
     }
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
