@@ -49,3 +49,9 @@ fabric.properties
 
 # Editor-based Rest Client
 .idea/httpRequests
+
+# Project related stuff
+metainfs
+
+# Project related stuff
+metainfs/
