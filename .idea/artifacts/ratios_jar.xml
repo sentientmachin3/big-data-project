@@ -1,9 +1,9 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="authorship:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/authorship_jar</output-path>
-    <root id="archive" name="authorship.jar">
+  <artifact type="jar" name="ratios:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ratios_jar</output-path>
+    <root id="archive" name="ratios.jar">
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/metainfs/authorship/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/metainfs/ratios/META-INF/MANIFEST.MF" />
       </element>
       <element id="module-output" name="big-data-project" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/hadoop-hdfs.jar" path-in-jar="/" />
@@ -12,6 +12,7 @@
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/hadoop-common.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/hadoop-annotations.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/libs/hadoop-core-2.6.0-mr1-cdh5.7.0.jar" path-in-jar="/" />
+      <element id="dir-copy" path="$PROJECT_DIR$/res" />
     </root>
   </artifact>
 </component>

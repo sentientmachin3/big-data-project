@@ -8,7 +8,7 @@ public class IniParser {
 
     static {
         try {
-            INI_FILE = new Ini(new File("../res/config.ini"));
+            INI_FILE = new Ini(new File("config.ini"));
         } catch (IOException e) {
             e.printStackTrace();
         }

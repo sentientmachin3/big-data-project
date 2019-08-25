@@ -1,38 +1,40 @@
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.HashMap;
 
 public class RatiosMap {
     private HashMap<String, Float> map;
 
-    public RatiosMap(BufferedReader reader) {
+    RatiosMap(BufferedReader reader) {
         map = new HashMap<>();
         HashMap<String, Integer> temp = new HashMap<>();
         String line;
-        int words;
 
         try {
             while ((line = reader.readLine()) != null) {
-                temp.put(line.split(" = ")[0], Integer.parseInt(line.split(" = ")[1]));
+                temp.put(line.split("\t")[0], Integer.parseInt(line.split("\t")[1]));
             }
 
-        } catch (IOException e) {
-            System.out.println(e.getCause());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
 
         for (String s : temp.keySet()) {
-            if (!s.equals("nwords"))
-                map.put(s, (float) (temp.get(s) / temp.get("nwords")));
+            if (!(s.equals("nwords")))
+                map.put(s, ((float)temp.get(s) / (float)temp.get("nwords")));
         }
     }
 
-    public HashMap<String, Float> getMap() {
+    HashMap<String, Float> getMap() {
         return map;
     }
 
-    public void append(String key, float value) {
-        map.put(key, value);
+    @Override
+    public String toString() {
+        StringBuilder ret = new StringBuilder();
+        for (String s : map.keySet()) {
+            ret.append(s).append(": ").append(map.get(s)).append("\n");
+        }
+
+        return ret.toString();
     }
-
-
 }

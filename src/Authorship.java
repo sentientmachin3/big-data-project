@@ -1,7 +1,4 @@
-import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -17,10 +14,8 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-
+// TODO: convert to .ini config
 public class Authorship extends Configured implements Tool {
-    private static final String INPUT_PATH = "/user/davide/authorship/input";
-    private static final String OUTPUT_PATH = "/user/davide/authorship/output";
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("il", "lo", "la", "i", "gli", "le", "l'", "un", "una", "uno", "un'"));
 
@@ -36,8 +31,8 @@ public class Authorship extends Configured implements Tool {
         job.setJarByClass(this.getClass());
 
         // job setup
-        TextInputFormat.setInputPaths(job, new Path(INPUT_PATH));
-        TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
+        TextInputFormat.setInputPaths(job, IniParser.getInputPath());
+        TextOutputFormat.setOutputPath(job, IniParser.getOutputPath());
 
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
