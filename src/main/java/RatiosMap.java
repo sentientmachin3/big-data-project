@@ -1,3 +1,5 @@
+package main.java;
+
 import java.io.BufferedReader;
 import java.util.HashMap;
 

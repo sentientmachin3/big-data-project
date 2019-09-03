@@ -1,11 +1,14 @@
+package main.java;
+
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
@@ -14,15 +17,13 @@ import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
-// TODO: convert to .ini config
 public class Authorship extends Configured implements Tool {
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma", "però", "dunque", "anzi", "che"));
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("il", "lo", "la", "i", "gli", "le", "l'", "un", "una", "uno", "un'"));
 
     public static void main(String[] args) throws Exception {
-        Authorship authorship = new Authorship();
-        int res = ToolRunner.run(authorship, args);
-        System.exit(res);
+        ToolRunner.run(new Authorship(), args);
+        System.exit(0);
     }
 
     @Override
@@ -31,8 +32,10 @@ public class Authorship extends Configured implements Tool {
         job.setJarByClass(this.getClass());
 
         // job setup
-        TextInputFormat.setInputPaths(job, IniParser.getInputPath());
+//        TextInputFormat.setInputPaths(job, org.java.authorship.IniParser.getInputPath());
         TextOutputFormat.setOutputPath(job, IniParser.getOutputPath());
+        for (String s : IniParser.getAuthorsPaths())
+            FileInputFormat.addInputPath(new Job(), new Path(s));
 
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
@@ -40,7 +43,6 @@ public class Authorship extends Configured implements Tool {
         job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(String.class);
         job.setOutputValueClass(Integer.class);
-        job.getConfiguration().set("mapreduce.output.basename", "dante");
 
         return job.waitForCompletion(true) ? 0 : 1;
     }
