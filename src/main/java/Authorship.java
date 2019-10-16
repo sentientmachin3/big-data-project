@@ -11,6 +11,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.TaskInputOutputContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
@@ -27,9 +28,9 @@ public class Authorship extends Configured implements Tool {
             "però", "dunque", "anzi", "che", "and", "or", "not"));
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an", "il", "lo", "la", "i",
             "gli", "le", "l'", "un", "una", "uno", "un'"));
-    private static List<String> AUTHORS = new LinkedList<>();
-    public static final String INPUT_PATH = "/user/root/authroship/input";
-    public static final String OUTPUT_PATH = "/user/root/authroship/output";
+    private static final List<String> AUTHORS = new ArrayList<>(Arrays.asList("/hmelville.txt", "/mshelley.txt"));
+    public static final String INPUT_PATH = "/user/root/authorship/input";
+    public static final String OUTPUT_PATH = "/user/root/authorship/output";
 
     public static void main(String[] args) throws Exception {
         ToolRunner.run(new Authorship(), args);
@@ -42,11 +43,14 @@ public class Authorship extends Configured implements Tool {
         job.setJarByClass(this.getClass());
 
         // todo: fix output format
+        TextInputFormat.setInputPaths(job, new Path(INPUT_PATH));
+        TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
         // job setup
+
 //        TextInputFormat.setInputPaths(job, org.java.authorship.IniParser.getInputPath());
 //        TextOutputFormat.setOutputPath(job, IniParser.getOutputPath());
         for (String s : AUTHORS)
-            FileInputFormat.addInputPath(job, new Path(s));
+            FileInputFormat.addInputPath(job, new Path(INPUT_PATH + s));
 
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
@@ -82,12 +86,12 @@ public class Authorship extends Configured implements Tool {
 
 
     public static class Reduce extends Reducer<Text, IntWritable, String, Integer> {
-        private MultipleOutputs<Text, IntWritable> out;
-
-        @Override
-        protected void setup(Context context) throws IOException, InterruptedException {
-            out = new MultipleOutputs<Text, IntWritable>((TaskInputOutputContext) context);
-        }
+//        private MultipleOutputs<Text, IntWritable> out;
+//
+//        @Override
+//        protected void setup(Context context) throws IOException, InterruptedException {
+//            out = new MultipleOutputs<Text, IntWritable>((TaskInputOutputContext) context);
+//        }
 
         @Override
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
@@ -97,7 +101,7 @@ public class Authorship extends Configured implements Tool {
             }
 
 
-            out.write(key.toString().split("\\*")[0], key.toString().split("\\*")[1], new IntWritable(sum));
+            context.write(key.toString().split("\\*")[0] + key.toString().split("\\*")[1], sum);
 
         }
     }
