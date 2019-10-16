@@ -41,14 +41,10 @@ public class Authorship extends Configured implements Tool {
     public int run(String[] args) throws Exception {
         Job job = Job.getInstance(this.getConf(), "authorship");
         job.setJarByClass(this.getClass());
-
-        // todo: fix output format
         TextInputFormat.setInputPaths(job, new Path(INPUT_PATH));
         TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
-        // job setup
 
-//        TextInputFormat.setInputPaths(job, org.java.authorship.IniParser.getInputPath());
-//        TextOutputFormat.setOutputPath(job, IniParser.getOutputPath());
+        // job setup
         for (String s : AUTHORS)
             FileInputFormat.addInputPath(job, new Path(INPUT_PATH + s));
 
@@ -86,13 +82,6 @@ public class Authorship extends Configured implements Tool {
 
 
     public static class Reduce extends Reducer<Text, IntWritable, String, Integer> {
-//        private MultipleOutputs<Text, IntWritable> out;
-//
-//        @Override
-//        protected void setup(Context context) throws IOException, InterruptedException {
-//            out = new MultipleOutputs<Text, IntWritable>((TaskInputOutputContext) context);
-//        }
-
         @Override
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             int sum = 0;
