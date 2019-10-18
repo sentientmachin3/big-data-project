@@ -1,10 +1,11 @@
 package main.java;
 
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
 public class Main {
@@ -14,7 +15,7 @@ public class Main {
 
         ToolRunner.run(authorship, args);
         FileSystem fs = FileSystem.get(authorship.getConf());
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(Authorship.INPUT_PATH + "/part-r-00000")));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(new Path(Authorship.INPUT_PATH + "/part-r-00000"))));
 
         while (bufferedReader.readLine() != null) {
             String line = bufferedReader.readLine();
@@ -29,8 +30,8 @@ public class Main {
             frequencies.setValue(author, field, value);
         }
 
-
-
+        FSDataOutputStream outputStream = fs.create(new Path(Authorship.OUTPUT_PATH + "/frequencies.txt"));
+        outputStream.writeBytes(frequencies.toString());
 
 
     }

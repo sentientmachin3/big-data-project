@@ -9,7 +9,18 @@ public class FreqMap {
         map.put(author, mappings);
     }
 
-    public void setValue(String author, String field, int value) {
+    void setValue(String author, String field, int value) {
         map.get(author).put(field, value);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder tostr = new StringBuilder();
+        for (String auth : this.map.keySet()) {
+            for (String field : this.map.get(auth).keySet())
+                tostr.append(auth).append("-").append(field).append("=").append(this.map.get(auth).get(field)).append("\n");
+        }
+
+        return tostr.toString();
     }
 }
