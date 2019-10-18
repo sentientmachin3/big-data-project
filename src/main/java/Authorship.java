@@ -13,7 +13,6 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
-import org.apache.hadoop.util.ToolRunner;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,11 +28,6 @@ public class Authorship extends Configured implements Tool {
     private static final List<String> AUTHORS = new ArrayList<>(Arrays.asList("/hmelville.txt", "/mshelley.txt"));
     public static final String INPUT_PATH = "/user/root/authorship/input";
     public static final String OUTPUT_PATH = "/user/root/authorship/output";
-
-    public static void main(String[] args) throws Exception {
-        ToolRunner.run(new Authorship(), args);
-        System.exit(0);
-    }
 
     @Override
     public int run(String[] args) throws Exception {
