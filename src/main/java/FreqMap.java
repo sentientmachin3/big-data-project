@@ -3,13 +3,14 @@ package main.java;
 import java.util.HashMap;
 
 public class FreqMap {
-    private HashMap<String, HashMap<String, Integer>> map = new HashMap<>();
+    private HashMap<String, HashMap<String, Float>> map;
 
-    public void append(String author, HashMap<String, Integer> mappings) {
-        map.put(author, mappings);
+    FreqMap() {
+        this.map = new HashMap<>();
     }
 
-    void setValue(String author, String field, int value) {
+    void setValue(String author, String field, float value) {
+        map.put(author, new HashMap<String, Float>());
         map.get(author).put(field, value);
     }
 
@@ -23,4 +24,16 @@ public class FreqMap {
 
         return tostr.toString();
     }
+
+    void calculateFrequencies() {
+        for (String auth : map.keySet()) {
+            for (String field : map.get(auth).keySet()) {
+                if (!field.equals("nwords")) {
+                    float upval = map.get(auth).get(field) / map.get(auth).get("nwords");
+                    map.get(auth).put(field, upval);
+                }
+            }
+        }
+    }
+
 }

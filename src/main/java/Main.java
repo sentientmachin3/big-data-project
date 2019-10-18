@@ -11,24 +11,24 @@ import java.io.InputStreamReader;
 public class Main {
     public static void main(String[] args) throws Exception {
         Authorship authorship = new Authorship();
-        FreqMap frequencies = new FreqMap();
 
         ToolRunner.run(authorship, args);
         FileSystem fs = FileSystem.get(authorship.getConf());
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(new Path(Authorship.INPUT_PATH + "/part-r-00000"))));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(new Path(Authorship.OUTPUT_PATH + "/part-r-00000"))));
+        FreqMap frequencies = new FreqMap();
 
-        while (bufferedReader.readLine() != null) {
-            String line = bufferedReader.readLine();
+        // value parsing
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
             String author = line.split(".txt")[0];
-            String field = line.split(".txt")[1].split(" = ")[0];
-            int value = Integer.parseInt(line.split(".txt")[1].split(" = ")[1]);
-
-            if (field.equals("nwords")) {
-                value /= Integer.parseInt(field);
-            }
+            String field = line.split(".txt")[1].split("\t")[0];
+            float value = Float.parseFloat(line.split(".txt")[1].split("\t")[1]);
 
             frequencies.setValue(author, field, value);
+
         }
+
+        frequencies.calculateFrequencies();
 
         FSDataOutputStream outputStream = fs.create(new Path(Authorship.OUTPUT_PATH + "/frequencies.txt"));
         outputStream.writeBytes(frequencies.toString());
