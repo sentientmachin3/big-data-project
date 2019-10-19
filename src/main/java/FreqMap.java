@@ -10,8 +10,11 @@ public class FreqMap {
     }
 
     void setValue(String author, String field, float value) {
-        map.put(author, new HashMap<String, Float>());
         map.get(author).put(field, value);
+    }
+
+    void addAuthorWithEmptyMap(String author) {
+        this.map.put(author, new HashMap<String, Float>());
     }
 
     @Override
@@ -28,12 +31,11 @@ public class FreqMap {
     void calculateFrequencies() {
         for (String auth : map.keySet()) {
             for (String field : map.get(auth).keySet()) {
-                if (!field.equals("nwords")) {
+                if (!(field.equals("nwords"))) {
                     float upval = map.get(auth).get(field) / map.get(auth).get("nwords");
                     map.get(auth).put(field, upval);
                 }
             }
         }
     }
-
 }
