@@ -18,16 +18,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Authorship extends Configured implements Tool {
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma",
             "però", "dunque", "anzi", "che", "and", "or", "not"));
+
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an", "il", "lo", "la", "i",
             "gli", "le", "l'", "un", "una", "uno", "un'"));
+
+    // private static final List<String> PERIOD_MARKERS = new ArrayList<>(Arrays.asList(".", "!", "?", ". ", "! ", "? "));
+
     private static final List<String> AUTHORS = new ArrayList<>(Arrays.asList("/hmelville.txt", "/mshelley.txt"));
-    public static final String INPUT_PATH = "/user/root/authorship/input";
-    public static final String OUTPUT_PATH = "/user/root/authorship/output";
+    private static final String INPUT_PATH = "/user/root/authorship/input";
+    static final String OUTPUT_PATH = "/user/root/authorship/output";
 
     @Override
     public int run(String[] args) throws Exception {
@@ -52,6 +57,7 @@ public class Authorship extends Configured implements Tool {
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
+        private static final Pattern END_PERIOD = Pattern.compile("[.!?]");
 
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
@@ -69,6 +75,12 @@ public class Authorship extends Configured implements Tool {
                     context.write(new Text(filePathString + "*nwords"), new IntWritable(1));
                 }
             }
+
+            Matcher matcher = END_PERIOD.matcher(lineText.toString());
+            while (matcher.find()) {
+                context.write(new Text(filePathString + "*periods"), new IntWritable(1));
+            }
+
         }
     }
 
@@ -80,7 +92,6 @@ public class Authorship extends Configured implements Tool {
             for (IntWritable count : values) {
                 sum += count.get();
             }
-
 
             context.write(key.toString().split("\\*")[0] + key.toString().split("\\*")[1], sum);
 

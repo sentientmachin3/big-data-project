@@ -32,12 +32,12 @@ public class FreqMap {
     void calculateFrequencies() {
         for (String auth : map.keySet()) {
             for (String field : map.get(auth).keySet()) {
-                if (!(field.equals("nwords"))) {
+                if (field.equals("articles") || field.equals("conjunctions")) {
                     float upval = map.get(auth).get(field) / map.get(auth).get("nwords");
                     map.get(auth).put(field, upval);
                 }
             }
-            this.map.get(auth).remove("nwords");
+            this.map.get(auth).put("avg_period_length", map.get(auth).get("nwords") / map.get(auth).get("periods"));
         }
     }
 }
