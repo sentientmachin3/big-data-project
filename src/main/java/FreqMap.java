@@ -14,7 +14,8 @@ public class FreqMap {
     }
 
     void addAuthorWithEmptyMap(String author) {
-        this.map.put(author, new HashMap<String, Float>());
+        if (!this.map.containsKey(author))
+            this.map.put(author, new HashMap<String, Float>());
     }
 
     @Override
@@ -36,6 +37,7 @@ public class FreqMap {
                     map.get(auth).put(field, upval);
                 }
             }
+            this.map.get(auth).remove("nwords");
         }
     }
 }
