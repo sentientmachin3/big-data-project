@@ -32,7 +32,7 @@ public class Authorship extends Configured implements Tool {
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an", "il", "lo", "la", "i",
             "gli", "le", "l'", "un", "una", "uno", "un'"));
 
-    private static final String INPUT_PATH = "/user/root/authorship/input";
+    static final String INPUT_PATH = "/user/root/authorship/input";
     static final String OUTPUT_PATH = "/user/root/authorship/output";
 
 

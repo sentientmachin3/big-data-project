@@ -7,20 +7,30 @@ import org.apache.hadoop.fs.Path;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.*;
 
-public class FreqMap {
+public class FreqMap implements Map<String, HashMap<String, Float>> {
     private HashMap<String, HashMap<String, Float>> map;
+    private LinkedList<Path> unknowns;
 
     FreqMap() {
         this.map = new HashMap<>();
     }
 
-    private void setValue(String author, String field, float value) {
+    FreqMap(LinkedList<Path> unknowns) {
+        this.map = new HashMap<>();
+        this.unknowns = unknowns;
+    }
+
+    Set<String> getAuthors() {
+        return this.map.keySet();
+    }
+
+    void setValue(String author, String field, float value) {
         map.get(author).put(field, value);
     }
 
-    private void addAuthorWithEmptyMap(String author) {
+    void addAuthorWithEmptyMap(String author) {
         if (!this.map.containsKey(author))
             this.map.put(author, new HashMap<String, Float>());
     }
@@ -71,5 +81,65 @@ public class FreqMap {
         }
 
         this.calculateFrequencies();
+    }
+
+    @Override
+    public int size() {
+        return map.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return map.isEmpty();
+    }
+
+    @Override
+    public boolean containsKey(Object o) {
+        return map.containsKey(o);
+    }
+
+    @Override
+    public boolean containsValue(Object o) {
+        return map.containsValue(o);
+    }
+
+    @Override
+    public HashMap<String, Float> get(Object o) {
+        return map.get(o);
+    }
+
+    @Override
+    public HashMap<String, Float> put(String o, HashMap<String, Float> o2) {
+        return map.put(o, o2);
+    }
+
+    @Override
+    public HashMap<String, Float> remove(Object o) {
+        return map.remove(o);
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends HashMap<String, Float>> map) {
+        this.map.putAll(map);
+    }
+
+    @Override
+    public void clear() {
+        this.map.clear();
+    }
+
+    @Override
+    public Set<String> keySet() {
+        return this.map.keySet();
+    }
+
+    @Override
+    public Collection<HashMap<String, Float>> values() {
+        return this.map.values();
+    }
+
+    @Override
+    public Set<Entry<String, HashMap<String, Float>>> entrySet() {
+        return map.entrySet();
     }
 }
