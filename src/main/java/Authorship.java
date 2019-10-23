@@ -1,7 +1,10 @@
 package main.java;
 
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -17,6 +20,7 @@ import org.apache.hadoop.util.Tool;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,9 +32,7 @@ public class Authorship extends Configured implements Tool {
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an", "il", "lo", "la", "i",
             "gli", "le", "l'", "un", "una", "uno", "un'"));
 
-    // private static final List<String> PERIOD_MARKERS = new ArrayList<>(Arrays.asList(".", "!", "?", ". ", "! ", "? "));
-
-    private static final List<String> AUTHORS = new ArrayList<>(Arrays.asList("/hmelville.txt", "/mshelley.txt"));
+//    private static final List<String> AUTHORS = new ArrayList<>(Arrays.asList("/hmelville.txt", "/mshelley.txt"));
     private static final String INPUT_PATH = "/user/root/authorship/input";
     static final String OUTPUT_PATH = "/user/root/authorship/output";
 
@@ -42,8 +44,8 @@ public class Authorship extends Configured implements Tool {
         TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
 
         // job setup
-        for (String s : AUTHORS)
-            FileInputFormat.addInputPath(job, new Path(INPUT_PATH + s));
+        for (String s : buildAuthPaths())
+            FileInputFormat.addInputPath(job, new Path(s));
 
         job.setMapperClass(Map.class);
         job.setReducerClass(Reduce.class);
@@ -53,6 +55,17 @@ public class Authorship extends Configured implements Tool {
         job.setOutputValueClass(Integer.class);
 
         return job.waitForCompletion(true) ? 0 : 1;
+    }
+
+    private LinkedList<String> buildAuthPaths() throws IOException {
+        FileSystem fs = FileSystem.get(this.getConf());
+        RemoteIterator<LocatedFileStatus> remoteIterator = fs.listFiles(new Path(INPUT_PATH), false);
+        LinkedList<String> names = new LinkedList<>();
+        while (remoteIterator.hasNext()) {
+            names.add(remoteIterator.next().getPath().toString());
+        }
+
+        return names;
     }
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {

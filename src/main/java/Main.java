@@ -6,13 +6,20 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.util.ToolRunner;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Main {
     public static void main(String[] args) throws Exception {
         Authorship authorship = new Authorship();
-
         ToolRunner.run(authorship, args);
+        buildKnownData(authorship);
+        // buildUnknownData();
+
+    }
+
+
+    private static void buildKnownData(Authorship authorship) throws IOException {
         FileSystem fs = FileSystem.get(authorship.getConf());
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(new Path(Authorship.OUTPUT_PATH + "/part-r-00000"))));
         FreqMap frequencies = new FreqMap();
@@ -36,8 +43,9 @@ public class Main {
         outputStream.writeBytes(frequencies.toString());
         outputStream.flush();
         outputStream.close();
-
-
     }
 
+//    private static void buildUnknownData() {
+//
+//    }
 }
