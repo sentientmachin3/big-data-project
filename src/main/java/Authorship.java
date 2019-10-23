@@ -32,9 +32,9 @@ public class Authorship extends Configured implements Tool {
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an", "il", "lo", "la", "i",
             "gli", "le", "l'", "un", "una", "uno", "un'"));
 
-//    private static final List<String> AUTHORS = new ArrayList<>(Arrays.asList("/hmelville.txt", "/mshelley.txt"));
     private static final String INPUT_PATH = "/user/root/authorship/input";
     static final String OUTPUT_PATH = "/user/root/authorship/output";
+
 
     @Override
     public int run(String[] args) throws Exception {
@@ -44,7 +44,7 @@ public class Authorship extends Configured implements Tool {
         TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
 
         // job setup
-        for (String s : buildAuthPaths())
+        for (String s : buildPaths())
             FileInputFormat.addInputPath(job, new Path(s));
 
         job.setMapperClass(Map.class);
@@ -57,7 +57,7 @@ public class Authorship extends Configured implements Tool {
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
-    private LinkedList<String> buildAuthPaths() throws IOException {
+    private LinkedList<String> buildPaths() throws IOException {
         FileSystem fs = FileSystem.get(this.getConf());
         RemoteIterator<LocatedFileStatus> remoteIterator = fs.listFiles(new Path(INPUT_PATH), false);
         LinkedList<String> names = new LinkedList<>();

@@ -1,5 +1,12 @@
 package main.java;
 
+import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 
 public class FreqMap {
@@ -9,11 +16,11 @@ public class FreqMap {
         this.map = new HashMap<>();
     }
 
-    void setValue(String author, String field, float value) {
+    private void setValue(String author, String field, float value) {
         map.get(author).put(field, value);
     }
 
-    void addAuthorWithEmptyMap(String author) {
+    private void addAuthorWithEmptyMap(String author) {
         if (!this.map.containsKey(author))
             this.map.put(author, new HashMap<String, Float>());
     }
@@ -29,7 +36,7 @@ public class FreqMap {
         return tostr.toString();
     }
 
-    void calculateFrequencies() {
+    private void calculateFrequencies() {
         for (String auth : map.keySet()) {
             for (String field : map.get(auth).keySet()) {
                 if (field.equals("articles") || field.equals("conjunctions")) {
@@ -39,5 +46,30 @@ public class FreqMap {
             }
             this.map.get(auth).put("avg_period_length", map.get(auth).get("nwords") / map.get(auth).get("periods"));
         }
+    }
+
+    void toFile(FileSystem fs, Path path) throws IOException {
+        FSDataOutputStream outputStream = fs.create(path);
+        outputStream.writeBytes(this.toString());
+        outputStream.flush();
+        outputStream.close();
+    }
+
+    void fromFile(FileSystem fs, Path path) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(path)));
+
+        // value parsing
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            String author = line.split(".txt")[0];
+            this.addAuthorWithEmptyMap(author);
+
+            String field = line.split(".txt")[1].split("\t")[0];
+            float value = Float.parseFloat(line.split(".txt")[1].split("\t")[1]);
+
+            this.setValue(author, field, value);
+        }
+
+        this.calculateFrequencies();
     }
 }
