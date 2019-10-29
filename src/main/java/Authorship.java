@@ -30,7 +30,9 @@ public class Authorship extends Configured implements Tool {
             "però", "dunque", "anzi", "che", "and", "or", "not"));
 
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an", "il", "lo", "la", "i",
-            "gli", "le", "l'", "un", "una", "uno", "un'"));
+            "gli", "le", "l'", "un", "una", "uno", "un'", "gl'"));
+
+    private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("di", "a", "da", "in","con","su","per","tra","fra","d'"));
 
     static final String INPUT_PATH = "/user/root/authorship/input";
     static final String OUTPUT_PATH = "/user/root/authorship/output";
@@ -70,7 +72,7 @@ public class Authorship extends Configured implements Tool {
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
-        private static final Pattern END_PERIOD = Pattern.compile("[.!?]");
+        private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
 
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
@@ -83,6 +85,10 @@ public class Authorship extends Configured implements Tool {
 
                     if (Authorship.CONJUNCTIONS.contains(word)) {
                         context.write(new Text(filePathString + "*conjunction"), new IntWritable(1));
+                    }
+
+                    if (Authorship.PREPOSITIONS.contains(word)) {
+                        context.write(new Text(filePathString + "*preposition"), new IntWritable(1));
                     }
 
                     context.write(new Text(filePathString + "*nwords"), new IntWritable(1));

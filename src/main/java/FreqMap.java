@@ -49,7 +49,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
     private void calculateFrequencies() {
         for (String auth : map.keySet()) {
             for (String field : map.get(auth).keySet()) {
-                if (field.equals("article") || field.equals("conjunction")) {
+                if (field.equals("article") || field.equals("conjunction") || field.equals("preposition")) {
                     float upval = map.get(auth).get(field) / map.get(auth).get("nwords");
                     map.get(auth).put(field, upval);
                 }
