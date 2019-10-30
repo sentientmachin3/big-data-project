@@ -26,13 +26,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Authorship extends Configured implements Tool {
-    private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma",
-            "però", "dunque", "anzi", "che", "and", "or", "not"));
+    private static final List<String> IT_CONJUNCTIONS = new ArrayList<>(Arrays.asList("e", "né", "o", "inoltre", "ma",
+            "però", "dunque", "anzi", "che"));
 
-    private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an", "il", "lo", "la", "i",
+    private static final List<String> EN_CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not"));
+
+    private static final List<String> IT_ARTICLES = new ArrayList<>(Arrays.asList("il", "lo", "la", "i",
             "gli", "le", "l'", "un", "una", "uno", "un'", "gl'"));
 
-    private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("di", "a", "da", "in","con","su","per","tra","fra","d'"));
+    private static final List<String> EN_ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an"));
+
+    private static final List<String> IT_PREPOSITIONS = new ArrayList<>(Arrays.asList("di", "a", "da", "in", "con", "su", "per", "tra", "fra", "d'"));
+
+    private static final List<String> EN_PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between"));
 
     static final String INPUT_PATH = "/user/root/authorship/input";
     static final String OUTPUT_PATH = "/user/root/authorship/output";
@@ -60,26 +66,41 @@ public class Authorship extends Configured implements Tool {
     }
 
 
-
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
+        private static final Pattern EN_LANG = Pattern.compile("(\\bthe\\b|\\bof\\b|\\band\\b)");
 
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
             String filePathString = ((FileSplit) context.getInputSplit()).getPath().getName();
+            Matcher m = EN_LANG.matcher(lineText.toString());
             for (String word : WORD_BOUNDARY.split(lineText.toString())) {
                 if (!word.isEmpty()) {
-                    if (Authorship.ARTICLES.contains(word)) {
-                        context.write(new Text(filePathString + "*article"), new IntWritable(1));
-                    }
+                    if (m.find()) {
+                        if (Authorship.EN_ARTICLES.contains(word)) {
+                            context.write(new Text(filePathString + "*article"), new IntWritable(1));
+                        }
 
-                    if (Authorship.CONJUNCTIONS.contains(word)) {
-                        context.write(new Text(filePathString + "*conjunction"), new IntWritable(1));
-                    }
+                        if (Authorship.EN_CONJUNCTIONS.contains(word)) {
+                            context.write(new Text(filePathString + "*conjunction"), new IntWritable(1));
+                        }
 
-                    if (Authorship.PREPOSITIONS.contains(word)) {
-                        context.write(new Text(filePathString + "*preposition"), new IntWritable(1));
+                        if (Authorship.EN_PREPOSITIONS.contains(word)) {
+                            context.write(new Text(filePathString + "*preposition"), new IntWritable(1));
+                        }
+                    } else {
+                        if (Authorship.IT_ARTICLES.contains(word)) {
+                            context.write(new Text(filePathString + "*article"), new IntWritable(1));
+                        }
+
+                        if (Authorship.IT_CONJUNCTIONS.contains(word)) {
+                            context.write(new Text(filePathString + "*conjunction"), new IntWritable(1));
+                        }
+
+                        if (Authorship.IT_PREPOSITIONS.contains(word)) {
+                            context.write(new Text(filePathString + "*preposition"), new IntWritable(1));
+                        }
                     }
 
                     context.write(new Text(filePathString + "*nwords"), new IntWritable(1));
