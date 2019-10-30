@@ -46,7 +46,7 @@ public class Authorship extends Configured implements Tool {
         TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
 
         // job setup
-        for (String s : buildPaths())
+        for (String s : Main.buildPaths(this))
             FileInputFormat.addInputPath(job, new Path(s));
 
         job.setMapperClass(Map.class);
@@ -59,16 +59,7 @@ public class Authorship extends Configured implements Tool {
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
-    private LinkedList<String> buildPaths() throws IOException {
-        FileSystem fs = FileSystem.get(this.getConf());
-        RemoteIterator<LocatedFileStatus> remoteIterator = fs.listFiles(new Path(INPUT_PATH), false);
-        LinkedList<String> names = new LinkedList<>();
-        while (remoteIterator.hasNext()) {
-            names.add(remoteIterator.next().getPath().toString());
-        }
 
-        return names;
-    }
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
