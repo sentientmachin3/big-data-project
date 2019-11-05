@@ -26,16 +26,8 @@ public class Main {
         freqMap.fromFile(fs, new Path(Authorship.OUTPUT_PATH + "/part-r-00000"));
         freqMap.toFile(fs, new Path(Authorship.OUTPUT_PATH + "/known-frequencies.txt"));
 
-        FreqMap unknownFreqMap = new FreqMap();
-        for (Map.Entry<String, HashMap<String, Float>> m : freqMap.entrySet()) {
-            for (String s : args) {
-                if (s.contains(m.getKey())) {
-                    unknownFreqMap.put(m.getKey(), m.getValue());
-                }
-            }
-        }
 
-        // SimilarityAnalysis similarityAnalysis = new SimilarityAnalysis();
+//         SimilarityAnalysis similarityAnalysis = new SimilarityAnalysis();
 
     }
 
