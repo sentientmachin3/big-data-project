@@ -10,49 +10,46 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class FreqMap implements Map<String, HashMap<String, Float>> {
-    private HashMap<String, HashMap<String, Float>> map;
+    private HashSet<FreqMapEntry> entries;
 
     FreqMap() {
-        this.map = new HashMap<>();
+        this.entries = new HashSet<>();
     }
 
-    FreqMap(LinkedList<Path> unknowns) {
-        this.map = new HashMap<>();
-    }
 
     Set<String> getAuthors() {
-        return this.map.keySet();
+        return this.keySet();
     }
 
     private void setValue(String author, String field, float value) {
-        map.get(author).put(field, value);
+        this.get(author).put(field, value);
     }
 
     private void addAuthorWithEmptyMap(String author) {
-        if (!this.map.containsKey(author))
-            this.map.put(author, new HashMap<String, Float>());
+        if (!this.containsKey(author))
+            this.put(author, new HashMap<String, Float>());
     }
 
     @Override
     public String toString() {
         StringBuilder tostr = new StringBuilder();
-        for (String auth : this.map.keySet()) {
-            for (String field : this.map.get(auth).keySet())
-                tostr.append(auth).append("-").append(field).append("=").append(this.map.get(auth).get(field)).append("\n");
+        for (String auth : this.keySet()) {
+            for (String field : this.get(auth).keySet())
+                tostr.append(auth).append("-").append(field).append("=").append(this.get(auth).get(field)).append("\n");
         }
 
         return tostr.toString();
     }
 
     private void calculateFrequencies() {
-        for (String auth : map.keySet()) {
-            for (String field : map.get(auth).keySet()) {
+        for (String auth : this.keySet()) {
+            for (String field : this.get(auth).keySet()) {
                 if (field.equals("article") || field.equals("conjunction") || field.equals("preposition")) {
-                    float upval = map.get(auth).get(field) / map.get(auth).get("nwords");
-                    map.get(auth).put(field, upval);
+                    float upval = this.get(auth).get(field) / this.get(auth).get("nwords");
+                    this.get(auth).put(field, upval);
                 }
             }
-            this.map.get(auth).put("avg_period_length", map.get(auth).get("nwords") / map.get(auth).get("periods"));
+            this.get(auth).put("avg_period_length", this.get(auth).get("nwords") / this.get(auth).get("periods"));
         }
     }
 
@@ -83,61 +80,104 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
     @Override
     public int size() {
-        return map.size();
+        return entries.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return map.isEmpty();
+        return entries.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object o) {
-        return map.containsKey(o);
+        for (FreqMapEntry entry: this.entries) {
+            if (o.equals(entry.getAuthor()))
+                return true;
+        }
+
+        return false;
     }
 
     @Override
     public boolean containsValue(Object o) {
-        return map.containsValue(o);
+        for (FreqMapEntry entry: this.entries) {
+            if (entry.getFrequencies().containsValue(o))
+                return true;
+        }
+
+        return false;
     }
 
     @Override
     public HashMap<String, Float> get(Object o) {
-        return map.get(o);
+        for (FreqMapEntry entry: entries) {
+            if (entry.getAuthor().equals(o))
+                return entry.getFrequencies();
+        }
+
+        return null;
     }
 
     @Override
     public HashMap<String, Float> put(String o, HashMap<String, Float> o2) {
-        return map.put(o, o2);
+        return null;
     }
 
     @Override
     public HashMap<String, Float> remove(Object o) {
-        return map.remove(o);
+        return null;
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends HashMap<String, Float>> map) {
-        this.map.putAll(map);
-    }
+    public void putAll(Map<? extends String, ? extends HashMap<String, Float>> map) {}
 
     @Override
     public void clear() {
-        this.map.clear();
+        this.entries.clear();
     }
 
     @Override
     public Set<String> keySet() {
-        return this.map.keySet();
+        HashSet<String> names = new HashSet<>();
+        for (FreqMapEntry entry: entries) {
+            names.add(entry.getAuthor());
+        }
+
+        return names;
     }
 
     @Override
     public Collection<HashMap<String, Float>> values() {
-        return this.map.values();
+        HashSet<HashMap<String, Float>> set = new HashSet<>();
+        for (FreqMapEntry entry: entries) {
+            set.add(entry.getFrequencies());
+        }
+
+        return set;
     }
 
     @Override
     public Set<Entry<String, HashMap<String, Float>>> entrySet() {
-        return map.entrySet();
+        HashSet<Entry<String, HashMap<String, Float>>> set = new HashSet<>();
+        for (final FreqMapEntry entry: entries) {
+            set.add(new Entry<String, HashMap<String, Float>>() {
+                @Override
+                public String getKey() {
+                    return entry.getAuthor();
+                }
+
+                @Override
+                public HashMap<String, Float> getValue() {
+                    return entry.getFrequencies();
+                }
+
+                @Override
+                public HashMap<String, Float> setValue(HashMap<String, Float> stringFloatHashMap) {
+                    return stringFloatHashMap;
+                }
+            });
+        }
+
+        return set;
     }
 }
