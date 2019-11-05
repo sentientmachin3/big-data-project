@@ -5,11 +5,15 @@ import java.util.HashMap;
 public class AffinityMap {
     private String author;
     private String unknown;
-    private HashMap<String, Float> map;
+    private HashMap<String, Double> map;
 
-    public AffinityMap(String auth, String unk, HashMap<String, Float> map) {
+    public AffinityMap(String auth, String unk) {
         this.author = auth;
         this.unknown = unk;
-        this.map = map;
+        this.map = new HashMap<>();
+    }
+
+    public void append(String field, double delta) {
+        this.map.put(field, delta);
     }
 }

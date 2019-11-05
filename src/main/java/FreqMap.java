@@ -11,7 +11,6 @@ import java.util.*;
 
 public class FreqMap implements Map<String, HashMap<String, Float>> {
     private HashMap<String, HashMap<String, Float>> map;
-    private LinkedList<Path> unknowns;
 
     FreqMap() {
         this.map = new HashMap<>();
@@ -19,7 +18,6 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
     FreqMap(LinkedList<Path> unknowns) {
         this.map = new HashMap<>();
-        this.unknowns = unknowns;
     }
 
     Set<String> getAuthors() {

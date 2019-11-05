@@ -42,6 +42,7 @@ public class Authorship extends Configured implements Tool {
 
     static final String INPUT_PATH = "/user/root/authorship/input";
     static final String OUTPUT_PATH = "/user/root/authorship/output";
+    static final String UNKNOWNS_INPUT_PATH = "/user/root/authorship/input/unknowns";
 
 
     @Override
@@ -49,6 +50,7 @@ public class Authorship extends Configured implements Tool {
         Job job = Job.getInstance(this.getConf(), "authorship");
         job.setJarByClass(this.getClass());
         TextInputFormat.setInputPaths(job, new Path(INPUT_PATH));
+        TextInputFormat.setInputPaths(job, new Path(UNKNOWNS_INPUT_PATH));
         TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
 
         // job setup

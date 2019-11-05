@@ -1,5 +1,8 @@
 package main.java;
 
+import org.apache.hadoop.metrics2.sink.ganglia.AbstractGangliaSink;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class SimilarityAnalysis {
@@ -15,12 +18,18 @@ public class SimilarityAnalysis {
     }
 
     private ArrayList<AffinityMap> exec() {
+        ArrayList<AffinityMap> list = new ArrayList<>();
+
         for (String kn: known.keySet()) {
             for (String unk: unknown.keySet()) {
-                // TODO
+                AffinityMap am = new AffinityMap(kn, unk);
+                for (String field: known.get(kn).keySet()) {
+                    am.append(field, known.get(kn).get(field) - unknown.get(unk).get(field));
+                }
+                list.add(am);
             }
         }
 
-        return null;
+        return list;
     }
 }

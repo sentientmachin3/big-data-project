@@ -18,8 +18,6 @@ import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-
-        // args contains names of unknown authors file
         Authorship authorship = new Authorship();
         ToolRunner.run(authorship, args);
         FileSystem fs = FileSystem.get(authorship.getConf());
@@ -36,6 +34,8 @@ public class Main {
                 }
             }
         }
+
+        // SimilarityAnalysis similarityAnalysis = new SimilarityAnalysis();
 
     }
 
