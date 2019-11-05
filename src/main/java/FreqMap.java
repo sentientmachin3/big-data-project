@@ -16,20 +16,6 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         this.entries = new HashSet<>();
     }
 
-
-    Set<String> getAuthors() {
-        return this.keySet();
-    }
-
-    private void setValue(String author, String field, float value) {
-        this.get(author).put(field, value);
-    }
-
-    private void addAuthorWithEmptyMap(String author) {
-        if (!this.containsKey(author))
-            this.put(author, new HashMap<String, Float>());
-    }
-
     @Override
     public String toString() {
         StringBuilder tostr = new StringBuilder();
@@ -64,18 +50,36 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(path)));
 
         // value parsing
+        // string format author-title.txt*speechpart \t value
         String line;
         while ((line = bufferedReader.readLine()) != null) {
-            String author = line.split(".txt")[0];
-            this.addAuthorWithEmptyMap(author);
-
+            String author = line.split(".txt")[0].split("-")[0];
+            String title = line.split(".txt")[0].split("-")[1];
             String field = line.split(".txt")[1].split("\t")[0];
             float value = Float.parseFloat(line.split(".txt")[1].split("\t")[1]);
-
-            this.setValue(author, field, value);
+            this.update(author, title, field, value);
         }
 
         this.calculateFrequencies();
+    }
+
+    private void update(String author, String title, String field, float value) {
+        if (!this.containsKey(author)) {
+            entries.add(new FreqMapEntry(author, title, field, value));
+        } else if (this.containsKey(author) && this.getAuthorsTitles(author).contains(title)) {
+            this.getByAuthorTitle(author, title).put(field, value);
+        }
+    }
+
+    private ArrayList<String> getAuthorsTitles(String author) {
+        ArrayList<String> titles = new ArrayList<>();
+        for (FreqMapEntry entry : entries) {
+            if (entry.getAuthor().equals(author)) {
+                titles.add(entry.getText());
+            }
+        }
+
+        return titles;
     }
 
     @Override
@@ -90,7 +94,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
     @Override
     public boolean containsKey(Object o) {
-        for (FreqMapEntry entry: this.entries) {
+        for (FreqMapEntry entry : this.entries) {
             if (o.equals(entry.getAuthor()))
                 return true;
         }
@@ -98,9 +102,17 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         return false;
     }
 
+    public HashMap<String, Float> getByAuthorTitle(String author, String title) {
+        for (FreqMapEntry entry : entries) {
+            if (entry.getAuthor().equals(author) && entry.getText().equals(title))
+                return entry.getFrequencies();
+        }
+        return null;
+    }
+
     @Override
     public boolean containsValue(Object o) {
-        for (FreqMapEntry entry: this.entries) {
+        for (FreqMapEntry entry : this.entries) {
             if (entry.getFrequencies().containsValue(o))
                 return true;
         }
@@ -110,7 +122,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
     @Override
     public HashMap<String, Float> get(Object o) {
-        for (FreqMapEntry entry: entries) {
+        for (FreqMapEntry entry : entries) {
             if (entry.getAuthor().equals(o))
                 return entry.getFrequencies();
         }
@@ -129,7 +141,8 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends HashMap<String, Float>> map) {}
+    public void putAll(Map<? extends String, ? extends HashMap<String, Float>> map) {
+    }
 
     @Override
     public void clear() {
@@ -139,7 +152,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
     @Override
     public Set<String> keySet() {
         HashSet<String> names = new HashSet<>();
-        for (FreqMapEntry entry: entries) {
+        for (FreqMapEntry entry : entries) {
             names.add(entry.getAuthor());
         }
 
@@ -149,7 +162,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
     @Override
     public Collection<HashMap<String, Float>> values() {
         HashSet<HashMap<String, Float>> set = new HashSet<>();
-        for (FreqMapEntry entry: entries) {
+        for (FreqMapEntry entry : entries) {
             set.add(entry.getFrequencies());
         }
 
@@ -159,7 +172,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
     @Override
     public Set<Entry<String, HashMap<String, Float>>> entrySet() {
         HashSet<Entry<String, HashMap<String, Float>>> set = new HashSet<>();
-        for (final FreqMapEntry entry: entries) {
+        for (final FreqMapEntry entry : entries) {
             set.add(new Entry<String, HashMap<String, Float>>() {
                 @Override
                 public String getKey() {

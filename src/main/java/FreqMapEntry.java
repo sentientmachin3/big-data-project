@@ -5,12 +5,21 @@ import java.util.HashMap;
 public class FreqMapEntry {
     private String author;
     private String text;
-    private HashMap<String, Float> frequencies;
+    private HashMap<String, Float> frequencies = new HashMap<>();
 
     public FreqMapEntry(String author, String text) {
         this.author = author;
         this.text = text;
-        this.frequencies = new HashMap<>();
+    }
+
+    public FreqMapEntry(String author, String title, String field, float value) {
+        this.author = author;
+        this.text = title;
+        this.frequencies.put(field, value);
+    }
+
+    public void setText(String title) {
+        this.text = title;
     }
 
     public String getAuthor() {
