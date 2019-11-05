@@ -26,11 +26,11 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         return this.map.keySet();
     }
 
-    void setValue(String author, String field, float value) {
+    private void setValue(String author, String field, float value) {
         map.get(author).put(field, value);
     }
 
-    void addAuthorWithEmptyMap(String author) {
+    private void addAuthorWithEmptyMap(String author) {
         if (!this.map.containsKey(author))
             this.map.put(author, new HashMap<String, Float>());
     }

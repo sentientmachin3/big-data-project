@@ -18,8 +18,8 @@ import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        // args contains names of unknown authors file
 
+        // args contains names of unknown authors file
         Authorship authorship = new Authorship();
         ToolRunner.run(authorship, args);
         FileSystem fs = FileSystem.get(authorship.getConf());
@@ -39,23 +39,7 @@ public class Main {
 
     }
 
-    private String getLang(FileSystem fs, Authorship authorship) throws IOException {
-        Pattern en = Pattern.compile("(\\bthe\\b|\\bof\\b|\\band\\b)");
-        Matcher m;
-        BufferedReader br = new BufferedReader(new InputStreamReader(fs.open(new Path(buildPaths(authorship).getFirst()))));
-
-        // tries to match pattern in the first 20 lines
-        for (int i = 0; i < 20; i++) {
-            m = en.matcher(br.readLine());
-            if (m.find()) {
-                return "en";
-            }
-        }
-
-        return "it";
-    }
-
-    public static LinkedList<String> buildPaths(Authorship authorship) throws IOException {
+    static LinkedList<String> buildPaths(Authorship authorship) throws IOException {
         FileSystem fs = FileSystem.get(authorship.getConf());
         RemoteIterator<LocatedFileStatus> remoteIterator = fs.listFiles(new Path(Authorship.INPUT_PATH), false);
         LinkedList<String> names = new LinkedList<>();
