@@ -63,13 +63,13 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
     }
 
     private void update(String author, String title, String field, float value) {
-        if (!this.containsKey(author)) {
-            entries.add(new FreqMapEntry(author, title, field, value));
-        } else if (this.containsKey(author) && this.getAuthorsTitles(author).contains(title)) {
-            this.getByAuthorTitle(author, title).put(field, value);
-        } else {
-
+        for (FreqMapEntry entry: entries) {
+            if (entry.getText().equals(title) && entry.getAuthor().equals(author)) {
+                entry.getFrequencies().put(field, value);
+                return;
+            }
         }
+        entries.add(new FreqMapEntry(author, title, field, value));
     }
 
     private ArrayList<String> getAuthorsTitles(String author) {
