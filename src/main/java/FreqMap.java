@@ -19,9 +19,8 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
     @Override
     public String toString() {
         StringBuilder tostr = new StringBuilder();
-        for (String auth : this.keySet()) {
-            for (String field : this.get(auth).keySet())
-                tostr.append(auth).append("-").append(field).append("=").append(this.get(auth).get(field)).append("\n");
+        for (FreqMapEntry entry: entries) {
+            tostr.append(entry.toString());
         }
 
         return tostr.toString();
@@ -50,11 +49,11 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(path)));
 
         // value parsing
-        // string format author-title.txt*speechpart \t value
+        // string format author-tit-le.txtspeechpart \t value
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             String author = line.split(".txt")[0].split("-")[0];
-            String title = line.split(".txt")[0].split("-")[1];
+            String title = line.split(".txt")[0].substring(line.split(".txt")[0].indexOf("-") + 1);
             String field = line.split(".txt")[1].split("\t")[0];
             float value = Float.parseFloat(line.split(".txt")[1].split("\t")[1]);
             this.update(author, title, field, value);
@@ -68,6 +67,8 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
             entries.add(new FreqMapEntry(author, title, field, value));
         } else if (this.containsKey(author) && this.getAuthorsTitles(author).contains(title)) {
             this.getByAuthorTitle(author, title).put(field, value);
+        } else {
+
         }
     }
 
