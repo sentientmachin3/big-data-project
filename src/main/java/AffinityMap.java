@@ -16,4 +16,15 @@ public class AffinityMap {
     public void append(String field, double delta) {
         this.map.put(field, delta);
     }
+
+    @Override
+    public String toString() {
+        String init = this.author + "-" + this.unknown + "-";
+        StringBuilder sb = new StringBuilder("");
+        for (String f:map.keySet()) {
+            sb.append(init).append(f).append("=").append(this.map.get(f)).append("\n");
+        }
+
+        return sb.toString().substring(0, sb.toString().length() - 1);
+    }
 }
