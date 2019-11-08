@@ -16,6 +16,10 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         this.entries = new HashSet<>();
     }
 
+    public HashSet<FreqMapEntry> getEntries() {
+        return this.entries;
+    }
+
     @Override
     public String toString() {
         StringBuilder tostr = new StringBuilder();

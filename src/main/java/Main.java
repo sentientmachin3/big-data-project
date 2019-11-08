@@ -27,7 +27,7 @@ public class Main {
         freqMap.toFile(fs, new Path(Authorship.OUTPUT_PATH + "/known-frequencies.txt"));
 
 
-//         SimilarityAnalysis similarityAnalysis = new SimilarityAnalysis();
+         SimilarityAnalysis similarityAnalysis = new SimilarityAnalysis(freqMap);
 
     }
 
