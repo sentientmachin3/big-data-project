@@ -32,7 +32,7 @@ public class Authorship extends Configured implements Tool {
     private static final List<String> EN_CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not"));
 
     private static final List<String> IT_ARTICLES = new ArrayList<>(Arrays.asList("il", "lo", "la", "i",
-            "gli", "le", "l'", "un", "una", "uno", "un'", "gl'"));
+            "gli", "le", "un", "una", "uno"));
 
     private static final List<String> EN_ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an"));
 
@@ -70,6 +70,7 @@ public class Authorship extends Configured implements Tool {
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
+        //private static final Pattern APHOSTROPHE_BOUNDARY = Pattern.compile("\\bl'");
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
         private static final Pattern EN_LANG = Pattern.compile("(\\bthe\\b|\\bof\\b|\\band\\b)");
 
@@ -92,7 +93,7 @@ public class Authorship extends Configured implements Tool {
                             context.write(new Text(filePathString + "*preposition"), new IntWritable(1));
                         }
                     } else {
-                        if (Authorship.IT_ARTICLES.contains(word)) {
+                        if (Authorship.IT_ARTICLES.contains(word) || word.startsWith("l'") || word.startsWith("un'") || word.startsWith("gl'")) {
                             context.write(new Text(filePathString + "*article"), new IntWritable(1));
                         }
 
