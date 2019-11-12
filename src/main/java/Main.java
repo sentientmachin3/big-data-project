@@ -19,10 +19,8 @@ public class Main {
 
         freqMap.fromFile(fs, new Path(Authorship.OUTPUT_PATH + "/part-r-00000"));
         freqMap.toFile(fs, new Path(Authorship.OUTPUT_PATH + "/known-frequencies.txt"));
-//        freqMap.removeUseless();
 
         SimilarityAnalysis similarityAnalysis = new SimilarityAnalysis(freqMap);
-        similarityAnalysis.exec();
         similarityAnalysis.toFile(fs, new Path(Authorship.OUTPUT_PATH + "/deltas.txt"));
 
     }

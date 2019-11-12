@@ -17,11 +17,10 @@ public class SimilarityAnalysis {
     public SimilarityAnalysis(FreqMap known) {
         this.freqMap = known;
         this.deltas = new ArrayList<>();
+        this.exec();
     }
 
-
-
-    public void exec() {
+    private void exec() {
         // remove non globals values and sort entries
         ArrayList<FreqMapEntry> unknowns = new ArrayList<>();
         ArrayList<FreqMapEntry> knowns = new ArrayList<>();
