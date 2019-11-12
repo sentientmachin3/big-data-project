@@ -36,18 +36,14 @@ public class AffinityMap implements Comparable {
         count.put(-1, 0);
         count.put(0, 0);
         count.put(1, 0);
-        int temp;
 
         for (String s : this.map.keySet()) {
             if (this.map.get(s) < rec.map.get(s)) {
-                temp = count.get(-1);
-                count.put(-1, temp++);
+                count.put(-1, count.get(-1) + 1);
             } else if (rec.map.get(s) < this.map.get(s)) {
-                temp = count.get(1);
-                count.put(1, temp++);
+                count.put(1, count.get(1) + 1);
             } else {
-                temp = count.get(0);
-                count.put(0, temp++);
+                count.put(0, count.get(0) + 1);
             }
         }
 

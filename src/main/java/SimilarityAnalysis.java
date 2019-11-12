@@ -17,10 +17,16 @@ public class SimilarityAnalysis {
     public SimilarityAnalysis(FreqMap known) {
         this.freqMap = known;
         this.deltas = new ArrayList<>();
-        this.exec();
     }
 
-    private void exec() {
+    public void exec() {
+        for (FreqMapEntry e : this.freqMap.getEntries()) {
+            for (String mapkey : e.getFrequencies().keySet()) {
+                if (mapkey.equals("nwords") || mapkey.equals("periods"))
+                    e.getFrequencies().remove(mapkey);
+            }
+        }
+
         // remove non globals values and sort entries
         ArrayList<FreqMapEntry> unknowns = new ArrayList<>();
         ArrayList<FreqMapEntry> knowns = new ArrayList<>();
@@ -41,6 +47,7 @@ public class SimilarityAnalysis {
         }
 
         Collections.sort(this.deltas, new Comparator<AffinityMap>() {
+            // comparison method between two affinity maps, used to sort the analysis
             @Override
             public int compare(AffinityMap affinityMap, AffinityMap t1) {
                 return affinityMap.compareTo(t1);

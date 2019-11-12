@@ -22,6 +22,7 @@ public class Main {
 
 
          SimilarityAnalysis similarityAnalysis = new SimilarityAnalysis(freqMap);
+         similarityAnalysis.exec();
          similarityAnalysis.toFile(fs, new Path(Authorship.OUTPUT_PATH + "/deltas.txt"));
 
     }
