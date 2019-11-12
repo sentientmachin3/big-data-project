@@ -23,17 +23,12 @@ public class SimilarityAnalysis {
         // remove non globals values and sort entries
         ArrayList<FreqMapEntry> unknowns = new ArrayList<>();
         ArrayList<FreqMapEntry> knowns = new ArrayList<>();
-        HashSet<FreqMapEntry> temp = new HashSet<>(this.freqMap.getEntries());
 
-        for (FreqMapEntry entry : temp) {
-            if (entry.getAuthor().contains("unknown")) {
+        for (FreqMapEntry entry : this.freqMap.getEntries()) {
+            if (entry.getAuthor().contains("unknown") && entry.getTitle().equals("global")) {
                 unknowns.add(entry);
-                temp.remove(entry);
-            }
-
-            if (entry.getTitle().equals("global")) {
+            } else if (!entry.getAuthor().contains("unknown") && entry.getTitle().equals("global")) {
                 knowns.add(entry);
-                temp.remove(entry);
             }
         }
 
