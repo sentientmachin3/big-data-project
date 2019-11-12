@@ -7,6 +7,7 @@ import org.apache.hadoop.fs.Path;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class SimilarityAnalysis {
     private FreqMap freqMap;
@@ -18,27 +19,21 @@ public class SimilarityAnalysis {
         this.exec();
     }
 
-    private void removeNonGlobals() {
-        for (FreqMapEntry entry : this.freqMap.getEntries()) {
-            if (!entry.getTitle().contains("global")) {
-                this.freqMap.removeByEntry(entry);
-            }
-        }
-    }
-
     private void exec() {
-        this.removeNonGlobals();
-
         // remove non globals values and sort entries
         ArrayList<FreqMapEntry> unknowns = new ArrayList<>();
         ArrayList<FreqMapEntry> knowns = new ArrayList<>();
-        for (FreqMapEntry entry : this.freqMap.getEntries()) {
-            if (entry.getTitle().contains("unknown") && entry.getAuthor().contains("unknown")) {
+        HashSet<FreqMapEntry> temp = new HashSet<>(this.freqMap.getEntries());
+
+        for (FreqMapEntry entry : temp) {
+            if (entry.getAuthor().contains("unknown")) {
                 unknowns.add(entry);
-//                System.out.println("u   " + entry);
-            } else {
+                temp.remove(entry);
+            }
+
+            if (entry.getTitle().equals("global")) {
                 knowns.add(entry);
-//                System.out.println("k   " + entry);
+                temp.remove(entry);
             }
         }
 
@@ -48,8 +43,6 @@ public class SimilarityAnalysis {
                 this.deltas.add(computedDelta(kn, unk));
             }
         }
-
-//        this.sort();
     }
 
     public void toFile(FileSystem fs, Path outputPath) throws IOException {
@@ -64,14 +57,10 @@ public class SimilarityAnalysis {
         outputStream.close();
     }
 
-//    private void sort() {
-//
-//    }
-
     private AffinityMap computedDelta(FreqMapEntry kn, FreqMapEntry unk) {
         AffinityMap af = new AffinityMap(kn.getAuthor(), unk.getAuthor());
 
-        // delta diff = kn - unk for each field in map
+        // delta diff = |kn - unk| for each field in map
         for (String field : kn.getFrequencies().keySet()) {
             af.append(field, Math.abs(kn.getFrequencies().get(field) - unk.getFrequencies().get(field)));
         }

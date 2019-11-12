@@ -170,22 +170,17 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
     @Override
     public HashMap<String, Float> remove(Object o) {
+        if (o instanceof FreqMapEntry)
+            this.entries.remove(o);
+
         for (FreqMapEntry entry: entries) {
             if (entry.getAuthor().equals(o)) {
-                this.entries.remove(o);
+                this.entries.remove(entry);
             }
         }
 
         return null;
 
-    }
-
-    public void removeByEntry(FreqMapEntry entry) {
-        for (FreqMapEntry e: entries) {
-            if (e.equals(entry)) {
-                entries.remove(entry);
-            }
-        }
     }
 
     @Override
