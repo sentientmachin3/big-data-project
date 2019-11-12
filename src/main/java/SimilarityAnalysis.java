@@ -7,7 +7,8 @@ import org.apache.hadoop.fs.Path;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class SimilarityAnalysis {
     private FreqMap freqMap;
@@ -38,6 +39,13 @@ public class SimilarityAnalysis {
                 this.deltas.add(computedDelta(kn, unk));
             }
         }
+
+        Collections.sort(this.deltas, new Comparator<AffinityMap>() {
+            @Override
+            public int compare(AffinityMap affinityMap, AffinityMap t1) {
+                return affinityMap.compareTo(t1);
+            }
+        });
     }
 
     public void toFile(FileSystem fs, Path outputPath) throws IOException {
