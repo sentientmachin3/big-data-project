@@ -108,6 +108,15 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         this.calculateFrequencies();
     }
 
+//    public void removeUseless() {
+//        for (FreqMapEntry entry: this.entries) {
+//            for (String mapkey : entry.getFrequencies().keySet()) {
+//                if (mapkey.equals("nwords") || mapkey.equals("periods"))
+//                    entry.getFrequencies().remove(mapkey);
+//            }
+//        }
+//    }
+
     private void update(String author, String title, String field, float value) {
         // update entry map if exists an entry with the param author and title,
         // otherwise just add the whole entry to the entry set.

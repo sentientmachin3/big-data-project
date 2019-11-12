@@ -19,14 +19,9 @@ public class SimilarityAnalysis {
         this.deltas = new ArrayList<>();
     }
 
-    public void exec() {
-        for (FreqMapEntry e : this.freqMap.getEntries()) {
-            for (String mapkey : e.getFrequencies().keySet()) {
-                if (mapkey.equals("nwords") || mapkey.equals("periods"))
-                    e.getFrequencies().remove(mapkey);
-            }
-        }
 
+
+    public void exec() {
         // remove non globals values and sort entries
         ArrayList<FreqMapEntry> unknowns = new ArrayList<>();
         ArrayList<FreqMapEntry> knowns = new ArrayList<>();
@@ -72,7 +67,8 @@ public class SimilarityAnalysis {
 
         // delta diff = |kn - unk| for each field in map
         for (String field : kn.getFrequencies().keySet()) {
-            af.append(field, Math.abs(kn.getFrequencies().get(field) - unk.getFrequencies().get(field)));
+            if (!field.equals("nwords") && !field.equals("periods"))
+                af.append(field, Math.abs(kn.getFrequencies().get(field) - unk.getFrequencies().get(field)));
         }
 
         return af;

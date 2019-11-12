@@ -13,6 +13,10 @@ public class AffinityMap implements Comparable {
         this.map = new HashMap<>();
     }
 
+    public HashMap<String, Double> getMap() {
+        return this.map;
+    }
+
     public void append(String field, double delta) {
         this.map.put(field, delta);
     }
