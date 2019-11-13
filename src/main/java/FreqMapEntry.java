@@ -51,7 +51,7 @@ public class FreqMapEntry {
 
     @Override
     public String toString() {
-        StringBuilder str = new StringBuilder("");
+        StringBuilder str = new StringBuilder();
         for (String field : this.frequencies.keySet()) {
             str.append(this.author).append("-").append(this.title).append("-").append(field).append("=").append(this.frequencies.get(field)).append("\n");
         }

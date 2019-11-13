@@ -1,10 +1,7 @@
 package main.java;
 
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -20,7 +17,6 @@ import org.apache.hadoop.util.Tool;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,7 +30,7 @@ public class Authorship extends Configured implements Tool {
 
     static final String INPUT_PATH = "/user/root/authorship/input";
     static final String OUTPUT_PATH = "/user/root/authorship/output";
-    static final String UNKNOWNS_INPUT_PATH = "/user/root/authorship/input/unknowns";
+    private static final String UNKNOWNS_INPUT_PATH = "/user/root/authorship/input/unknowns";
 
 
     @Override

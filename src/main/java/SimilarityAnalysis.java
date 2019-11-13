@@ -50,7 +50,7 @@ public class SimilarityAnalysis {
     }
 
     public void toFile(FileSystem fs, Path outputPath) throws IOException {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         for (AffinityMap a : this.deltas) {
             sb.append(a.toString()).append("\n");
         }

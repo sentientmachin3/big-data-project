@@ -21,7 +21,7 @@ public class AffinityMap implements Comparable {
     @Override
     public String toString() {
         String init = this.author + "-" + this.unknown + "-";
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         for (String f : map.keySet()) {
             sb.append(init).append(f).append("=").append(this.map.get(f)).append("\n");
         }
@@ -58,6 +58,7 @@ public class AffinityMap implements Comparable {
                 max = entry;
             }
         }
+        assert max != null;
         return max.getKey();
 
     }
