@@ -45,7 +45,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
                     float upval = entry.getFrequencies().get(field) / entry.getFrequencies().get("nwords");
                     entry.getFrequencies().put(field, upval);
                 } else if (field.equals("dialogue")) {
-                    float dial = (entry.getFrequencies().get(field) / 2) / entry.getFrequencies().get("nwords");
+                    float dial = (entry.getFrequencies().get(field) / 2) / entry.getFrequencies().get("periods");
                     entry.getFrequencies().put(field, dial);
                 }
             }
