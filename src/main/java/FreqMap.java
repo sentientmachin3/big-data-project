@@ -103,13 +103,13 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(path)));
 
         // value parsing
-        // string format: author-tit-le.txtspeechpart \t value
+        // string format: author-tit-le.txt*speechpart \t value
         String line;
         while ((line = bufferedReader.readLine()) != null) {
-            String author = line.split(".txt")[0].split("-")[0];
-            String title = line.split(".txt")[0].substring(line.split(".txt")[0].indexOf("-") + 1);
-            String field = line.split(".txt")[1].split("\t")[0];
-            float value = Float.parseFloat(line.split(".txt")[1].split("\t")[1]);
+            String author = line.split(".txt\\*")[0].split("-")[0];
+            String title = line.split(".txt\\*")[0].substring(line.split(".txt\\*")[0].indexOf("-") + 1);
+            String field = line.split(".txt\\*")[1].split("\t")[0];
+            float value = Float.parseFloat(line.split(".txt\\*")[1].split("\t")[1]);
             this.update(author, title, field, value);
         }
 

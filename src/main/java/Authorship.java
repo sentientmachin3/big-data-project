@@ -46,11 +46,12 @@ public class Authorship extends Configured implements Tool {
             FileInputFormat.addInputPath(job, new Path(s));
 
         job.setMapperClass(Map.class);
+        job.setCombinerClass(Reduce.class);
         job.setReducerClass(Reduce.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
-        job.setOutputKeyClass(String.class);
-        job.setOutputValueClass(Integer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
 
         return job.waitForCompletion(true) ? 0 : 1;
     }
@@ -61,44 +62,49 @@ public class Authorship extends Configured implements Tool {
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
         private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
         private static final Pattern DIALOGUE = Pattern.compile("[\u201C\u201D]");
+        private static final IntWritable ONE = new IntWritable(1);
 
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
             String filePathString = ((FileSplit) context.getInputSplit()).getPath().getName();
+
             for (String word : WORD_BOUNDARY.split(lineText.toString())) {
+                String refWord = word.toLowerCase();
                 if (!word.isEmpty()) {
-                    if (Authorship.ARTICLES.contains(word.toLowerCase()) || word.toLowerCase().startsWith("l'") || word.toLowerCase().startsWith("un'") ||
-                            word.toLowerCase().startsWith("gl'")) {
-                        context.write(new Text(filePathString + "*article"), new IntWritable(1));
+                    if (Authorship.ARTICLES.contains(refWord) || refWord.startsWith("l'") || refWord.startsWith("un'") ||
+                            refWord.startsWith("gl'")) {
+                        context.write(new Text(filePathString + "*article"), ONE);
                     }
 
-                    if (Authorship.CONJUNCTIONS.contains(word.toLowerCase())) {
-                        context.write(new Text(filePathString + "*conjunction"), new IntWritable(1));
+                    if (Authorship.CONJUNCTIONS.contains(refWord)) {
+                        context.write(new Text(filePathString + "*conjunction"), ONE);
                     }
 
-                    if (Authorship.PREPOSITIONS.contains(word.toLowerCase()) || word.toLowerCase().startsWith("d'") || word.toLowerCase().startsWith("D'")) {
-                        context.write(new Text(filePathString + "*preposition"), new IntWritable(1));
+                    if (Authorship.PREPOSITIONS.contains(refWord) || refWord.startsWith("d'") || refWord.startsWith("D'")) {
+                        context.write(new Text(filePathString + "*preposition"), ONE);
                     }
 
-                    context.write(new Text(filePathString + "*nwords"), new IntWritable(1));
+                    context.write(new Text(filePathString + "*nwords"), ONE);
                 }
             }
 
+            String refLineText = lineText.toString();
+
             // period number count
-            Matcher matcher = END_PERIOD.matcher(lineText.toString());
+            Matcher matcher = END_PERIOD.matcher(refLineText);
             while (matcher.find()) {
-                context.write(new Text(filePathString + "*periods"), new IntWritable(1));
+                context.write(new Text(filePathString + "*periods"), ONE);
             }
 
             // commas number count
-            Matcher commas = MARKS_COMMAS.matcher(lineText.toString());
+            Matcher commas = MARKS_COMMAS.matcher(refLineText);
             while (commas.find()) {
-                context.write(new Text(filePathString + "*commas"), new IntWritable(1));
+                context.write(new Text(filePathString + "*commas"), ONE);
             }
 
-            Matcher dialogue = DIALOGUE.matcher(lineText.toString());
+            Matcher dialogue = DIALOGUE.matcher(refLineText);
             while (dialogue.find()) {
-                context.write(new Text(filePathString + "*dialogue"), new IntWritable(1));
+                context.write(new Text(filePathString + "*dialogue"), ONE);
             }
 
 
@@ -107,7 +113,7 @@ public class Authorship extends Configured implements Tool {
     }
 
 
-    public static class Reduce extends Reducer<Text, IntWritable, String, Integer> {
+    public static class Reduce extends Reducer<Text, IntWritable, Text, IntWritable> {
         @Override
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             int sum = 0;
@@ -115,7 +121,7 @@ public class Authorship extends Configured implements Tool {
                 sum += count.get();
             }
 
-            context.write(key.toString().split("\\*")[0] + key.toString().split("\\*")[1], sum);
+            context.write(key, new IntWritable(sum));
 
         }
     }

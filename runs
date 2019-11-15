@@ -2,3 +2,6 @@ DIMENSIONE INPUT: 15.9mb
 
 tempo: 2m47s 53 map tasks, 1 reduce task
 tempo: 2m34s 52 map tasks, 1 reduce task
+
+CON COMBINER
+tempo: 2m33s 52 map tasks, 1 reduce task
