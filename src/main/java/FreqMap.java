@@ -34,10 +34,19 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         // for each entry computes the frequency of articles, conjunctions and prepositions by dividing the counted words
         // by the total number of words
         for (FreqMapEntry entry : entries) {
+
+            // since text may not have any dialogues, we insert 0 in the map
+            if (!entry.getFrequencies().containsKey("dialogue")) {
+                entry.getFrequencies().put("dialogue", (float) 0.0);
+            }
+
             for (String field : entry.getFrequencies().keySet()) {
                 if (field.equals("article") || field.equals("conjunction") || field.equals("preposition") || field.equals("commas")) {
                     float upval = entry.getFrequencies().get(field) / entry.getFrequencies().get("nwords");
                     entry.getFrequencies().put(field, upval);
+                } else if (field.equals("dialogue")) {
+                    float dial = (entry.getFrequencies().get(field) / 2) / entry.getFrequencies().get("nwords");
+                    entry.getFrequencies().put(field, dial);
                 }
             }
             // computes the average period length by dividing the total number of words by the number of periods.

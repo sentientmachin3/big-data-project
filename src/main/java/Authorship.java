@@ -60,6 +60,7 @@ public class Authorship extends Configured implements Tool {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
         private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
+        private static final Pattern DIALOGUE = Pattern.compile("[\u201C\u201D]");
 
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
@@ -94,6 +95,13 @@ public class Authorship extends Configured implements Tool {
             while (commas.find()) {
                 context.write(new Text(filePathString + "*commas"), new IntWritable(1));
             }
+
+            Matcher dialogue = DIALOGUE.matcher(lineText.toString());
+            while (dialogue.find()) {
+                context.write(new Text(filePathString + "*dialogue"), new IntWritable(1));
+            }
+
+
 
         }
     }
