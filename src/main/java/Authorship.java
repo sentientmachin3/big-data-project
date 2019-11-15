@@ -63,28 +63,34 @@ public class Authorship extends Configured implements Tool {
         private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
         private static final Pattern DIALOGUE = Pattern.compile("[\u201C\u201D]");
         private static final IntWritable ONE = new IntWritable(1);
+        private Text text = new Text();
 
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
             String filePathString = ((FileSplit) context.getInputSplit()).getPath().getName();
+
 
             for (String word : WORD_BOUNDARY.split(lineText.toString())) {
                 String refWord = word.toLowerCase();
                 if (!word.isEmpty()) {
                     if (Authorship.ARTICLES.contains(refWord) || refWord.startsWith("l'") || refWord.startsWith("un'") ||
                             refWord.startsWith("gl'")) {
-                        context.write(new Text(filePathString + "*article"), ONE);
+                        text.set(filePathString + "*article");
+                        context.write(text, ONE);
                     }
 
                     if (Authorship.CONJUNCTIONS.contains(refWord)) {
-                        context.write(new Text(filePathString + "*conjunction"), ONE);
+                        text.set(filePathString + "*conjunctions");
+                        context.write(text, ONE);
                     }
 
                     if (Authorship.PREPOSITIONS.contains(refWord) || refWord.startsWith("d'") || refWord.startsWith("D'")) {
-                        context.write(new Text(filePathString + "*preposition"), ONE);
+                        text.set(filePathString + "*prepositions");
+                        context.write(text, ONE);
                     }
 
-                    context.write(new Text(filePathString + "*nwords"), ONE);
+                    text.set(filePathString + "*nwords");
+                    context.write(text, ONE);
                 }
             }
 
@@ -93,20 +99,22 @@ public class Authorship extends Configured implements Tool {
             // period number count
             Matcher matcher = END_PERIOD.matcher(refLineText);
             while (matcher.find()) {
-                context.write(new Text(filePathString + "*periods"), ONE);
+                text.set(filePathString + "*periods");
+                context.write(text, ONE);
             }
 
             // commas number count
             Matcher commas = MARKS_COMMAS.matcher(refLineText);
             while (commas.find()) {
-                context.write(new Text(filePathString + "*commas"), ONE);
+                text.set(filePathString + "*commas");
+                context.write(text, ONE);
             }
 
             Matcher dialogue = DIALOGUE.matcher(refLineText);
             while (dialogue.find()) {
-                context.write(new Text(filePathString + "*dialogue"), ONE);
+                text.set(filePathString + "*dialogue");
+                context.write(text, ONE);
             }
-
 
 
         }
