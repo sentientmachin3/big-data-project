@@ -33,7 +33,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
     private void calculateFrequencies() {
         // for each entry computes the frequency of articles, conjunctions and prepositions by dividing the counted words
         // by the total number of words
-        for (FreqMapEntry entry: entries) {
+        for (FreqMapEntry entry : entries) {
             for (String field : entry.getFrequencies().keySet()) {
                 if (field.equals("article") || field.equals("conjunction") || field.equals("preposition")) {
                     float upval = entry.getFrequencies().get(field) / entry.getFrequencies().get("nwords");
@@ -45,7 +45,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         }
 
         // call the method for global frequencies (average of author's parameters)
-        for (String author: this.keySet()) {
+        for (String author : this.keySet()) {
             this.globalAuthorFrequency(author);
         }
 
@@ -63,20 +63,20 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         }
 
         // init map to 0
-        for (String field: authorEntries.get(0).getFrequencies().keySet()) {
+        for (String field : authorEntries.get(0).getFrequencies().keySet()) {
             global.getFrequencies().put(field, (float) 0);
         }
 
         // sums by field, entries are grouped by author
         for (FreqMapEntry entry : authorEntries) {
-            for (String field: entry.getFrequencies().keySet()) {
+            for (String field : entry.getFrequencies().keySet()) {
                 float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
                 global.getFrequencies().put(field, upvalue);
             }
         }
 
         // average using number of entries
-        for (String field: global.getFrequencies().keySet()) {
+        for (String field : global.getFrequencies().keySet()) {
             global.getFrequencies().put(field, global.getFrequencies().get(field) / authorEntries.size());
         }
 
@@ -104,18 +104,8 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
             this.update(author, title, field, value);
         }
 
-        // frequency calc
         this.calculateFrequencies();
     }
-
-//    public void removeUseless() {
-//        for (FreqMapEntry entry: this.entries) {
-//            for (String mapkey : entry.getFrequencies().keySet()) {
-//                if (mapkey.equals("nwords") || mapkey.equals("periods"))
-//                    entry.getFrequencies().remove(mapkey);
-//            }
-//        }
-//    }
 
     private void update(String author, String title, String field, float value) {
         // update entry map if exists an entry with the param author and title,
@@ -130,8 +120,8 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
     }
 
     /*
-    * Map inherited methods
-    * */
+     * Map inherited methods
+     * */
     @Override
     public int size() {
         return entries.size();
@@ -182,7 +172,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         if (o instanceof FreqMapEntry)
             this.entries.remove(o);
 
-        for (FreqMapEntry entry: entries) {
+        for (FreqMapEntry entry : entries) {
             if (entry.getAuthor().equals(o)) {
                 this.entries.remove(entry);
             }

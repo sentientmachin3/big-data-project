@@ -1,6 +1,7 @@
 package main.java;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class AffinityMap implements Comparable {
     private String author;
@@ -13,10 +14,6 @@ public class AffinityMap implements Comparable {
         this.map = new HashMap<>();
     }
 
-    public HashMap<String, Double> getMap() {
-        return this.map;
-    }
-
     public void append(String field, double delta) {
         this.map.put(field, delta);
     }
@@ -24,7 +21,7 @@ public class AffinityMap implements Comparable {
     @Override
     public String toString() {
         String init = this.author + "-" + this.unknown + "-";
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         for (String f : map.keySet()) {
             sb.append(init).append(f).append("=").append(this.map.get(f)).append("\n");
         }
@@ -41,6 +38,7 @@ public class AffinityMap implements Comparable {
         count.put(0, 0);
         count.put(1, 0);
 
+        // count for compare values
         for (String s : this.map.keySet()) {
             if (this.map.get(s) < rec.map.get(s)) {
                 count.put(-1, count.get(-1) + 1);
@@ -51,11 +49,17 @@ public class AffinityMap implements Comparable {
             }
         }
 
-        if (count.get(-1) > count.get(0) && count.get(-1) > count.get(1)) {
-            return -1;
-        } else if (count.get(0) > count.get(-1) && count.get(0) > count.get(1)) {
-            return 0;
+        // max on compare counts
+        Map.Entry<Integer, Integer> max = null;
+        int intmax = 0;
+        for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
+            if (entry.getValue() > intmax) {
+                intmax = entry.getValue();
+                max = entry;
+            }
         }
-        return 1;
+        assert max != null;
+        return max.getKey();
+
     }
 }
