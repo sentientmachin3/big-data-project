@@ -35,7 +35,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         // by the total number of words
         for (FreqMapEntry entry : entries) {
             for (String field : entry.getFrequencies().keySet()) {
-                if (field.equals("article") || field.equals("conjunction") || field.equals("preposition")) {
+                if (field.equals("article") || field.equals("conjunction") || field.equals("preposition") || field.equals("commas")) {
                     float upval = entry.getFrequencies().get(field) / entry.getFrequencies().get("nwords");
                     entry.getFrequencies().put(field, upval);
                 }

@@ -59,6 +59,7 @@ public class Authorship extends Configured implements Tool {
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
+        private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
 
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
@@ -82,9 +83,16 @@ public class Authorship extends Configured implements Tool {
                 }
             }
 
+            // period number count
             Matcher matcher = END_PERIOD.matcher(lineText.toString());
             while (matcher.find()) {
                 context.write(new Text(filePathString + "*periods"), new IntWritable(1));
+            }
+
+            // commas number count
+            Matcher commas = MARKS_COMMAS.matcher(lineText.toString());
+            while (commas.find()) {
+                context.write(new Text(filePathString + "*commas"), new IntWritable(1));
             }
 
         }
