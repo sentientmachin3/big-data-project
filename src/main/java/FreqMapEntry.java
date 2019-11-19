@@ -6,7 +6,6 @@ import java.util.Objects;
 public class FreqMapEntry {
     private String author;
     private String title;
-    // always generates an empty map
     private HashMap<String, Float> frequencies = new HashMap<>();
 
     public FreqMapEntry(String author, String title) {

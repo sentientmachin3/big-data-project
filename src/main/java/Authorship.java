@@ -22,10 +22,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Authorship extends Configured implements Tool {
+    // speech parts used in wordcount-like job
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not"));
-
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an"));
-
     private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between"));
 
     static final String INPUT_PATH = "/user/root/authorship/input";
@@ -110,6 +109,7 @@ public class Authorship extends Configured implements Tool {
                 context.write(text, ONE);
             }
 
+            // dialogue quotes count
             Matcher dialogue = DIALOGUE.matcher(refLineText);
             while (dialogue.find()) {
                 text.set(filePathString + "*dialogue");
