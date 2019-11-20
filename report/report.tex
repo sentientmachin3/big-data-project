@@ -81,13 +81,25 @@
 		\bigskip
 
 		\noindent
-		The Cloudera\parencite{Cloudera} Docker image used in this project contains an Hadoop Distributed File System (HDFS) partition. Cloudera provides a scalable, flexible, integrated platform that makes it easy to manage rapidly increasing volumes and
-		varieties of data in an enterprise. It is distributed by Apache Hadoop\parencite{Apache}. The Hadoop version used in this project is \texttt{Hadoop 2.6.0-cdh5.7.0}.
+		The Cloudera\parencite{Cloudera} Docker image used in this project contains an Hadoop Distributed File System (HDFS) partition. Cloudera provides a scalable, flexible, integrated platform that makes it easy to manage rapidly increasing volumes and varieties of data in an enterprise. 
 
 		\bigskip
 
 		\noindent
 		For the installation of Docker, the Cloudera Docker image and the execution of jobs using jar file it has been used the instructions of the course. The project is written using Java version \texttt{11.0.4}. For the code compilation we used IntelliJ version \texttt{2019.2.4} compiling using compatibility mode with version \texttt{1.7}.
+		
+		\bigskip
+		
+		\noindent
+		The whole project works alongside HDFS (\textit{Hadoop Distributed FileSystem}), used to store files across server collections, and MapReduce, a programming framework providing tools in order to simplify the analysis of datasets. The Hadoop version used in this project is \texttt{Hadoop 2.6.0-cdh5.7.0}.
+		
+		The distributed filesystem relies on two main services: \begin{itemize}
+			\item \textit{NameNode}: is a single instance service, running on a master node, which is responsible for files and directory mantainance within the filesystem itself;
+			
+			\item \textit{DataNode}: running on multiple nodes (many instances are allowed), are supposed to retrieve the application data when they are told by the NameNode.
+		\end{itemize}
+	
+		MapReduce is a programming paradigm which works on parallel platforms in order to process in the best possible way large amounts of data. The client has to implement a map function, which is supposed to take as input raw data and process them into intermediate \textit{key-value} pairs, and the reduce function, which aim is to regroup key-value pairs relying on the key and generate key-value final pairs.
 
 	\subsection{Map Reduce Background}
 
