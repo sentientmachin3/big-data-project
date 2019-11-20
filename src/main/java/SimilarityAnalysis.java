@@ -26,9 +26,9 @@ public class SimilarityAnalysis {
         ArrayList<FreqMapEntry> knowns = new ArrayList<>();
 
         for (FreqMapEntry entry : this.freqMap.getEntries()) {
-            if (entry.getAuthor().contains("unknown") && entry.getTitle().equals("global")) {
+            if (entry.isUnknown() && entry.isGlobal()) {
                 unknowns.add(entry);
-            } else if (!entry.getAuthor().contains("unknown") && entry.getTitle().equals("global")) {
+            } else if (!entry.isUnknown() && entry.isGlobal()) {
                 knowns.add(entry);
             }
         }

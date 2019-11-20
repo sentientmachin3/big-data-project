@@ -57,4 +57,12 @@ public class FreqMapEntry {
         return str.toString();
 
     }
+
+    public boolean isUnknown() {
+        return this.author.contains("unknown");
+    }
+
+    public boolean isGlobal() {
+        return this.title.contains("global");
+    }
 }

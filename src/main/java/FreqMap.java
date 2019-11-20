@@ -62,31 +62,27 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
     private void globalAuthorFrequency(String author) {
         FreqMapEntry global = new FreqMapEntry(author, "global");
-        LinkedList<FreqMapEntry> authorEntries = new LinkedList<>();
-
-        // collecting entries from the same author
-        for (FreqMapEntry entry : entries) {
-            if (entry.getAuthor().equals(author)) {
-                authorEntries.add(entry);
-            }
-        }
 
         // init map to 0
-        for (String field : authorEntries.get(0).getFrequencies().keySet()) {
+        for (String field : entries.iterator().next().getFrequencies().keySet()) {
             global.getFrequencies().put(field, (float) 0);
         }
 
         // sums by field, entries are grouped by author
-        for (FreqMapEntry entry : authorEntries) {
-            for (String field : entry.getFrequencies().keySet()) {
-                float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
-                global.getFrequencies().put(field, upvalue);
+        int authorEntries = 0;
+        for (FreqMapEntry entry : this.entries) {
+            if (entry.getAuthor().equals(author)) {
+                authorEntries++;
+                for (String field : entry.getFrequencies().keySet()) {
+                    float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
+                    global.getFrequencies().put(field, upvalue);
+                }
             }
         }
 
         // average using number of entries
         for (String field : global.getFrequencies().keySet()) {
-            global.getFrequencies().put(field, global.getFrequencies().get(field) / authorEntries.size());
+            global.getFrequencies().put(field, global.getFrequencies().get(field) / authorEntries);
         }
 
         this.entries.add(global);
