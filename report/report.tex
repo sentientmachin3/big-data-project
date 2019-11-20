@@ -19,7 +19,7 @@
 	colorlinks = true,
 	linkcolor = black,
 }
-
+\renewcommand{\ttdefault}{cmtt}
 \begin{document}
 	\clearpage
 	\begin{titlepage}
@@ -39,7 +39,7 @@
 		\vspace{5cm}
 		\vspace*{\fill}
 		% Bottom of the page
-		{\large \today\par}
+		{\large A.A. 2018/2019\par}
 	\end{titlepage}
 	\thispagestyle{empty}
 	\newpage
@@ -63,9 +63,17 @@
 	\bigskip
 
 	\noindent
-	The Cloudera Docker image used in this project contains an Hadoop Distributed File System (HDFS) partition. 
+	The Cloudera Docker image used in this project contains an Hadoop Distributed File System (HDFS) partition. Cloudera provides a scalable, flexible, integrated platform that makes it easy to manage rapidly increasing volumes and
+	varieties of data in an enterprise. It is distributed by Apache Hadoop. The Hadoop version used in this project is \texttt{Hadoop 2.6.0-cdh5.7.0}.
+
+	\bigskip
+
+	\noindent
+	For the installation of Docker, the Cloudera Docker image and the execution of jobs using jar file it has been used the instructions of the course.
+
 	\section{Project Workflow}
 
+	The first step the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. Starting from these data, the program should take unknown manuscripts as input and establish the authorship of them by the comparing them with the ``dictionary'' previously created. 
 
 
 
