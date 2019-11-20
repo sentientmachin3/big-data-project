@@ -9,9 +9,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+/**
+ * Class representing a FreqMapEntry instance. A FreqMap is a set of entries (instances of FreqMapEntry) containing,
+ * for each author and each text, the results of the analysis of a single input file.
+ */
 public class FreqMap implements Map<String, HashMap<String, Float>> {
     private HashSet<FreqMapEntry> entries;
 
+    /**
+     * Empty constructor for an instance. Simply generates an empty set.
+     */
     FreqMap() {
         this.entries = new HashSet<>();
     }
@@ -30,6 +37,9 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         return tostr.toString();
     }
 
+    /**
+     * Method filling the frequency map with the frequencies of the fields needed.
+     */
     private void calculateFrequencies() {
         // for each entry computes the frequency of articles, conjunctions and prepositions by dividing the counted words
         // by the total number of words
@@ -51,6 +61,12 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
     }
 
+    /**
+     * Generates a global frequency for each author by computing the average values for each field in the frequency map.
+     * Substitutes all the entries of an author with a single entry with the same author name and "global" as title.
+     *
+     * @param author the author's name to compute the average of.
+     */
     private void globalAuthorFrequency(String author) {
         FreqMapEntry global = new FreqMapEntry(author, "global");
         LinkedList<FreqMapEntry> authorEntries = new LinkedList<>();
@@ -83,6 +99,13 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         this.entries.add(global);
     }
 
+    /**
+     * Writes to file this FreqMap.
+     *
+     * @param fs the filesystem where the file is written.
+     * @param path the path where the file is about to be saved.
+     * @throws IOException if an IOException writing the file occurs.
+     */
     void toFile(FileSystem fs, Path path) throws IOException {
         FSDataOutputStream outputStream = fs.create(path);
         outputStream.writeBytes(this.toString());
@@ -90,6 +113,13 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         outputStream.close();
     }
 
+    /**
+     * Fetches a FreqMap instance from the job output file. This method also calls the
+     *
+     * @param fs the filesystem where the output file is located.
+     * @param path the path where the file is located.
+     * @throws IOException if an IOException reading the file occurs.
+     */
     void fromFile(FileSystem fs, Path path) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(path)));
 
@@ -107,6 +137,15 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         this.calculateFrequencies();
     }
 
+    /**
+     * Updates the FreqMap instance by adding a new entry to the set. If an entry with the same author and title exists,
+     * the field value is updated with the specified value parameter.
+     *
+     * @param author the author's name.
+     * @param title the title of the writing.
+     * @param field the field name to be updated.
+     * @param value the value to be added/overwritten.
+     */
     private void update(String author, String title, String field, float value) {
         // update entry map if exists an entry with the param author and title,
         // otherwise just add the whole entry to the entry set.

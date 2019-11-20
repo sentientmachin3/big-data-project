@@ -21,6 +21,16 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Main hadoop job. The workflow proceeds as follows:
+ * <ul>
+ *     <li>Job setup including input and output paths.</li>
+ *     <li>Mapper starts: counts the words identifying them by using the previously declared lists. The mapper outputs
+ *     a string formatted as [filepath][*][speechpart] and an IntWritable instance with a One.</li>
+ *     <li> Reducer starts: counts the ones for every speech part in every file and generates an output file with
+ *     the results.</li>
+ * </ul>
+ */
 public class Authorship extends Configured implements Tool {
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not"));
 

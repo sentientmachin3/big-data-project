@@ -9,7 +9,10 @@ import org.apache.hadoop.util.ToolRunner;
 import java.io.IOException;
 import java.util.LinkedList;
 
-
+/**
+ * The Main program. This class is responsible for running the hadoop job,
+ * generating the frequency maps from the hadoop job output and running the similarity analysis.
+ */
 public class Main {
     public static void main(String[] args) throws Exception {
         Authorship authorship = new Authorship();
@@ -25,6 +28,13 @@ public class Main {
 
     }
 
+    /**
+     * Builds the paths leading to the input files.
+     *
+     * @param authorship the hadoop job instance.
+     * @return a list of paths as String instances.
+     * @throws IOException if an IOException occurs (permission problems and so on...)
+     */
     static LinkedList<String> buildPaths(Authorship authorship) throws IOException {
         FileSystem fs = FileSystem.get(authorship.getConf());
         RemoteIterator<LocatedFileStatus> remoteIterator = fs.listFiles(new Path(Authorship.INPUT_PATH), false);
