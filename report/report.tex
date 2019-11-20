@@ -6,6 +6,7 @@
 \usepackage{float}
 \usepackage{fixltx2e}
 \usepackage{listings}
+\usepackage{enumitem}
 \usepackage{color}
 \usepackage{textcomp}
 \usepackage{latexsym}
@@ -23,7 +24,8 @@
 	hidelinks, 
 	colorlinks = true,
 	linkcolor = black,
-	citecolor = black
+	citecolor = black,
+	urlcolor = blue
 }
 
 \pagestyle{fancy}
@@ -89,7 +91,16 @@
 
 	\section{Project Workflow}
 
-	The first step the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. Starting from these data, the program should take unknown manuscripts as input and establish the authorship by the comparing them with the ``dictionary'' previously created. 
+	The first step the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. Starting from these data, the program should take unknown manuscripts as input and establish the authorship by the comparing them with the ``dictionary'' previously created. All the manuscripts are \texttt{.txt} files taken from the Project Gutenberg\parencite{Gutenberg} online library.
+	The Project Workflow is the following:
+	\begin{enumerate}
+		\item Parsing all the files using Hadoop Map Reduce job: 
+		\begin{itemize}
+			\item Mapper performs the counting of all the specified language parts in each file. These parts are ArrayList instances that contain english Conjunctions, Articles and Prepositions. Mapper associates each language part with an integer flag set to 1.
+			\item Reducer performs the counting of language parts by putting together data taken from the Mappers. 
+		\end{itemize}
+		\item Calculating the frequencies of language parts for each text.
+	\end{enumerate}
 
 	\newpage
 
