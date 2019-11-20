@@ -55,7 +55,6 @@ metainfs
 
 # Project related stuff
 metainfs/
-<<<<<<< HEAD
 
 ## Core latex/pdflatex auxiliary files:
 *.aux
@@ -333,6 +332,3 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
-=======
-runs
->>>>>>> master
