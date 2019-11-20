@@ -10,16 +10,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+/**
+ * The class contains the methods in order to run a similarity analysis between authors.
+ */
 public class SimilarityAnalysis {
     private FreqMap freqMap;
     private ArrayList<AffinityMap> deltas;
 
+    /**
+     * Generates an instance, using a FreqMap of known authors.
+     *
+     * @param known the FreqMap instance with the known author's data.
+     */
     public SimilarityAnalysis(FreqMap known) {
         this.freqMap = known;
         this.deltas = new ArrayList<>();
         this.exec();
     }
 
+    /**
+     * Runs the analysis. For each couple of known/unknwown author generates an AffinityMap instance.
+     * The analysis runs in two phases: <ul>
+     *     <li> Calculates the deltas for each couple of authors;</li>
+     *     <li> Sorts the AffintiyMap instances in order to have the most similar and the less similar in order.</li>
+     * </ul>
+     */
     private void exec() {
         // remove non globals values and sort entries
         ArrayList<FreqMapEntry> unknowns = new ArrayList<>();
@@ -49,6 +64,13 @@ public class SimilarityAnalysis {
         });
     }
 
+    /**
+     * Writes the current SimilarityAnalysis to an output file.
+     *
+     * @param fs the filesystem where the file is written.
+     * @param outputPath the path where the file is about to be saved.
+     * @throws IOException if an IOException writing the file occurs.
+     */
     public void toFile(FileSystem fs, Path outputPath) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (AffinityMap a : this.deltas) {
@@ -61,6 +83,14 @@ public class SimilarityAnalysis {
         outputStream.close();
     }
 
+    /**
+     * Calculates the deltas between the frequency map of a known and an unknown author.
+     * The operation performed is the absolute value of the difference between respective field names of the two maps.
+     *
+     * @param kn the known author frequency map.
+     * @param unk the unknown frequency map.
+     * @return an AffinityMap instance containing the comparison result.
+     */
     private AffinityMap computedDelta(FreqMapEntry kn, FreqMapEntry unk) {
         AffinityMap af = new AffinityMap(kn.getAuthor(), unk.getAuthor());
 

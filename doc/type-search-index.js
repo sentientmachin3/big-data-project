@@ -1,0 +1,1 @@
+typeSearchIndex = [{"p":"main.java","l":"AffinityMap"},{"l":"All Classes","url":"allclasses-index.html"},{"p":"main.java","l":"Authorship"},{"p":"main.java","l":"FreqMap"},{"p":"main.java","l":"FreqMapEntry"},{"p":"main.java","l":"Main"},{"p":"main.java","l":"Authorship.Map"},{"p":"main.java","l":"Authorship.Reduce"},{"p":"main.java","l":"SimilarityAnalysis"}]

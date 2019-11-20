@@ -3,16 +3,36 @@ package main.java;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ * <p>A FreqMapEntry is an entry of a map containing the author name, the title of the manuscript and the map
+ * of data extracted from the analysis.</p>
+ */
 public class FreqMapEntry {
     private String author;
     private String title;
     private HashMap<String, Float> frequencies = new HashMap<>();
 
+    /**
+     * Constructor for FreqMapEntry class.
+     * <b>Note:</b> this constructor generates an empty map for the data.
+     *
+     * @param author the author name.
+     * @param title the title of the writing.
+     */
     public FreqMapEntry(String author, String title) {
         this.author = author;
         this.title = title;
     }
 
+    /**
+     * <p> Constructor for a FreqMapEntry instance. This constructor takes as argument a field name
+     * and the value to be assigned to that field, most likely to be used to updated a map.</p>
+     *
+     * @param author the author's name.
+     * @param title the title of the manuscript.
+     * @param field the field name.
+     * @param value the value to be assigned to the field.
+     */
     public FreqMapEntry(String author, String title, String field, float value) {
         this.author = author;
         this.title = title;
@@ -22,6 +42,7 @@ public class FreqMapEntry {
     public String getAuthor() {
         return author;
     }
+
 
     public String getTitle() {
         return title;

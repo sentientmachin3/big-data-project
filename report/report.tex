@@ -20,6 +20,7 @@
 	linkcolor = black,
 }
 
+\renewcommand{\ttdefault}{cmtt}
 \begin{document}
 	\clearpage
 	\begin{titlepage}
@@ -39,7 +40,7 @@
 		\vspace{5cm}
 		\vspace*{\fill}
 		% Bottom of the page
-		{\large \today\par}
+		{\large A.A. 2018/2019\par}
 	\end{titlepage}
 	\thispagestyle{empty}
 	\newpage
@@ -49,9 +50,31 @@
 	\section{Introduction}
 	The project aim was to design a tool which could establish the authorship of a manuscript by using specific criteria described later. 
 	The used architecture is based on Hadoop, a distributed filesystem simulator, running in a docker container. 
+
+	\section{Background and System Description}
+
+	\noindent
+	A container is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another. A Docker container image is an executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
+
+	\bigskip
+
+	\noindent
+	Docker containers images become containers when they run on Docker Engine. They isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.
 	
+	\bigskip
+
+	\noindent
+	The Cloudera Docker image used in this project contains an Hadoop Distributed File System (HDFS) partition. Cloudera provides a scalable, flexible, integrated platform that makes it easy to manage rapidly increasing volumes and
+	varieties of data in an enterprise. It is distributed by Apache Hadoop. The Hadoop version used in this project is \texttt{Hadoop 2.6.0-cdh5.7.0}.
+
+	\bigskip
+
+	\noindent
+	For the installation of Docker, the Cloudera Docker image and the execution of jobs using jar file it has been used the instructions of the course.
+
 	\section{Project Workflow}
 
+	The first step the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. Starting from these data, the program should take unknown manuscripts as input and establish a possible author, comparing the extracted data with the ``dictionary'' previously created.
 
 
 

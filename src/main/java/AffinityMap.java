@@ -3,17 +3,35 @@ package main.java;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * <p>Class generating an affinity map between two authors. </p>
+ * <p>The class contains data to compare two authors using the information extracted from
+ * the previous analysis. The comparison proceeds by calculating a delta for each field each author's map.
+ * </p>
+ */
 public class AffinityMap implements Comparable {
     private String author;
     private String unknown;
     private HashMap<String, Double> map;
 
+    /**
+     * Generates an instance with empty comparison map.
+     *
+     * @param auth the known author's name.
+     * @param unk the unknown author's name.
+     */
     public AffinityMap(String auth, String unk) {
         this.author = auth;
         this.unknown = unk;
         this.map = new HashMap<>();
     }
 
+    /**
+     * Appends a field and its relative delta to the map.
+     *
+     * @param field the field name.
+     * @param delta the calculated delta.
+     */
     public void append(String field, double delta) {
         this.map.put(field, delta);
     }
