@@ -1,24 +1,40 @@
-\documentclass[a4paper, 11pt]{article}
+\documentclass[a4paper]{article}
 \usepackage[english]{babel}
-\usepackage[utf8]{inputenc}
+%\usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{fixltx2e}
 \usepackage{listings}
 \usepackage{color}
+\usepackage{textcomp}
 \usepackage{latexsym}
 \usepackage{lstautogobble}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[margin=3cm]{geometry}
 \usepackage{hyperref}
+\usepackage{fancyhdr}
 \usepackage{tikz}
 \usepackage{libertine}
+\usepackage{csquotes}
+\usepackage[backend=bibtex, style=numeric]{biblatex}
+\addbibresource{biblio.bib}
 \hypersetup{
 	hidelinks, 
 	colorlinks = true,
 	linkcolor = black,
+	citecolor = black
 }
+
+\pagestyle{fancy}
+\lhead{\nouppercase{\leftmark}}
+\rhead{\nouppercase{\rightmark}}
+\chead{}
+\lfoot{}
+\cfoot{\thepage}
+\rfoot{}
+\renewcommand{\headrulewidth}{0.4pt}
+
 \renewcommand{\ttdefault}{cmtt}
 \begin{document}
 	\clearpage
@@ -63,26 +79,22 @@
 	\bigskip
 
 	\noindent
-	The Cloudera Docker image used in this project contains an Hadoop Distributed File System (HDFS) partition. Cloudera provides a scalable, flexible, integrated platform that makes it easy to manage rapidly increasing volumes and
+	The Cloudera\parencite{Cloudera} Docker image used in this project contains an Hadoop\parencite{Apache} Distributed File System (HDFS) partition. Cloudera provides a scalable, flexible, integrated platform that makes it easy to manage rapidly increasing volumes and
 	varieties of data in an enterprise. It is distributed by Apache Hadoop. The Hadoop version used in this project is \texttt{Hadoop 2.6.0-cdh5.7.0}.
 
 	\bigskip
 
 	\noindent
-	For the installation of Docker, the Cloudera Docker image and the execution of jobs using jar file it has been used the instructions of the course.
+	For the installation of Docker, the Cloudera Docker image and the execution of jobs using jar file it has been used the instructions of the course. The project is written using Java version \texttt{11.0.4}. For the code compilation we used IntelliJ version \texttt{2019.2.4} compiling using compatibility mode with version \texttt{1.7}.
 
 	\section{Project Workflow}
 
-	The first step the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. Starting from these data, the program should take unknown manuscripts as input and establish the authorship of them by the comparing them with the ``dictionary'' previously created. 
+	The first step the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. Starting from these data, the program should take unknown manuscripts as input and establish the authorship by the comparing them with the ``dictionary'' previously created. 
 
+	\newpage
 
-
-
-
-
-
-
-
+	\printbibheading
+	\printbibliography[nottype=book,heading=subbibliography,title={Online Sources}]
 
 
 
