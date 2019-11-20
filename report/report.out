@@ -3,6 +3,7 @@
 \BOOKMARK [2][-]{subsection.2.1}{Cloudera Docker and system setup}{section.2}% 3
 \BOOKMARK [2][-]{subsection.2.2}{Map Reduce Framework}{section.2}% 4
 \BOOKMARK [1][-]{section.3}{Project Workflow}{}% 5
-\BOOKMARK [2][-]{subsection.3.1}{Map Reduce Job}{section.3}% 6
-\BOOKMARK [2][-]{subsection.3.2}{Frequency Calculations}{section.3}% 7
-\BOOKMARK [2][-]{subsection.3.3}{Similarity Analysis}{section.3}% 8
+\BOOKMARK [1][-]{section.4}{Project Workflow}{}% 6
+\BOOKMARK [2][-]{subsection.4.1}{Map Reduce Job}{section.4}% 7
+\BOOKMARK [2][-]{subsection.4.2}{Frequency Calculations}{section.4}% 8
+\BOOKMARK [2][-]{subsection.4.3}{Similarity Analysis}{section.4}% 9

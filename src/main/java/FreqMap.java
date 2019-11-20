@@ -9,9 +9,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
+/**
+ * Class representing a FreqMapEntry instance. A FreqMap is a set of entries (instances of FreqMapEntry) containing,
+ * for each author and each text, the results of the analysis of a single input file.
+ */
 public class FreqMap implements Map<String, HashMap<String, Float>> {
     private HashSet<FreqMapEntry> entries;
 
+    /**
+     * Empty constructor for an instance. Simply generates an empty set.
+     */
     FreqMap() {
         this.entries = new HashSet<>();
     }
@@ -30,14 +37,26 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         return tostr.toString();
     }
 
+    /**
+     * Method filling the frequency map with the frequencies of the fields needed.
+     */
     private void calculateFrequencies() {
         // for each entry computes the frequency of articles, conjunctions and prepositions by dividing the counted words
         // by the total number of words
         for (FreqMapEntry entry : entries) {
+
+            // since text may not have any dialogues, we insert 0 in the map
+            if (!entry.getFrequencies().containsKey("dialogue")) {
+                entry.getFrequencies().put("dialogue", (float) 0.0);
+            }
+
             for (String field : entry.getFrequencies().keySet()) {
-                if (field.equals("article") || field.equals("conjunction") || field.equals("preposition")) {
+                if (field.equals("article") || field.equals("conjunction") || field.equals("preposition") || field.equals("commas")) {
                     float upval = entry.getFrequencies().get(field) / entry.getFrequencies().get("nwords");
                     entry.getFrequencies().put(field, upval);
+                } else if (field.equals("dialogue")) {
+                    float dial = (entry.getFrequencies().get(field) / 2) / entry.getFrequencies().get("periods");
+                    entry.getFrequencies().put(field, dial);
                 }
             }
             // computes the average period length by dividing the total number of words by the number of periods.
@@ -51,38 +70,47 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
     }
 
+    /**
+     * Generates a global frequency for each author by computing the average values for each field in the frequency map.
+     * Substitutes all the entries of an author with a single entry with the same author name and "global" as title.
+     *
+     * @param author the author's name to compute the average of.
+     */
     private void globalAuthorFrequency(String author) {
         FreqMapEntry global = new FreqMapEntry(author, "global");
-        LinkedList<FreqMapEntry> authorEntries = new LinkedList<>();
-
-        // collecting entries from the same author
-        for (FreqMapEntry entry : entries) {
-            if (entry.getAuthor().equals(author)) {
-                authorEntries.add(entry);
-            }
-        }
 
         // init map to 0
-        for (String field : authorEntries.get(0).getFrequencies().keySet()) {
+        for (String field : entries.iterator().next().getFrequencies().keySet()) {
             global.getFrequencies().put(field, (float) 0);
         }
 
         // sums by field, entries are grouped by author
-        for (FreqMapEntry entry : authorEntries) {
-            for (String field : entry.getFrequencies().keySet()) {
-                float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
-                global.getFrequencies().put(field, upvalue);
+        int authorEntries = 0;
+        for (FreqMapEntry entry : this.entries) {
+            if (entry.getAuthor().equals(author)) {
+                authorEntries++;
+                for (String field : entry.getFrequencies().keySet()) {
+                    float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
+                    global.getFrequencies().put(field, upvalue);
+                }
             }
         }
 
         // average using number of entries
         for (String field : global.getFrequencies().keySet()) {
-            global.getFrequencies().put(field, global.getFrequencies().get(field) / authorEntries.size());
+            global.getFrequencies().put(field, global.getFrequencies().get(field) / authorEntries);
         }
 
         this.entries.add(global);
     }
 
+    /**
+     * Writes to file this FreqMap.
+     *
+     * @param fs the filesystem where the file is written.
+     * @param path the path where the file is about to be saved.
+     * @throws IOException if an IOException writing the file occurs.
+     */
     void toFile(FileSystem fs, Path path) throws IOException {
         FSDataOutputStream outputStream = fs.create(path);
         outputStream.writeBytes(this.toString());
@@ -90,23 +118,39 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         outputStream.close();
     }
 
+    /**
+     * Fetches a FreqMap instance from the job output file. This method also calls the
+     *
+     * @param fs the filesystem where the output file is located.
+     * @param path the path where the file is located.
+     * @throws IOException if an IOException reading the file occurs.
+     */
     void fromFile(FileSystem fs, Path path) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(path)));
 
         // value parsing
-        // string format: author-tit-le.txtspeechpart \t value
+        // string format: author-tit-le.txt*speechpart \t value
         String line;
         while ((line = bufferedReader.readLine()) != null) {
-            String author = line.split(".txt")[0].split("-")[0];
-            String title = line.split(".txt")[0].substring(line.split(".txt")[0].indexOf("-") + 1);
-            String field = line.split(".txt")[1].split("\t")[0];
-            float value = Float.parseFloat(line.split(".txt")[1].split("\t")[1]);
+            String author = line.split(".txt\\*")[0].split("-")[0];
+            String title = line.split(".txt\\*")[0].substring(line.split(".txt\\*")[0].indexOf("-") + 1);
+            String field = line.split(".txt\\*")[1].split("\t")[0];
+            float value = Float.parseFloat(line.split(".txt\\*")[1].split("\t")[1]);
             this.update(author, title, field, value);
         }
 
         this.calculateFrequencies();
     }
 
+    /**
+     * Updates the FreqMap instance by adding a new entry to the set. If an entry with the same author and title exists,
+     * the field value is updated with the specified value parameter.
+     *
+     * @param author the author's name.
+     * @param title the title of the writing.
+     * @param field the field name to be updated.
+     * @param value the value to be added/overwritten.
+     */
     private void update(String author, String title, String field, float value) {
         // update entry map if exists an entry with the param author and title,
         // otherwise just add the whole entry to the entry set.

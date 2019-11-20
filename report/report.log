@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2019.11.15)  20 NOV 2019 20:21
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Arch Linux) (preloaded format=pdflatex 2019.11.15)  20 NOV 2019 22:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1307,39 +1307,32 @@ We now make it that large for the rest of the document.
 This may cause the page layout to be inconsistent, however.
 
 [3] [4]
-Overfull \hbox (9.74063pt too wide) in paragraph at lines 150--150
+Overfull \hbox (9.74063pt too wide) in paragraph at lines 153--153
 []\OT1/LinuxLibertineT-TLF/m/n/10.95 M. Afzali, N. Singh, and S. Ku-mar. \  Had
 oop-MapReduce: A plat-form for min-ing large datasets".
  []
 
 [5]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 156.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 156.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 159.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 159.
  (./report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 156.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 156.
-
-
-Package rerunfilecheck Warning: File `report.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `report.out':
-(rerunfilecheck)             Before: 7B90FB926CA975CBE755FB0ED0DA82E0;514
-(rerunfilecheck)             After:  34CE5119B3B325E2D4065C9993B62551;518.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 159.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 159.
+Package rerunfilecheck Info: File `report.out' has not changed.
+(rerunfilecheck)             Checksum: 2AC301192A5CEB50C5DA0EC4A47FEB97;569.
 Package logreq Info: Writing requests to 'report.run.xml'.
 \openout1 = `report.run.xml'.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 156.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 159.
  ) 
 Here is how much of TeX's memory you used:
- 28619 strings out of 492167
- 528278 string characters out of 6131557
+ 28621 strings out of 492167
+ 528298 string characters out of 6131557
  974634 words of memory out of 5000000
- 32497 multiletter control sequences out of 15000+600000
+ 32498 multiletter control sequences out of 15000+600000
  28594 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 68i,11n,83p,963b,1977s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 68i,11n,83p,963b,1803s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}{/usr/share/
 texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{/usr/share/texmf-dist/fon
 ts/enc/dvips/libertine/lbtn_kijugd.enc}{/usr/share/texmf-dist/fonts/enc/dvips/l
@@ -1351,10 +1344,10 @@ xmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts
 /type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/a
 msfonts/cm/cmr8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy1
 0.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on report.pdf (5 pages, 305020 bytes).
+Output written on report.pdf (5 pages, 305441 bytes).
 PDF statistics:
- 159 PDF objects out of 1000 (max. 8388607)
- 126 compressed objects within 2 object streams
- 23 named destinations out of 1000 (max. 500000)
- 173 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 164 PDF objects out of 1000 (max. 8388607)
+ 131 compressed objects within 2 object streams
+ 24 named destinations out of 1000 (max. 500000)
+ 181 words of extra memory for PDF output out of 10000 (max. 10000000)
 
