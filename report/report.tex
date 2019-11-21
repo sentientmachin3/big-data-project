@@ -66,17 +66,16 @@
 	
 	\section{Introduction}
 	The project aim was to design a tool which could establish the authorship of a manuscript by using specific criteria described later. 
-	The used architecture is based on Hadoop, a distributed filesystem simulator, running in a docker container. The requirements of the project imposed the use of MapReduce programming model as seen in Laboratory Lessons of Big Data course.
+	The used architecture is based on Hadoop, a distributed filesystem simulator, running in a Docker container. The requirements of the project imposed the use of MapReduce programming model as seen in Laboratory Lessons of the Big Data course.
 
 	\section{Background and System Description}
-
     \subsection{Cloudera Docker and system setup}
 		A container is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another. A Docker container image is an executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
 
 		\bigskip
 
 		\noindent
-		Docker containers images become containers when they run on Docker Engine. They isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.
+		Docker images become containers when they run on Docker Engine. They isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.
 		
 		\bigskip
 
@@ -84,14 +83,9 @@
 		The Cloudera\parencite{Cloudera} Docker image used in this project contains an Hadoop Distributed File System (HDFS) partition. Cloudera provides a scalable, flexible, integrated platform that makes it easy to manage rapidly increasing volumes and varieties of data in an enterprise. 
 
 		\bigskip
-
-		\noindent
-		For the installation of Docker, the Cloudera Docker image and the execution of jobs using jar file it has been used the instructions of the course. The project is written using Java version \texttt{11.0.4}. For the code compilation we used IntelliJ version \texttt{2019.2.4} compiling using compatibility mode with version \texttt{1.7}.
-		
-		\bigskip
 		
 		\noindent
-		The whole project relies on HDFS (\textit{Hadoop Distributed FileSystem})\parencite{Hadoop-Mapreduce}, used to store files across server collections, and MapReduce, a programming framework providing tools in order to simplify the analysis of large datasets. The Hadoop version used in this project is \texttt{Hadoop 2.6.0-cdh5.7.0}.
+		Cloudera provides an HDFS (\textit{Hadoop Distributed FileSystem})\parencite{Hadoop-Mapreduce}, used to store files across server collections. The Hadoop version used in this project is \texttt{Hadoop 2.6.0-cdh5.7.0}.
 		
 		The distributed filesystem consists on two basic services: \begin{itemize}
 			\item \textit{NameNode}: is a single instance service, running on a master node, which is responsible for files and directory mantainance within the filesystem itself;
@@ -99,14 +93,15 @@
 			\item \textit{DataNode}: running on multiple nodes (many instances are allowed), are supposed to retrieve the application data when they are told by the NameNode.
 		\end{itemize}
 	
-		MapReduce is a programming paradigm which works on parallel platforms in order to process in the best possible way large amounts of data. The client has to implement a map function, which is supposed to take as input raw data and process them into intermediate \textit{key-value} pairs, and the reduce function, which aim is to regroup key-value pairs relying on the key and generate key-value output pairs. The mapreduce model is explained more in detail in the next section.
+		\bigskip
+		
+		\noindent
+		For the installation of Docker, the Cloudera Docker image and the execution of jobs using jar file it have been used the instructions of the course. The project is written using Java version \texttt{11.0.4}. For the code compilation we used IntelliJ version \texttt{2019.2.4} compiling using compatibility mode with version \texttt{1.7}.
 
 	\subsection{Map Reduce Framework}
-
-		This project uses the MapReduce Programming Model. It allows expressing distributed computations on massive amounts of data. Considering it as an execution framework it is designed for large scale-data processing, and to be executed on clusters of commodity hardware.
-
-
-	The first step the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. Starting from these data, the program should take unknown manuscripts as input and establish a possible author, comparing the extracted data with the ``dictionary'' previously created.
+		MapReduce is a programming paradigm which works on parallel platforms in order to process in the best possible way large amounts of data. The client has to implement a map function, which is supposed to take as input raw data and process them into intermediate \textit{key-value} pairs, and the reduce function, which aim is to regroup key-value pairs relying on the key and generate key-value output pairs. The mapreduce model is explained more in detail in the next section.
+		
+		\bigskip
 
 
 		\noindent
