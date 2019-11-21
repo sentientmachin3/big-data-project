@@ -21,11 +21,20 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Main hadoop job. The workflow proceeds as follows:
+ * <ul>
+ *     <li>Job setup including input and output paths.</li>
+ *     <li>Mapper starts: counts the words identifying them by using the previously declared lists. The mapper outputs
+ *     a string formatted as [filepath][*][speechpart] and an IntWritable instance with a One.</li>
+ *     <li> Reducer starts: counts the ones for every speech part in every file and generates an output file with
+ *     the results.</li>
+ * </ul>
+ */
 public class Authorship extends Configured implements Tool {
+    // speech parts used in wordcount-like job
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not"));
-
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an"));
-
     private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between"));
 
     static final String INPUT_PATH = "/user/root/authorship/input";
@@ -46,11 +55,12 @@ public class Authorship extends Configured implements Tool {
             FileInputFormat.addInputPath(job, new Path(s));
 
         job.setMapperClass(Map.class);
+        job.setCombinerClass(Reduce.class);
         job.setReducerClass(Reduce.class);
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(IntWritable.class);
-        job.setOutputKeyClass(String.class);
-        job.setOutputValueClass(Integer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
 
         return job.waitForCompletion(true) ? 0 : 1;
     }
@@ -59,39 +69,69 @@ public class Authorship extends Configured implements Tool {
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
+        private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
+        private static final Pattern DIALOGUE = Pattern.compile("[\u201C\u201D]");
+        private static final IntWritable ONE = new IntWritable(1);
+        private Text text = new Text();
 
         @Override
         public void map(LongWritable offset, Text lineText, Context context) throws IOException, InterruptedException {
             String filePathString = ((FileSplit) context.getInputSplit()).getPath().getName();
+
+
             for (String word : WORD_BOUNDARY.split(lineText.toString())) {
+                String refWord = word.toLowerCase();
                 if (!word.isEmpty()) {
-                    if (Authorship.ARTICLES.contains(word.toLowerCase()) || word.toLowerCase().startsWith("l'") || word.toLowerCase().startsWith("un'") ||
-                            word.toLowerCase().startsWith("gl'")) {
-                        context.write(new Text(filePathString + "*article"), new IntWritable(1));
+                    if (Authorship.ARTICLES.contains(refWord) || refWord.startsWith("l'") || refWord.startsWith("un'") ||
+                            refWord.startsWith("gl'")) {
+                        text.set(filePathString + "*article");
+                        context.write(text, ONE);
                     }
 
-                    if (Authorship.CONJUNCTIONS.contains(word.toLowerCase())) {
-                        context.write(new Text(filePathString + "*conjunction"), new IntWritable(1));
+                    if (Authorship.CONJUNCTIONS.contains(refWord)) {
+                        text.set(filePathString + "*conjunctions");
+                        context.write(text, ONE);
                     }
 
-                    if (Authorship.PREPOSITIONS.contains(word.toLowerCase()) || word.toLowerCase().startsWith("d'") || word.toLowerCase().startsWith("D'")) {
-                        context.write(new Text(filePathString + "*preposition"), new IntWritable(1));
+                    if (Authorship.PREPOSITIONS.contains(refWord) || refWord.startsWith("d'") || refWord.startsWith("D'")) {
+                        text.set(filePathString + "*prepositions");
+                        context.write(text, ONE);
                     }
 
-                    context.write(new Text(filePathString + "*nwords"), new IntWritable(1));
+                    text.set(filePathString + "*nwords");
+                    context.write(text, ONE);
                 }
             }
 
-            Matcher matcher = END_PERIOD.matcher(lineText.toString());
+            String refLineText = lineText.toString();
+
+            // period number count
+            Matcher matcher = END_PERIOD.matcher(refLineText);
             while (matcher.find()) {
-                context.write(new Text(filePathString + "*periods"), new IntWritable(1));
+                text.set(filePathString + "*periods");
+                context.write(text, ONE);
             }
+
+            // commas number count
+            Matcher commas = MARKS_COMMAS.matcher(refLineText);
+            while (commas.find()) {
+                text.set(filePathString + "*commas");
+                context.write(text, ONE);
+            }
+
+            // dialogue quotes count
+            Matcher dialogue = DIALOGUE.matcher(refLineText);
+            while (dialogue.find()) {
+                text.set(filePathString + "*dialogue");
+                context.write(text, ONE);
+            }
+
 
         }
     }
 
 
-    public static class Reduce extends Reducer<Text, IntWritable, String, Integer> {
+    public static class Reduce extends Reducer<Text, IntWritable, Text, IntWritable> {
         @Override
         protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
             int sum = 0;
@@ -99,7 +139,7 @@ public class Authorship extends Configured implements Tool {
                 sum += count.get();
             }
 
-            context.write(key.toString().split("\\*")[0] + key.toString().split("\\*")[1], sum);
+            context.write(key, new IntWritable(sum));
 
         }
     }
