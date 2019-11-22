@@ -46,15 +46,15 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         for (FreqMapEntry entry : entries) {
 
             // since text may not have any dialogues, we insert 0 in the map
-            if (!entry.getFrequencies().containsKey("dialogue")) {
-                entry.getFrequencies().put("dialogue", (float) 0.0);
+            if (!entry.getFrequencies().containsKey("dialogues")) {
+                entry.getFrequencies().put("dialogues", (float) 0.0);
             }
 
             for (String field : entry.getFrequencies().keySet()) {
-                if (field.equals("article") || field.equals("conjunction") || field.equals("preposition") || field.equals("commas")) {
+                if (field.equals("articles") || field.equals("conjunctions") || field.equals("prepositions") || field.equals("commas")) {
                     float upval = entry.getFrequencies().get(field) / entry.getFrequencies().get("nwords");
                     entry.getFrequencies().put(field, upval);
-                } else if (field.equals("dialogue")) {
+                } else if (field.equals("dialogues")) {
                     float dial = (entry.getFrequencies().get(field) / 2) / entry.getFrequencies().get("periods");
                     entry.getFrequencies().put(field, dial);
                 }
