@@ -6,7 +6,6 @@
 \usepackage{float}
 \usepackage{fixltx2e}
 \usepackage{listings}
-\usepackage{dirtree}
 \usepackage{enumitem}
 \usepackage{color}
 \usepackage{textcomp}
@@ -16,6 +15,7 @@
 \usepackage[margin=3cm]{geometry}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
+\usepackage{dirtree}
 \usepackage{tikz}
 \usetikzlibrary{patterns}
 \usetikzlibrary{shapes,positioning,calc}
@@ -39,9 +39,11 @@ keywordstyle=\color{blue},
 showtabs=false,
 showspaces=false,
 showstringspaces=false,
+numbers=left,
 frame=single,
-basicstyle=\ttfamily\small,
-breaklines=true
+basicstyle=\ttfamily\footnotesize,
+breaklines=true,
+tabsize=2
 }
 
 \pagestyle{fancy}
@@ -195,24 +197,24 @@ breaklines=true
 	The project main folder is divided in the following directories:
 	\begin{figure}[h!]
 		\dirtree{%
-		.1 big-data-project. 
-		.2 doc\DTcomment{generated javadoc folder}. 
-		.2 libs \DTcomment{Hadoop libraries}. 
-		.2 report\DTcomment{project report}. 
-		.2 src \DTcomment{code sources}. 
-		.3 main. 
-		.4 java. 
-		.5 AffinityMap.java. 
-		.5 Authorship.java. 
-		.5 FreqMap.java. 
-		.5 FreqMapEntry.java. 
-		.5 Main.java. 
-		.5 SimilarityAnalysis.java. 
+			.1 big-data-project. 
+			.2 doc\DTcomment{generated javadoc folder}. 
+			.2 libs \DTcomment{Hadoop libraries}. 
+			.2 report\DTcomment{project report}. 
+			.2 src \DTcomment{code sources}. 
+			.3 main. 
+			.4 java. 
+			.5 AffinityMap.java. 
+			.5 Authorship.java. 
+			.5 FreqMap.java. 
+			.5 FreqMapEntry.java. 
+			.5 Main.java. 
+			.5 SimilarityAnalysis.java. 
 		}
 	\end{figure}
 
 	\subsection{Map Reduce Job}
-	The project only contains a single mapreduce job, alongside with other classes to hold temporary data. The mapreduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface to the HDFS functions. These libraries are: 
+	The project only contains a single mapreduce job, alongside with other classes to hold temporary data. The mapreduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface to the HDFS functions. These libraries are:
 	\begin{figure}[h!]
 		\dirtree{%
 			.1 libs. 
@@ -229,7 +231,53 @@ breaklines=true
 	\noindent
 	As said in the previous sections, the client has to manually implement the map and the reduce functions, alongside with a \lstinline|run| method to configure the job itself.
 	
-	\paragraph{\lstinline|Run| method.} Contains the job configuration, setting input and output paths
+	\paragraph{\lstinline|Run| method.} Contains the job configuration, setting input and output paths.
+	The job is configured as follows:
+	
+	\begin{lstlisting}[firstnumber=45]
+@Override
+public int run(String[] args) throws Exception {
+	Job job = Job.getInstance(this.getConf(), "authorship");
+	job.setJarByClass(this.getClass());
+	TextInputFormat.setInputPaths(job, new Path(INPUT_PATH));
+	TextInputFormat.setInputPaths(job, new Path(UNKNOWNS_INPUT_PATH));
+	TextOutputFormat.setOutputPath(job, new Path(OUTPUT_PATH));
+	
+	for (String s : Main.buildPaths(this))
+		FileInputFormat.addInputPath(job, new Path(s));
+	
+	job.setMapperClass(Map.class);
+	job.setCombinerClass(Reduce.class);
+	job.setReducerClass(Reduce.class);
+	job.setMapOutputKeyClass(Text.class);
+	job.setMapOutputValueClass(IntWritable.class);
+	job.setOutputKeyClass(Text.class);
+	job.setOutputValueClass(IntWritable.class);
+	
+	return job.waitForCompletion(true) ? 0 : 1;
+}
+	\end{lstlisting}
+	
+	Note that several costants are used: \begin{itemize}
+		\item \lstinline|INPUT_PATH| is the input path for known texts;
+		\item \lstinline|OUTPUT_PATH| is the reduce output path;
+		\item \lstinline|UNKNOWNS_INPUT_PATH| is the input path for unknown texts (which are located in a subdirectory of \lstinline|INPUT_PATH|).
+	\end{itemize}
+
+	The calls to \lstinline|setInputPaths| and \lstinline|setOutputPath|, as the name suggests, are used to set respectively the input and output paths of the job. We then add the single files using a call to \lstinline|addInputPath| for each input file we have. Respectively: \begin{itemize}
+		\item mapper output key is \lstinline|Text| (the hadoop-like type for \lstinline|String|);
+		\item mapper output value is \lstinline|IntWritable| (standing for \lstinline|Integer|);
+		\item reducer output key is \lstinline|Text|;
+		\item reducer output value is \lstinline|Integer|.
+	\end{itemize}
+
+	Calls to \lstinline|job.setMapperClass|, \lstinline|job.setReducerClass| and \lstinline|job.setCombinerClass| just tell the interpreter which is the class respinsible for describing the mapping, reducing and combining function.
+	
+	\bigskip
+	\noindent
+	In the following lines, we configure the mapper and reducer input and output types and classes.
+	
+	\paragraph{Mapper implementation.} The mapper is implemented in an inner class. 
 
 	\subsection{Frequency Calculations}
 
