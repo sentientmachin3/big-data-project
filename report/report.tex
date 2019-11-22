@@ -1,4 +1,4 @@
-\documentclass[a4paper,11pt, twoside, openright]{article}
+\documentclass[a4paper,11pt, twoside]{article}
 \usepackage[english]{babel}
 %\usepackage[utf8]{inputenc}
 \usepackage{amsmath}
@@ -31,6 +31,16 @@
 	linkcolor = black,
 	citecolor = black,
 	urlcolor = blue
+}
+\lstset{
+language=Java,
+keywordstyle=\color{blue},
+showtabs=false,
+showspaces=false,
+showstringspaces=false,
+frame=single,
+basicstyle=\ttfamily\small,
+breaklines=true
 }
 
 \pagestyle{fancy}
@@ -144,9 +154,9 @@
 				\node [draw, rectangle, rounded corners] (r3) at (2,-4.5) {reduce};
 				\node [relation=3, rounded corners, rectangle split horizontal, rectangle split part fill={lightgray!50}] (n1) at (0,-6)
 				{%
-					\nodepart{one} input
-					\nodepart{two} input
-					\nodepart{three} input};
+					\nodepart{one} output
+					\nodepart{two} output
+					\nodepart{three} output};
 
 				% Arrows
 
@@ -164,24 +174,43 @@
     		\label{tikz:mapred}
 		\end{figure}
 
-	\section{Project Workflow}
-
+	\section{Project workflow and structure}
 	The first step of the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. Starting from these data, the program should take unknown manuscripts as input and establish the authorship by the comparing them with the ``dictionary'' previously created. All the manuscripts are \texttt{.txt} files taken from the Project Gutenberg\parencite{Gutenberg} online library.
 	The Project Workflow is the following:
 	\begin{enumerate}
 		\item Parsing all the files using Hadoop Map Reduce job: 
-		\begin{itemize}
+		\begin{enumerate}
 			\item Mapper performs the counting of all the specified language parts in each file. These parts are ArrayList instances. The Mapper associates each language part with an integer flag set to 1. The collected data are explained more in detail in the next sections. 
 			
 			\item Reducer performs the counting of language parts by putting together data taken from the Mappers. The reducer output  
-		\end{itemize}
+		\end{enumerate}
 		\item Calculating the frequencies of language parts for each text.
-		\item 
+		\item Obtain an author ``identikit'' based on the texts that have been analyzed written by that specific author. The author characteristics are built merging the data resulting from the text analysis.
+		\item Analyze unknown texts and comparing them to the known author is order to have a rank of similarity between the unknown texts and the known authors.
 	\end{enumerate}
 
-	
+	\subsection{Project structure}
+	The project main folder is divided in the following directories: \begin{itemize}
+		\item \lstinline|libs|: hadoop libraries;
+		\item \lstinline|src|: code sources;
+		\item \lstinline|doc|: generated javadoc folder.
+	\end{itemize}
 
 	\subsection{Map Reduce Job}
+	The project only contains a single mapreduce job, alongside with other classes to hold temporary data. The mapreduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface to the HDFS functions. These libraries are: \begin{itemize}
+		\item \lstinline|hadoop-annotations.jar|
+		\item \lstinline|hadoop-common.jar|
+		\item \lstinline|hadoop-core-2.6.0-mr1-cdh5.7.0.jar|
+		\item \lstinline|hadoop-hdfs.jar|
+		\item \lstinline|log4j-1.2.17.jar|
+	\end{itemize}
+	Before diving into the implementation of the job, we have the assure that the current class (compiled into a \verb|jar| file), will run as an hadoop job. In order to do so, we have to add \lstinline|extends Configured implements Tool| to the class declaration.
+	
+	\bigskip
+	\noindent
+	As said in the previous sections, the client has to manually implement the map and the reduce functions, alongside with a \lstinline|run| method to configure the job itself.
+	
+	\paragraph{\lstinline|Run| method.} Contains the job configuration, setting input and output paths
 
 	\subsection{Frequency Calculations}
 
