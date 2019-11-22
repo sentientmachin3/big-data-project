@@ -177,7 +177,9 @@ breaklines=true
 		\end{figure}
 
 	\section{Project workflow and structure}
-	The first step of the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. Starting from these data, the program should take unknown manuscripts as input and establish the authorship by the comparing them with the ``dictionary'' previously created. All the manuscripts are \texttt{.txt} files taken from the Project Gutenberg\parencite{Gutenberg} online library.
+	The first step of the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. It performs the calculation of the frequencies of language parts used by the authors in their texts. Starting from these data, the following steps consist of taking unknown manuscripts as input and establishing the authorship by the comparing them with the ``dictionary'' previously created. 
+	
+	All the manuscripts are \texttt{.txt} files taken from the Project Gutenberg\parencite{Gutenberg} online library.
 	The Project Workflow is the following:
 	\begin{enumerate}
 		\item Parsing all the files using Hadoop Map Reduce job: 
