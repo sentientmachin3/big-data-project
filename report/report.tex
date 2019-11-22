@@ -227,13 +227,16 @@ tabsize=2
 			.2 log4j-1.2.17.jar. 
 		}
 	\end{figure}
+
 	Before diving into the implementation of the job, we have the assure that the current class (compiled into a \verb|jar| file), will run as an hadoop job. In order to do so, we have to add \lstinline|extends Configured implements Tool| to the class declaration.
 	
 	\bigskip
 	\noindent
 	As said in the previous sections, the client has to manually implement the map and the reduce functions, alongside with a \lstinline|run| method to configure the job itself.
 	
-	\paragraph{\lstinline|Run| method.} Contains the job configuration, setting input and output paths.
+	\subsubsection{Run method}
+	
+	Contains the job configuration, setting input and output paths.
 	The job is configured as follows:
 	
 	\begin{lstlisting}[firstnumber=45]
