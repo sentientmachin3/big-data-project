@@ -6,6 +6,7 @@
 \usepackage{float}
 \usepackage{fixltx2e}
 \usepackage{listings}
+\usepackage{dirtree}
 \usepackage{enumitem}
 \usepackage{color}
 \usepackage{textcomp}
@@ -51,6 +52,7 @@ breaklines=true
 \cfoot{\thepage}
 \rfoot{}
 \renewcommand{\headrulewidth}{0.4pt}
+\renewcommand*\DTstylecomment{\rmfamily}
 
 \renewcommand{\ttdefault}{cmtt}
 \begin{document}
@@ -185,25 +187,42 @@ breaklines=true
 			\item Reducer performs the counting of language parts by putting together data taken from the Mappers. The reducer output  
 		\end{enumerate}
 		\item Calculating the frequencies of language parts for each text.
-		\item Obtain an author ``identikit'' based on the texts that have been analyzed written by that specific author. The author characteristics are built merging the data resulting from the text analysis.
-		\item Analyze unknown texts and comparing them to the known author is order to have a rank of similarity between the unknown texts and the known authors.
+		\item Obtaining an author ``identikit'' based on the texts that have been analyzed written by that specific author. The author characteristics are built merging the data resulting from the text analysis.
+		\item Analyzing unknown texts and comparing them to the known author is order to have a rank of similarity between the unknown texts and the known authors.
 	\end{enumerate}
 
 	\subsection{Project structure}
-	The project main folder is divided in the following directories: \begin{itemize}
-		\item \lstinline|libs|: hadoop libraries;
-		\item \lstinline|src|: code sources;
-		\item \lstinline|doc|: generated javadoc folder.
-	\end{itemize}
+	The project main folder is divided in the following directories:
+	\begin{figure}[h!]
+		\dirtree{%
+		.1 big-data-project. 
+		.2 doc\DTcomment{generated javadoc folder}. 
+		.2 libs \DTcomment{Hadoop libraries}. 
+		.2 report\DTcomment{project report}. 
+		.2 src \DTcomment{code sources}. 
+		.3 main. 
+		.4 java. 
+		.5 AffinityMap.java. 
+		.5 Authorship.java. 
+		.5 FreqMap.java. 
+		.5 FreqMapEntry.java. 
+		.5 Main.java. 
+		.5 SimilarityAnalysis.java. 
+		}
+	\end{figure}
 
 	\subsection{Map Reduce Job}
-	The project only contains a single mapreduce job, alongside with other classes to hold temporary data. The mapreduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface to the HDFS functions. These libraries are: \begin{itemize}
-		\item \lstinline|hadoop-annotations.jar|
-		\item \lstinline|hadoop-common.jar|
-		\item \lstinline|hadoop-core-2.6.0-mr1-cdh5.7.0.jar|
-		\item \lstinline|hadoop-hdfs.jar|
-		\item \lstinline|log4j-1.2.17.jar|
-	\end{itemize}
+	The project only contains a single mapreduce job, alongside with other classes to hold temporary data. The mapreduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface to the HDFS functions. These libraries are: 
+	\begin{figure}[h!]
+		\dirtree{%
+			.1 libs. 
+			.2 hadoop-annotations.jar. 
+			.2 hadoop-common.jar. 
+			.2 hadoop-core-2.6.0-mr1-cdh5.7.0.jar. 
+			.2 hadoop-hdfs.jar. 
+			.2 log4j-1.2.17.jar. 
+		}
+	\end{figure}
 	Before diving into the implementation of the job, we have the assure that the current class (compiled into a \verb|jar| file), will run as an hadoop job. In order to do so, we have to add \lstinline|extends Configured implements Tool| to the class declaration.
 	
 	\bigskip
