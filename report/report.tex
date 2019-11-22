@@ -362,17 +362,49 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 }
 	\end{lstlisting}
 	
-	Since the contest has now a lot of lines associated with same value (the \lstinline|IntWritable| instance for ``ones''), the combiner and the reducer are responsible for grouping lines with the same key and count these lines, writing the total into the context.
+	Since the contest has now a lot of lines associated with same value (the \lstinline|IntWritable| instance for ``ones''), the combiner and the reducer are responsible for grouping lines with the same key and count these lines, writing the total into the context. Once the reducing phase is completed, the output is written onto a file into the HDFS (specifically \lstinline|OUTPUT_PATH|).
 	
-	
-	
-
-	
-	
-
 	\subsection{Frequency Calculations}
+	Once the hadoop job has terminated, the control passes to a simple Java program. This section of the program generates an instance of the class \lstinline|FreqMap| parsing the reducer output file.
+	
+	A \lstinline|FreqMap| instance is a set of \lstinline|FreqMapEntry|, which are entries text-specific. More in detail an instance of \lstinline|FreqMapEntry| consists of: \begin{itemize}
+		\item a \lstinline|String| author name;
+		\item a \lstinline|String| text title;
+		\item a map \lstinline|String| $\to$ \lstinline|Float|, containing field names (text features extracted from the mapreduce framework) and their respective values.
+	\end{itemize}
 
+	More in detail, a complete entry contains the follwing fields: \begin{itemize}
+		\item frequency of articles;
+		\item frequency of prepositions;
+		\item frequency of conjunctions;
+		\item number of words in the input;
+		\item number of periods in the input;
+		\item frequency of punctuation marks;
+		\item frequency of dialogue sentences.
+		\item average period length.
+	\end{itemize}
+
+	Note that the frequency of articles, prepositions, cojunctions and punctuation symbols is determined over the total number of words, while the frequency of dialogue sentences is calculated over the total number of periods.
+	
+	After this phase, we will have a frequency map for every text of every author, for example: \begin{align*}
+		\text{author}&: M. Shelley \\
+		\text{title} &: Frankenstein \\
+		\text{frequencies}&:\begin{cases}
+			articles &0.000152 \\
+			prepositions &0.000582 \\
+			conjunctions &0.00251 \\
+			periods &3441 \\
+			nwords &134135 \\
+			avg\text{-}period\text{-}length &20.283638 \\
+			commas &0.00848 \\
+			dialogues &0.051891
+		\end{cases}
+	\end{align*}
+	
+	
 	\subsection{Similarity Analysis}
+	
+	\section{Performed tests}
 
 	\newpage
 
