@@ -233,9 +233,8 @@ tabsize=2
 	\bigskip
 	\noindent
 	As said in the previous sections, the client has to manually implement the map and the reduce functions, alongside with a \lstinline|run| method to configure the job itself.
-	
+
 	\subsubsection{Run method}
-	
 	Contains the job configuration, setting input and output paths.
 	The job is configured as follows:
 	
@@ -269,7 +268,12 @@ public int run(String[] args) throws Exception {
 		\item \lstinline|UNKNOWNS_INPUT_PATH| is the input path for unknown texts (which are located in a subdirectory of \lstinline|INPUT_PATH|).
 	\end{itemize}
 
-	The calls to \lstinline|setInputPaths| and \lstinline|setOutputPath|, as the name suggests, are used to set respectively the input and output paths of the job. We then add the single files using a call to \lstinline|addInputPath| for each input file we have. Respectively: \begin{itemize}
+	The calls to \lstinline|setInputPaths| and \lstinline|setOutputPath|, as the name suggests, are used to set respectively the input and output paths of the job. We then add the single files using a call to \lstinline|addInputPath| for each input file we have. 
+	
+	\bigskip
+	\noindent
+	In the following lines, we configure the mapper and reducer input and output types and classes.
+	Respectively: \begin{itemize}
 		\item mapper output key is \lstinline|Text| (the hadoop-like type for \lstinline|String|);
 		\item mapper output value is \lstinline|IntWritable| (standing for \lstinline|Integer|);
 		\item reducer output key is \lstinline|Text|;
@@ -278,11 +282,93 @@ public int run(String[] args) throws Exception {
 
 	Calls to \lstinline|job.setMapperClass|, \lstinline|job.setReducerClass| and \lstinline|job.setCombinerClass| just tell the interpreter which is the class respinsible for describing the mapping, reducing and combining function.
 	
+	\subsubsection{Mapper implementation.} The mapper is implemented in an inner class, and we can summarize the content by dividing it in three sections.
+	
+	The first one contains the declaration of patterns during the analysis.
+	
+	\begin{lstlisting}[firstnumber=70]
+private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
+private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
+private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
+private static final Pattern DIALOGUE = Pattern.compile("[\u201C\u201D]");
+private static final IntWritable ONE = new IntWritable(1);
+	\end{lstlisting}
+	
+	These pattern are used in the text analysis. Briefly: \begin{itemize}
+		\item \lstinline|WORD_BOUNDARY|: splits on word separators characters;
+		\item \lstinline|END_PERIOD|: splits text on end-period characters;
+		\item \lstinline|MARKS_COMMAS|: splits on commas and exclamation/question marks;
+		\item \lstinline|DIALOGUE|: splits on dialogue quotes (\lstinline|\u201C| and \lstinline|\u201D| is their specification in Unicode, since these symbols are not in the standard ASCII table). 
+	\end{itemize}
+
+	The last constant is an \lstinline|IntWritable| value set to 1, and is used when a matching expression is detected.
+
+	The second section contains the text analysis itself, which is based on: \begin{itemize}
+		\item article, preposition and conjunction frequency;
+		\item average period length;
+		\item dialogues frequency;
+		\item punctuation mark frequency.
+	\end{itemize}
+	Besides this, we save additional informations, such as the total number of words in the input and the total number of periods, so we can get the frequency over the total dimension of the input.
+
+	In this section the previous pattern matchers are used to reach these words and write the corresponding \lstinline|ONE| in the job contest. 
+	
+	We report an example for articles count: \begin{lstlisting}[firstnumber=82]
+for (String word : WORD_BOUNDARY.split(lineText.toString())) {
+	String refWord = word.toLowerCase();
+	if (!word.isEmpty()) {
+		if (Authorship.ARTICLES.contains(refWord) || refWord.startsWith("l'") || refWord.startsWith("un'") || refWord.startsWith("gl'")) {
+		
+			text.set(filePathString + "*article");
+			context.write(text, ONE);
+		}
+	}
+
+	...
+
+}
+	\end{lstlisting}
+	
+	In short terms, for each article found in the input text, the mapper writes a string formatted as follows:\begin{center}
+		\textit{author-title.txt*article\textless tab\textgreater \textless value\textgreater} 
+	\end{center}
+
+	This procedure applies in the same way to preposition and conjunctions.
+	
 	\bigskip
 	\noindent
-	In the following lines, we configure the mapper and reducer input and output types and classes.
+	For periods, punctuation and dialogues we used a different method.
+	\begin{lstlisting}[firstnumber=109]
+Matcher matcher = END_PERIOD.matcher(refLineText);
+while (matcher.find()) {
+	text.set(filePathString + "*periods");
+	context.write(text, ONE);
+}
+	...
+	\end{lstlisting}
 	
-	\paragraph{Mapper implementation.} The mapper is implemented in an inner class. 
+	A \lstinline|Matcher| instance tries to match the pattern to an input line. As soon as the matcher finds occurences of the pattern in the text passed as parameter, the mapper writes a line similar to the previous one (i.e. formatted in the same way) to the context. The procedure repeats for punctuation marks, commas and periods delimitators.
+	
+	\subsubsection{Reducer implementation}
+	The reducer implementation is pretty much the same as in the \lstinline|Wordcount| example. Since it's just a few lines we report the full code:
+	\begin{lstlisting}[firstnumber=135]
+@Override
+protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+	int sum = 0;
+	for (IntWritable count : values) {
+		sum += count.get();
+	}
+	context.write(key, new IntWritable(sum));
+}
+	\end{lstlisting}
+	
+	Since the contest has now a lot of lines associated with same value (the \lstinline|IntWritable| instance for ``ones''), the combiner and the reducer are responsible for grouping lines with the same key and count these lines, writing the total into the context.
+	
+	
+	
+
+	
+	
 
 	\subsection{Frequency Calculations}
 
