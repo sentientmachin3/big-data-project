@@ -332,3 +332,11 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+
+report/report.aux
+report/report.log
+report/report.out
+report/report.pdf
+report/report.synctex.gz
+report/report.toc
