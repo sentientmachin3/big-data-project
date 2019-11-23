@@ -177,7 +177,8 @@ tabsize=2
 			\caption{MapReduce Model}
     		\label{tikz:mapred}
 		\end{figure}
-
+	
+	\newpage
 	\section{Project workflow and structure}
 	The first step of the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. It performs the calculation of the frequencies of language parts used by the authors in their texts. Starting from these data, the following steps consist of taking unknown manuscripts as input and establishing the authorship by the comparing them with the ``dictionary'' previously created. 
 	
@@ -373,7 +374,7 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 		\item a map \lstinline|String| $\to$ \lstinline|Float|, containing field names (text features extracted from the mapreduce framework) and their respective values.
 	\end{itemize}
 
-	More in detail, a complete entry contains the follwing fields: \begin{itemize}
+	More in detail, a complete entry contains the following fields: \begin{itemize}
 		\item frequency of articles;
 		\item frequency of prepositions;
 		\item frequency of conjunctions;
@@ -390,20 +391,65 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 		\text{author}&: M. Shelley \\
 		\text{title} &: Frankenstein \\
 		\text{frequencies}&:\begin{cases}
-			articles &0.000152 \\
-			prepositions &0.000582 \\
-			conjunctions &0.00251 \\
+			articles &0.07756892 \\
+			prepositions &0.11023554 \\
+			conjunctions &0.037609607 \\
 			periods &3441 \\
-			nwords &134135 \\
+			nwords &69796.0 \\
 			avg\text{-}period\text{-}length &20.283638 \\
-			commas &0.00848 \\
-			dialogues &0.051891
+			commas &0.079789676 \\
+			dialogues &0.112322
 		\end{cases}
 	\end{align*}
+	 What we need now is a map of frequencies relative to a single author, order to generate a ``stylistic identikit''  of an author, so then we can compare any unknown text to that author.
+	 
+	 In order to do so we pick all the informations we got about every known text of every author and we merge this maps into a single one, which is relative to an author. That is, if we have multiple texts of the same author, we generate a new \lstinline|FreqMapEntry|, were the author remains the same, but we set as title a \lstinline|String| set to the value \lstinline|"global"|, in order to identify that map as the author identikit we were talking some lines above.
+	 
+	 \bigskip
+	 \noindent
+	 The global entries are generated with the following method.\begin{lstlisting}[firstnumber=79]
+private void globalAuthorFrequency(String author) {
+	FreqMapEntry global = new FreqMapEntry(author, "global");
 	
+	// init map to 0
+	for (String field : entries.iterator().next().getFrequencies().keySet()) {
+		global.getFrequencies().put(field, (float) 0);
+	}
+	
+	// sums by field, entries are grouped by author
+	int authorEntries = 0;
+	for (FreqMapEntry entry : this.entries) {
+		if (entry.getAuthor().equals(author)) {
+			authorEntries++;
+			for (String field : entry.getFrequencies().keySet()) {
+				float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
+				global.getFrequencies().put(field, upvalue);
+			}
+		}
+	}
+	
+	// average using number of entries
+	for (String field : global.getFrequencies().keySet()) {
+		global.getFrequencies().put(field, global.getFrequencies().get(field) / authorEntries);
+	}
+	
+	this.entries.add(global);
+}
+	 \end{lstlisting}
+	 
+	 The methods proceeds following these steps: \begin{enumerate}
+	 	\item lines $80::84$ build the map reserved for the complexive values of the author, and initializes all the fields to 0;
+	 	\item lines $88::94$ query all the previous instances of \lstinline|FreqMap| entry, get a specific field value and sum this value to all other matching fields in other instances.
+	 	\item lines $100::102$ generate an average value for the global entry, dividing the sums obtained at the previous step by the total number of entries with the specific author name.
+	 \end{enumerate}
+	 
+	 \bigskip
+	 \noindent
+	 At the end we will have in the beginning \lstinline|FreqMap| instance an entry for each text of each author and a global entry for every author.
 	
 	\subsection{Similarity Analysis}
 	
+	\newpage
 	\section{Performed tests}
 
 	\newpage
