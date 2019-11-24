@@ -111,11 +111,21 @@ tabsize=2
 			
 			\item \textit{DataNode}: running on multiple nodes (many instances are allowed), are supposed to retrieve the application data when they are told by the NameNode.
 		\end{itemize}
-	
-		\bigskip
+		\begin{figure}[h!]
+			\centering
+			\begin{tikzpicture}[>=latex]
+				\fill[draw=black, thick, fill=blue!30!white] (0,0) rectangle (7,4);\node[anchor=west] at (0.25,0.2) {Host file system};
+				\fill[draw=black, thick, fill=lightgray] (0.25,1) rectangle (6,3.75);\node[anchor=west] at (0.25,1.2) {Container Virtual file system};
+				\fill[draw=black, thick, fill=white] (.5,2) rectangle (4,3.5);\node[anchor=west] at (0.5,2.2) {HDFS};
+				\draw[<->,thick] (5.5,.65) -- (5.5,1.35);\draw[<->,thick] (3.65,3) -- (4.35,3);
+			\end{tikzpicture}
+			\caption{File system organization}
+			\label{tikz:filesys}
+		\end{figure}
 		
-		\noindent
 		For the installation of Docker, the Cloudera Docker image and the execution of jobs using jar file it have been used the instructions of the course. The project is written using Java version \texttt{11.0.4}. For the code compilation we used IntelliJ version \texttt{2019.2.4} compiling using compatibility mode with version \texttt{1.7}.
+
+		
 
 	\subsection{Map Reduce Framework}
 		MapReduce is a programming paradigm which works on parallel platforms in order to process in the best possible way large amounts of data. The client has to implement a map function, which is supposed to take as input raw data and process them into intermediate \textit{key-value} pairs, and the reduce function, which aim is to regroup key-value pairs relying on the key and generate key-value output pairs. The mapreduce model is explained more in detail in the next section.
