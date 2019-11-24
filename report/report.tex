@@ -62,7 +62,7 @@ tabsize=2
 	\begin{titlepage}
 		\centering
 		\vspace*{\fill}
-		{\scshape\LARGE Università degli Studi di Verona \par}
+		{\scshape\LARGE University of Verona \par}
 		\vspace{1.5cm}
 		\line(1,0){240} \\
 		{\huge\bfseries Authorship Attribution\par}
@@ -76,7 +76,7 @@ tabsize=2
 		\vspace{5cm}
 		\vspace*{\fill}
 		% Bottom of the page
-		{\large A.A. 2018/2019\par}
+		{\large A.Y. 2018/2019\par}
 	\end{titlepage}
 	\thispagestyle{empty}
 	\newpage
@@ -362,7 +362,7 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 }
 	\end{lstlisting}
 	
-	Since the contest has now a lot of lines associated with same value (the \lstinline|IntWritable| instance for ``ones''), the combiner and the reducer are responsible for grouping lines with the same key and count these lines, writing the total into the context.
+	Since the context has now a lot of lines associated with same value (the \lstinline|IntWritable| instance for ``ones''), the combiner and the reducer are responsible for grouping lines with the same key and count these lines, writing the total into the context.
 	
 	
 	
