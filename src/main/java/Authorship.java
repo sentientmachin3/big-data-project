@@ -84,7 +84,7 @@ public class Authorship extends Configured implements Tool {
                 if (!word.isEmpty()) {
                     if (Authorship.ARTICLES.contains(refWord) || refWord.startsWith("l'") || refWord.startsWith("un'") ||
                             refWord.startsWith("gl'")) {
-                        text.set(filePathString + "*article");
+                        text.set(filePathString + "*articles");
                         context.write(text, ONE);
                     }
 
@@ -122,7 +122,7 @@ public class Authorship extends Configured implements Tool {
             // dialogue quotes count
             Matcher dialogue = DIALOGUE.matcher(refLineText);
             while (dialogue.find()) {
-                text.set(filePathString + "*dialogue");
+                text.set(filePathString + "*dialogues");
                 context.write(text, ONE);
             }
 
