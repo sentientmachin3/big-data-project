@@ -43,7 +43,8 @@ numbers=left,
 frame=single,
 basicstyle=\ttfamily\footnotesize,
 breaklines=true,
-tabsize=2
+tabsize=2,
+escapeinside={(*@}{@*)}
 }
 
 \pagestyle{fancy}
@@ -122,7 +123,7 @@ tabsize=2
 			\caption{File system organization}
 			\label{tikz:filesys}
 		\end{figure}
-		
+
 		For the installation of Docker, the Cloudera Docker image and the execution of jobs using jar file it have been used the instructions of the course. The project is written using Java version \texttt{11.0.4}. For the code compilation we used IntelliJ version \texttt{2019.2.4} compiling using compatibility mode with version \texttt{1.7}.
 
 		
@@ -239,7 +240,7 @@ tabsize=2
 		}
 	\end{figure}
 
-	Before diving into the implementation of the job, we have the assure that the current class (compiled into a \verb|jar| file), will run as an hadoop job. In order to do so, we have to add \lstinline|extends Configured implements Tool| to the class declaration.
+	Before diving into the implementation of the job, we have to assure that the current class (compiled into a \verb|jar| file), will run as an hadoop job. In order to do so, we have to add \lstinline|extends Configured implements Tool| to the class declaration.
 	
 	\bigskip
 	\noindent
@@ -249,7 +250,7 @@ tabsize=2
 	Contains the job configuration, setting input and output paths.
 	The job is configured as follows:
 	
-	\begin{lstlisting}[firstnumber=45]
+	\begin{lstlisting}[firstnumber=45, caption={Run method}, captionpos=b]
 @Override
 public int run(String[] args) throws Exception {
 	Job job = Job.getInstance(this.getConf(), "authorship");
@@ -297,7 +298,7 @@ public int run(String[] args) throws Exception {
 	
 	The first one contains the declaration of patterns during the analysis.
 	
-	\begin{lstlisting}[firstnumber=70]
+	\begin{lstlisting}[firstnumber=70, caption={Declaration of Regular Expression Patterns}, captionpos=b]
 private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
 private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
 private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
@@ -324,7 +325,7 @@ private static final IntWritable ONE = new IntWritable(1);
 
 	In this section the previous pattern matchers are used to reach these words and write the corresponding \lstinline|ONE| in the job contest. 
 	
-	We report an example for articles count: \begin{lstlisting}[firstnumber=82]
+	We report an example for articles count: \begin{lstlisting}[firstnumber=82, caption={Articles counting in Map method}, captionpos=b]
 for (String word : WORD_BOUNDARY.split(lineText.toString())) {
 	String refWord = word.toLowerCase();
 	if (!word.isEmpty()) {
@@ -349,7 +350,7 @@ for (String word : WORD_BOUNDARY.split(lineText.toString())) {
 	\bigskip
 	\noindent
 	For periods, punctuation and dialogues we used a different method.
-	\begin{lstlisting}[firstnumber=109]
+	\begin{lstlisting}[firstnumber=109, caption={Periods counting in Map method}, captionpos=b]
 Matcher matcher = END_PERIOD.matcher(refLineText);
 while (matcher.find()) {
 	text.set(filePathString + "*periods");
@@ -362,7 +363,7 @@ while (matcher.find()) {
 	
 	\subsubsection{Reducer implementation}
 	The reducer implementation is pretty much the same as in the \lstinline|Wordcount| example. Since it's just a few lines we report the full code:
-	\begin{lstlisting}[firstnumber=135]
+	\begin{lstlisting}[firstnumber=135, caption={Reduce method}, captionpos=b]
 @Override
 protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
 	int sum = 0;
@@ -418,40 +419,41 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 	 
 	 \bigskip
 	 \noindent
-	 The global entries are generated with the following method.\begin{lstlisting}[firstnumber=79]
+	 The global entries are generated with the following method.
+	 \begin{lstlisting}[firstnumber=79, caption={globalAuthorFrequency method}, captionpos=b]
 private void globalAuthorFrequency(String author) {
-	FreqMapEntry global = new FreqMapEntry(author, "global");
+	FreqMapEntry global = new FreqMapEntry(author, "global");(*@\label{eighty}@*)
 	
 	// init map to 0
 	for (String field : entries.iterator().next().getFrequencies().keySet()) {
-		global.getFrequencies().put(field, (float) 0);
+		global.getFrequencies().put(field, (float) 0);(*@\label{eightyfour}@*)
 	}
 	
 	// sums by field, entries are grouped by author
-	int authorEntries = 0;
+	int authorEntries = 0;(*@\label{eightyeight}@*)
 	for (FreqMapEntry entry : this.entries) {
 		if (entry.getAuthor().equals(author)) {
 			authorEntries++;
 			for (String field : entry.getFrequencies().keySet()) {
 				float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
-				global.getFrequencies().put(field, upvalue);
+				global.getFrequencies().put(field, upvalue);(*@\label{ninetyfour}@*)
 			}
 		}
 	}
 	
 	// average using number of entries
-	for (String field : global.getFrequencies().keySet()) {
+	for (String field : global.getFrequencies().keySet()) {(*@\label{100}@*)
 		global.getFrequencies().put(field, global.getFrequencies().get(field) / authorEntries);
-	}
+	}(*@\label{102}@*)
 	
 	this.entries.add(global);
 }
 	 \end{lstlisting}
 	 
 	 The methods proceeds following these steps: \begin{enumerate}
-	 	\item lines $80::84$ build the map reserved for the complexive values of the author, and initializes all the fields to 0;
-	 	\item lines $88::94$ query all the previous instances of \lstinline|FreqMap| entry, get a specific field value and sum this value to all other matching fields in other instances.
-	 	\item lines $100::102$ generate an average value for the global entry, dividing the sums obtained at the previous step by the total number of entries with the specific author name.
+	 	\item lines \ref{eighty} :: \ref{eightyfour} build the map reserved for the complexive values of the author, and initializes all the fields to 0;
+	 	\item lines \ref{eightyeight} :: \ref{ninetyfour} query all the previous instances of \lstinline|FreqMap| entry, get a specific field value and sum this value to all other matching fields in other instances.
+	 	\item lines \ref{100} :: \ref{102} generate an average value for the global entry, dividing the sums obtained at the previous step by the total number of entries with the specific author name.
 	 \end{enumerate}
 	 
 	 \bigskip
