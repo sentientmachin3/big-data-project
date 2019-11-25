@@ -525,7 +525,7 @@ public int compareTo(Object o) {
  		\item lines \ref{72} :: \ref{78} check which of the three counter has the maximum value; if $-1$ is the maximum, the current object is lower that the parameter item, if $1$ is the maximum the parameter item is lower than the current object, otherwise the two items are considered to be equal.
  	\end{itemize}
  
- 	The comparison is ran from the method \lstinline|SimilarityAnalysis.exec()|, which is responsible for generating the correlations between unknown text and known authors and reporting to file the final rank. We start the description of the class from specifying how affinities are calculated, and report the \lstinline|exec()| method code.
+ 	The comparison is run from the method \lstinline|SimilarityAnalysis.exec()|, which is responsible for generating the correlations between unknown text and known authors and reporting to file the final rank. We start the description of the class from specifying how affinities are calculated, and report the \lstinline|exec()| method code.
  	
  	\begin{lstlisting}[firstnumber=38]
 private void exec() {
@@ -578,12 +578,15 @@ private void exec() {
 	\newpage
 	\section{Running on a sample}
 	\subsection{Input and extracted data}
-	During the development process, we tested the program on a bunch of samples (155 files, more or less 70 MB) from 4 different authors: \begin{itemize}
+	During the development process, we tested the program on a bunch of samples (155 files, more or less 70 MB) from 4 different authors: 
+	\begin{itemize}
 		\item M. Shelley;
 		\item H. Melville;
 		\item C. Dickens (with unknown texts number 4 and 5);
 		\item J. Abbott (with unknown texts from 1 to 3).
 	\end{itemize}
+
+	\subsection{Results}
 
 	\begin{figure}[h!]
 		\centering
@@ -688,9 +691,75 @@ private void exec() {
 		\caption{Frequencies between Dickens and 2 unknowns}
 		\label{tikz:dickens-unk}
 	\end{figure}
-	
-	
-	\newpage
+
+	\begin{figure}[h!]
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}
+			[
+			legend entries={Unknown4, Unknown5},
+			legend style={
+				at={(1.5,-0.2)},
+				anchor=north,
+				legend columns=1,
+				cells={anchor=west},
+				font=\footnotesize,
+				rounded corners=2pt,
+			},
+			grid=major,
+			height=8cm,
+			grid style={densely dotted},
+			ymin=-0.005,
+			xtick=data,
+			ytick={0.010, 0.015, ..., 0.05},
+			legend pos=outer north east,
+			yticklabel={\pgfmathprintnumber{\tick}\,\%},
+			x tick label style={rotate=90},
+			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
+			ylabel=Deltas]
+			\addplot table [x=freq, y=unknown4, col sep=comma] {deltas-dickens.csv};
+			\addplot table [x=freq, y=unknown5, col sep=comma] {deltas-dickens.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Deltas Dickens}
+		\label{tikz:dickens-deltas}
+	\end{figure}
+
+	\begin{figure}[h!]
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}
+			[
+			legend entries={Unknown1, Unknown2, Unknown3},
+			legend style={
+				at={(1.5,-0.2)},
+				anchor=north,
+				legend columns=1,
+				cells={anchor=west},
+				font=\footnotesize,
+				rounded corners=2pt,
+			},
+			grid=major,
+			height=8cm,
+			grid style={densely dotted},
+			ymin=-0.004,
+			xtick=data,
+			ytick={0.01, 0.025, ..., 0.2},
+			legend pos=outer north east,
+			yticklabel={\pgfmathprintnumber{\tick}\,\%},
+			x tick label style={rotate=90},
+			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
+			ylabel=Deltas]
+			\addplot table [x=freq, y=unknown1, col sep=comma] {deltas-abbott.csv};
+			\addplot table [x=freq, y=unknown2, col sep=comma] {deltas-abbott.csv};
+			\addplot table [x=freq, y=unknown3, col sep=comma] {deltas-abbott.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Deltas Abbott}
+		\label{tikz:abbott-deltas}
+	\end{figure}
+
+	\clearpage
 
 	\printbibheading
 	\printbibliography[nottype=book,heading=subbibliography,title={Online Sources}]
