@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage{fixltx2e}
+\usepackage{booktabs}
 \usepackage{listings}
 \usepackage{enumitem}
 \usepackage{color}
@@ -67,20 +68,20 @@ escapeinside={(*@}{@*)}
 	\clearpage
 	\begin{titlepage}
 		\centering
-		\vspace*{\fill}
-		{\scshape\LARGE University of Verona \par}
-		\vspace{1.5cm}
-		\line(1,0){240} \\
-		{\huge\bfseries Authorship Attribution\par}
-		\line(1,0){240} \\
-		\vspace{0.5cm}
-		{\scshape\Large Big Data project report\par}
+		{\scshape\LARGE Università degli Studi di Verona \par}
+		\noindent\rule{\textwidth}{0.5pt}\\
+		{\scshape\large Master degree in Computer Science and Engineering\par}
+		\vspace{6cm}
+		{\huge\bfseries Authorship attribution\par}
+		\vspace{1cm}
+		{\Large\scshape Big data course\\ \large project report\par}
 		\vspace{2cm}
-		{\Large\itshape Davide Bianchi VR424505\par
-		\Large\itshape Matteo Danzi VR424987\par}
+		{\Large Davide Bianchi VR424505\par
+		\Large Matteo Danzi VR424987\par}
 		\vspace{1cm}
 		\vspace{5cm}
 		\vspace*{\fill}
+		\noindent\rule{\textwidth}{0.5pt}\\
 		% Bottom of the page
 		{\large A.Y. 2018/2019\par}
 	\end{titlepage}
@@ -572,20 +573,16 @@ private void exec() {
 	Lines \ref{58b} to \ref{64b} sort the collection of \lstinline|AffinityMap| instances using the \lstinline|compare| method described in listing \ref{lst:comparemethod}.
 	
 	The ranking is written to a new file in the HDFS (in directory \lstinline|OUTPUT_PATH|); the first position are the most similar, the last position are the smallest affinity pairs.
-	
-	
-	
-	
 
 	
-	
 	\newpage
-	\section{Performed tests}
-	To do:
-	\begin{itemize}
-		\item Tabella con dati iniziali per ogni autore noto, frequenze
-		\item 1 Grafico per ogni autore con i deltas (similarity)
-		\item Grafico per ogni autore mettere le frequenze di articoli, congiunzioni \dots
+	\section{Running on a sample}
+	\subsection{Input and extracted data}
+	During the development process, we tested the program on a bunch of samples (155 files, more or less 70 MB) from 4 different authors: \begin{itemize}
+		\item M. Shelley;
+		\item H. Melville;
+		\item C. Dickens (with unknown texts number 4 and 5);
+		\item J. Abbott (with unknown texts from 1 to 3).
 	\end{itemize}
 
 	\begin{figure}[h!]
