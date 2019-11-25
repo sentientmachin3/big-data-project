@@ -472,7 +472,7 @@ private void globalAuthorFrequency(String author) {
 	
 	 An \lstinline|AffinityMap| instance represents a comparison of authors, the first is known and the second is not. The compared fields are represented as a map \lstinline|String| $\to$ \lstinline|Double|, as in previous classes. The \lstinline|AffinityMap| instance implements the \lstinline|Comparable| interface, in order to be able to compare two instances and determine a sort of ``hierarchy''.
 	 
-	 The comparison method is the following:\begin{lstlisting}[firstnumber=51,caption={AffinityMap comparison method}, captionpos=b]
+	 The comparison method is the following:\begin{lstlisting}[firstnumber=51,caption={AffinityMap comparison method}, captionpos=b, label={lst:comparemethod}]
 @Override
 public int compareTo(Object o) {
 	AffinityMap rec = (AffinityMap) o;
@@ -542,19 +542,19 @@ private void exec() {
 		}
 	}(*@\label{56}@*)
 	
-	Collections.sort(this.deltas, new Comparator<AffinityMap>() {
+	Collections.sort(this.deltas, new Comparator<AffinityMap>() {(*@\label{58b}@*)
 		// comparison method between two affinity maps, used to sort the analysis
 		@Override
 		public int compare(AffinityMap affinityMap, AffinityMap t1) {
 			return affinityMap.compareTo(t1);
 		}
-	});
+	});(*@\label{64b}@*)
 }
  	\end{lstlisting}
  	
  	\bigskip
  	\noindent
-	As specified just few lines above, an \lstinline|AffinityMap| instance contains a map from String to doubles. Data in this map are saved as the field-to-field difference of the maps of the authors we are analyzing. More in detail, if we have two authors $A$ and $B$ (i.e. two \lstinline|FreqMapEntry| instances), the map will contain the following values(lines \ref{43} :: \ref{56}):
+	As specified just few lines above, an \lstinline|AffinityMap| instance contains a map from String to doubles. Data in this map are saved as the field-to-field difference of the maps of the authors we are analyzing. More in detail, if we have two authors $A$ and $B$ (i.e. two \lstinline|FreqMapEntry| instances), the map will contain the following values (lines \ref{43} to \ref{56}):
 	\begin{align*}
 		\begin{cases}
 			\text{articles} &= |A.\text{articles} - B.\text{articles}| \\
@@ -563,6 +563,10 @@ private void exec() {
 			\text{avg-period-length}&= |A.\text{avg-period-length} - B.\text{avg-period-length}|
 		\end{cases}
 	\end{align*}
+	
+	Lines \ref{58b} to \ref{64b} sort the collection of \lstinline|AffinityMap| instances using the \lstinline|compare| method described in listing \ref{lst:comparemethod}.
+	
+	The ranking is written to a new file in the HDFS (in directory \lstinline|OUTPUT_PATH|); the first position are the most similar, the last position are the smallest affinity pairs.
 	
 	
 	
