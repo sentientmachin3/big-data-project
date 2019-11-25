@@ -16,6 +16,10 @@
 \usepackage{hyperref}
 \usepackage{fancyhdr}
 \usepackage{dirtree}
+\usepackage{pgfplots}
+\usepackage{filecontents}
+\usepackage{pgfplotstable}
+\pgfplotsset{width=.60\textwidth, compat=newest}
 \usepackage{tikz}
 \usetikzlibrary{patterns}
 \usetikzlibrary{shapes,positioning,calc}
@@ -54,6 +58,7 @@ escapeinside={(*@}{@*)}
 \lfoot{}
 \cfoot{\thepage}
 \rfoot{}
+\setlength{\headheight}{14pt}
 \renewcommand{\headrulewidth}{0.4pt}
 \renewcommand*\DTstylecomment{\rmfamily}
 
@@ -582,6 +587,111 @@ private void exec() {
 		\item 1 Grafico per ogni autore con i deltas (similarity)
 		\item Grafico per ogni autore mettere le frequenze di articoli, congiunzioni \dots
 	\end{itemize}
+
+	\begin{figure}[h!]
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}
+			[
+			legend entries={Abbott, Shelley, Dickens, Melville},
+			legend style={
+				at={(1.5,-0.2)},
+				anchor=north,
+				legend columns=1,
+				cells={anchor=west},
+				font=\footnotesize,
+				rounded corners=2pt,
+			},
+			grid=major,
+			height=7cm,
+			grid style={densely dotted},
+			ymin=1,
+			xtick=data,
+			ytick={1, 3, ..., 16},
+			legend pos=outer north east,
+			yticklabel={\pgfmathprintnumber{\tick}\,\%},
+			x tick label style={rotate=90},
+			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
+			ylabel=Frequencies]
+			\addplot table [x=freq, y=abbott, col sep=comma] {frequencies.csv};
+			\addplot table [x=freq, y=shelley, col sep=comma] {frequencies.csv};
+			\addplot table [x=freq, y=dickens, col sep=comma] {frequencies.csv};
+			\addplot table [x=freq, y=melville, col sep=comma] {frequencies.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{frequencies}
+		\label{tikz:frequencies}
+	\end{figure}
+
+	\begin{figure}[h!]
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}
+			[
+			legend entries={Abbott, Unknown1, Unknown2, Unknown3},
+			legend style={
+				at={(1.5,-0.2)},
+				anchor=north,
+				legend columns=1,
+				cells={anchor=west},
+				font=\footnotesize,
+				rounded corners=2pt,
+			},
+			grid=major,
+			height=8cm,
+			grid style={densely dotted},
+			ymin=-3,
+			xtick=data,
+			ytick={0, 3, ..., 19},
+			legend pos=outer north east,
+			yticklabel={\pgfmathprintnumber{\tick}\,\%},
+			x tick label style={rotate=90},
+			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
+			ylabel=Frequencies]
+			\addplot table [x=freq, y=abbott, col sep=comma] {abbott-unknown.csv};
+			\addplot table [x=freq, y=unknown1, col sep=comma] {abbott-unknown.csv};
+			\addplot table [x=freq, y=unknown2, col sep=comma] {abbott-unknown.csv};
+			\addplot table [x=freq, y=unknown3, col sep=comma] {abbott-unknown.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Frequencies between Abbott and 3 unknowns}
+		\label{tikz:abbott-unk}
+	\end{figure}
+
+	\begin{figure}[h!]
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}
+			[
+			legend entries={Dickens, Unknown4, Unknown5},
+			legend style={
+				at={(1.5,-0.2)},
+				anchor=north,
+				legend columns=1,
+				cells={anchor=west},
+				font=\footnotesize,
+				rounded corners=2pt,
+			},
+			grid=major,
+			height=8cm,
+			grid style={densely dotted},
+			ymin=-3,
+			xtick=data,
+			ytick={0, 3, ..., 19},
+			legend pos=outer north east,
+			yticklabel={\pgfmathprintnumber{\tick}\,\%},
+			x tick label style={rotate=90},
+			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
+			ylabel=Frequencies]
+			\addplot table [x=freq, y=dickens, col sep=comma] {dickens-unknown.csv};
+			\addplot table [x=freq, y=unknown4, col sep=comma] {dickens-unknown.csv};
+			\addplot table [x=freq, y=unknown5, col sep=comma] {dickens-unknown.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Frequencies between Dickens and 2 unknowns}
+		\label{tikz:dickens-unk}
+	\end{figure}
+	
 	
 	\newpage
 
