@@ -461,6 +461,114 @@ private void globalAuthorFrequency(String author) {
 	 At the end we will have in the beginning \lstinline|FreqMap| instance an entry for each text of each author and a global entry for every author.
 	
 	\subsection{Similarity Analysis}
+	The last phase of the working project is the design of the mechanism which allows to attribute an hypotethic author to an unknown text.
+	
+	The task is done through the following steps: \begin{enumerate}
+		\item generating a partial comparison between every couple of unknown text-known author;
+		\item sorting this comparisons in order to get the most similar couples as the most correlated author to each unknown text.
+	\end{enumerate}
+
+	This steps are implemented in \lstinline|AffinityMap| and \lstinline|SimilarityAnalysis| classes.
+	
+	 An \lstinline|AffinityMap| instance represents a comparison of authors, the first is known and the second is not. The compared fields are represented as a map \lstinline|String| $\to$ \lstinline|Double|, as in previous classes. The \lstinline|AffinityMap| instance implements the \lstinline|Comparable| interface, in order to be able to compare two instances and determine a sort of ``hierarchy''.
+	 
+	 The comparison method is the following:\begin{lstlisting}[firstnumber=51,caption={AffinityMap comparison method}, captionpos=b]
+@Override
+public int compareTo(Object o) {
+	AffinityMap rec = (AffinityMap) o;
+	HashMap<Integer, Integer> count = new HashMap<>();(*@\label{54}@*)
+	count.put(-1, 0);
+	count.put(0, 0);
+	count.put(1, 0);(*@\label{57}@*)
+	
+	// count for compare values
+	for (String s : this.map.keySet()) {(*@\label{60}@*)
+		if (this.map.get(s) < rec.map.get(s)) {
+			count.put(-1, count.get(-1) + 1);
+		} else if (rec.map.get(s) < this.map.get(s)) {
+			count.put(1, count.get(1) + 1);
+		} else {
+			count.put(0, count.get(0) + 1);
+		}
+	}(*@\label{68}@*)
+	
+	// max on compare counts
+	Map.Entry<Integer, Integer> max = null;
+	int intmax = 0;(*@\label{72}@*)
+	for (Map.Entry<Integer, Integer> entry : count.entrySet()) {
+		if (entry.getValue() > intmax) {
+			intmax = entry.getValue();
+			max = entry;
+		}
+	}(*@\label{78}@*)
+	assert max != null;
+	return max.getKey();
+
+}
+	 \end{lstlisting}
+	 
+	 The code here is not clearly readable, we break it down to its basics. Before we dive into it, we have to recall the functioning of the standard \lstinline|compareTo(Object o)| method, inherited from the \lstinline|Comparable| interface. This method returns \begin{itemize}
+	 	\item $0$ if the objects are equal;
+	 	\item $-1$ if \lstinline|this| object is lower then the parameter object;
+	 	\item $1$ if \lstinline|this| object is greater then the parameter object;
+	 \end{itemize}
+ 
+ 	Now we can explain the code more in detail: \begin{itemize}
+ 		\item lines \ref{54} :: \ref{57} initialize to 0 three counters, one for each return type of the \lstinline|compare| method;
+ 		\item lines \ref{60} :: \ref{68} compare each field of the two maps (which have the same key) and increment the corresponding counter;
+ 		\item lines \ref{72} :: \ref{78} check which of the three counter has the maximum value; if $-1$ is the maximum, the current object is lower that the parameter item, if $1$ is the maximum the parameter item is lower than the current object, otherwise the two items are considered to be equal.
+ 	\end{itemize}
+ 
+ 	The comparison is ran from the method \lstinline|SimilarityAnalysis.exec()|, which is responsible for generating the correlations between unknown text and known authors and reporting to file the final rank. We start the description of the class from specifying how affinities are calculated, and report the \lstinline|exec()| method code.
+ 	
+ 	\begin{lstlisting}[firstnumber=38]
+private void exec() {
+	// remove non globals values and sort entries
+	ArrayList<FreqMapEntry> unknowns = new ArrayList<>();
+	ArrayList<FreqMapEntry> knowns = new ArrayList<>();
+	
+	for (FreqMapEntry entry : this.freqMap.getEntries()) {(*@\label{43}@*)
+		if (entry.isUnknown() && entry.isGlobal()) {
+			unknowns.add(entry);
+		} else if (!entry.isUnknown() && entry.isGlobal()) {
+			knowns.add(entry);
+		}
+	}
+	
+	// calc deltas for each FreqMapEntry combination
+	for (FreqMapEntry kn : knowns) {
+		for (FreqMapEntry unk : unknowns) {
+			this.deltas.add(computedDelta(kn, unk));
+		}
+	}(*@\label{56}@*)
+	
+	Collections.sort(this.deltas, new Comparator<AffinityMap>() {
+		// comparison method between two affinity maps, used to sort the analysis
+		@Override
+		public int compare(AffinityMap affinityMap, AffinityMap t1) {
+			return affinityMap.compareTo(t1);
+		}
+	});
+}
+ 	\end{lstlisting}
+ 	
+ 	\bigskip
+ 	\noindent
+	As specified just few lines above, an \lstinline|AffinityMap| instance contains a map from String to doubles. Data in this map are saved as the field-to-field difference of the maps of the authors we are analyzing. More in detail, if we have two authors $A$ and $B$ (i.e. two \lstinline|FreqMapEntry| instances), the map will contain the following values(lines \ref{43} :: \ref{56}):
+	\begin{align*}
+		\begin{cases}
+			\text{articles} &= |A.\text{articles} - B.\text{articles}| \\
+			\text{conjunctions} &= |A. \text{conjunctions}- B.\text{conjunctions}| \\
+			\dots& \\
+			\text{avg-period-length}&= |A.\text{avg-period-length} - B.\text{avg-period-length}|
+		\end{cases}
+	\end{align*}
+	
+	
+	
+	
+
+	
 	
 	\newpage
 	\section{Performed tests}
