@@ -14,5 +14,3 @@ rank = 1
 for key in rankings:
     print(str(rank) + '. ' + key + ' = ' + rankings[key][0])
     rank += 1
-# print(rankings)
-
