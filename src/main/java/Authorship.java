@@ -82,8 +82,7 @@ public class Authorship extends Configured implements Tool {
             for (String word : WORD_BOUNDARY.split(lineText.toString())) {
                 String refWord = word.toLowerCase();
                 if (!word.isEmpty()) {
-                    if (Authorship.ARTICLES.contains(refWord) || refWord.startsWith("l'") || refWord.startsWith("un'") ||
-                            refWord.startsWith("gl'")) {
+                    if (Authorship.ARTICLES.contains(refWord)) {
                         text.set(filePathString + "*articles");
                         context.write(text, ONE);
                     }
@@ -93,7 +92,7 @@ public class Authorship extends Configured implements Tool {
                         context.write(text, ONE);
                     }
 
-                    if (Authorship.PREPOSITIONS.contains(refWord) || refWord.startsWith("d'") || refWord.startsWith("D'")) {
+                    if (Authorship.PREPOSITIONS.contains(refWord)) {
                         text.set(filePathString + "*prepositions");
                         context.write(text, ONE);
                     }
