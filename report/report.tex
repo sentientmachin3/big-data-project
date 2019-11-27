@@ -524,7 +524,6 @@ public int compareTo(Object o) {
  		\item lines \ref{60} :: \ref{68} compare each field of the two maps (which have the same key) and increment the corresponding counter;
  		\item lines \ref{72} :: \ref{78} check which of the three counter has the maximum value; if $-1$ is the maximum, the current object is lower that the parameter item, if $1$ is the maximum the parameter item is lower than the current object, otherwise the two items are considered to be equal.
  	\end{itemize}
- 
  	The comparison is run from the method \lstinline|SimilarityAnalysis.exec()|, which is responsible for generating the correlations between unknown text and known authors and reporting to file the final rank. We start the description of the class from specifying how affinities are calculated, and report the \lstinline|exec()| method code.
  	
  	\begin{lstlisting}[firstnumber=38]
@@ -573,20 +572,53 @@ private void exec() {
 	Lines \ref{58b} to \ref{64b} sort the collection of \lstinline|AffinityMap| instances using the \lstinline|compare| method described in listing \ref{lst:comparemethod}.
 	
 	The ranking is written to a new file in the HDFS (in directory \lstinline|OUTPUT_PATH|); the first position are the most similar, the last position are the smallest affinity pairs.
+	
 
 	
 	\newpage
 	\section{Running on a sample}
-	\subsection{Input and extracted data}
-	During the development process, we tested the program on a bunch of samples (155 files, more or less 70 MB) from 4 different authors: 
-	\begin{itemize}
-		\item M. Shelley;
-		\item H. Melville;
-		\item C. Dickens (with unknown texts number 4 and 5);
-		\item J. Abbott (with unknown texts from 1 to 3).
-	\end{itemize}
+	\subsection{Extracted data}
+	During the development process, we tested the program on a bunch of samples (155 files, more or less 70 MB) from 4 different authors: \begin{itemize}
+	\item M. Shelley;
+	\item H. Melville;
+	\item C. Dickens (with unknown texts number 4 and 5);
+	\item J. Abbott (with unknown texts from 1 to 3).
+\end{itemize}
 
-	\subsection{Results}
+
+The unknown writings are 5, two of them written by C.Dickens, and three by J.Abbott.
+
+Running the program on the known texts, we got the following informations:
+\begin{center}
+	\begin{tabular}{ccccccc}
+		\toprule
+		Author  & Articles & Conjunctions & Prepositions & Avg. P. Length & Dialogues & Commas \\
+		\midrule
+		C. Dickens & 0.082019635 & 0.027478997 & 0.099212974 & 17.161312 & 0.04982827 & 0.113913454 \\
+		M.Shelley & 0.07756892 & 0.037609607 & 0.11023554 & 20.283638 & 0.112322 & 0.079789676 \\
+		H. Melville & 0.09492883 & 0.022307148 & 0.10162741 & 18.295984 & 0.152951 & 0.11895356 \\
+		J. Abbott & 0.09444337 & 0.030337486 & 0.11393475 & 18.103647 & 0.024209872 & 0.09896383 \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+\bigskip
+
+Running the program on unknown texts, we obtained the following datas:
+\begin{center}
+	\begin{tabular}{ccccccc}
+		\toprule
+		Number & Articles & Conjunctions & Prepositions & Avg. P. Length & Dialogues & Commas \\
+		\midrule
+		1 & 0.09626386 & 0.021988558 & 0.07945284 & 14.235214 & 0.0 & 0.12905493 \\
+		2 & 0.09980532 & 0.03374432 & 0.13167702 & 21.634577 & 0.0 & 0.090312414\\
+		3 & 0.1098881 & 0.030936884 & 0.12828201 & 20.07046 & 0.0 & 0.10059972\\
+		4 & 0.09391441 & 0.025601724 & 0.11509038 & 25.835533 & 0.0 & 0.11042987\\
+		5 & 0.08151421 & 0.028299406 & 0.09406835 & 13.454352 & 0.0 & 0.123244435\\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+	\subsection{Results and analysis}
 
 	\begin{figure}[h!]
 		\centering
@@ -760,7 +792,41 @@ private void exec() {
 	\end{figure}
 
 	\clearpage
+	
+	\section{Conclusions}
+	\subsection{Implementation issues}
+	During the development process we encountered several issues and in order to solve them, we implemented some restrictive design choices.
+	
+	\begin{itemize}
+		\item \textbf{Environment issues:} we lost quite some time to make hadoop work on linux. In fact, there seem to be some problems in running hadoop on Arch-based distributions (expecially the webserver part). Besides that, we noticed that some particular hardware configuration make hadoop crash or not work properly, we fixed by manually changing the amount of memory reserved to hadoop, in its configuration files.
+		
+		\item \textbf{Virtualized filesystem access:} the access to the effective filesystem needed in order to manipulate files is quite tricky, in fact the filesystem reserved to the process is retrievable only by a specific call to the job configuration and the documentation is quite difficult to understand.
+		
+		\item \textbf{Input file naming format:} due to difficulties in the parsing process, we decide to format the input file names $author-title.txt$, and the unknown files as $unknown-unknown.txt$.
+	\end{itemize}
 
+	\subsection{Predefined paths and program running}
+	Since we embedded input and output paths directly in the code, we have to give the directory structure we used throughout the development process. 
+	\begin{figure}[h!]
+		\dirtree{%
+			.1 user.
+			.2 root.
+			.3 authorship.
+			.4 input\DTcomment{input file folder}.
+			.5 unknowns\DTcomment{unknowns input file folder}.
+			.4 output\DTcomment{output file folder}.
+		}
+	\caption{Hadoop directory tree.}
+	\end{figure}
+
+	With this directory structure, a possible user has just to place the files in the right directory (\lstinline|unknowns| if the text is unknown or in \lstinline|input| if the author is known) simply run the program.
+	
+	In order to run the program we wrote down a quick script, named \lstinline|exec.sh| which deletes the output directory, runs the jar file and cats the output properly ``grepped''.
+
+	\subsection{Performance considerations}
+	% 7m24s	
+
+	\newpage
 	\printbibheading
 	\printbibliography[nottype=book,heading=subbibliography,title={Online Sources}]
 
