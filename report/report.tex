@@ -615,8 +615,8 @@ private void exec() {
 			ylabel=Frequencies]
 			\addplot table [x=freq, y=abbott, col sep=comma] {frequencies.csv};
 			\addplot table [x=freq, y=shelley, col sep=comma] {frequencies.csv};
-			\addplot table [x=freq, y=dickens, col sep=comma] {frequencies.csv};
-			\addplot table [x=freq, y=melville, col sep=comma] {frequencies.csv};
+			\addplot[mark=*, brown] table [x=freq, y=dickens, col sep=comma] {frequencies.csv};
+			\addplot[mark=*, black] table [x=freq, y=melville, col sep=comma] {frequencies.csv};
 			\end{axis}
 		\end{tikzpicture}
 		\caption{frequencies}
@@ -649,9 +649,9 @@ private void exec() {
 			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
 			ylabel=Frequencies]
 			\addplot table [x=freq, y=abbott, col sep=comma] {abbott-unknown.csv};
-			\addplot table [x=freq, y=unknown1, col sep=comma] {abbott-unknown.csv};
-			\addplot table [x=freq, y=unknown2, col sep=comma] {abbott-unknown.csv};
-			\addplot table [x=freq, y=unknown3, col sep=comma] {abbott-unknown.csv};
+			\addplot[mark=square*, black] table [only marks, x=freq, y=unknown1, col sep=comma] {abbott-unknown.csv};
+			\addplot[mark=triangle*, red] table [only marks, x=freq, y=unknown2, col sep=comma] {abbott-unknown.csv};
+			\addplot[mark=o] table [only marks, x=freq, y=unknown3, col sep=comma] {abbott-unknown.csv};
 			\end{axis}
 		\end{tikzpicture}
 		\caption{Frequencies between Abbott and 3 unknowns}
