@@ -524,7 +524,6 @@ public int compareTo(Object o) {
  		\item lines \ref{60} :: \ref{68} compare each field of the two maps (which have the same key) and increment the corresponding counter;
  		\item lines \ref{72} :: \ref{78} check which of the three counter has the maximum value; if $-1$ is the maximum, the current object is lower that the parameter item, if $1$ is the maximum the parameter item is lower than the current object, otherwise the two items are considered to be equal.
  	\end{itemize}
- 
  	The comparison is run from the method \lstinline|SimilarityAnalysis.exec()|, which is responsible for generating the correlations between unknown text and known authors and reporting to file the final rank. We start the description of the class from specifying how affinities are calculated, and report the \lstinline|exec()| method code.
  	
  	\begin{lstlisting}[firstnumber=38]
@@ -794,8 +793,40 @@ Running the program on unknown texts, we obtained the following datas:
 
 	\clearpage
 	
-	\section{Design issues and choices}
+	\section{Conclusions}
+	\subsection{Implementation issues}
+	During the development process we encountered several issues and in order to solve them, we implemented some restrictive design choices.
+	
+	\begin{itemize}
+		\item \textbf{Environment issues:} we lost quite some time to make hadoop work on linux. In fact, there seem to be some problems in running hadoop on Arch-based distributions (expecially the webserver part). Besides that, we noticed that some particular hardware configuration make hadoop crash or not work properly, we fixed by manually changing the amount of memory reserved to hadoop, in its configuration files.
+		
+		\item \textbf{Virtualized filesystem access:} the access to the effective filesystem needed in order to manipulate files is quite tricky, in fact the filesystem reserved to the process is retrievable only by a specific call to the job configuration and the documentation is quite difficult to understand.
+		
+		\item \textbf{Input file naming format:} due to difficulties in the parsing process, we decide to format the input file names $author-title.txt$, and the unknown files as $unknown-unknown.txt$.
+	\end{itemize}
 
+	\subsection{Predefined paths and program running}
+	Since we embedded input and output paths directly in the code, we have to give the directory structure we used throughout the development process. 
+	\begin{figure}[h!]
+		\dirtree{%
+			.1 user.
+			.2 root.
+			.3 authorship.
+			.4 input\DTcomment{input file folder}.
+			.5 unknowns\DTcomment{unknowns input file folder}.
+			.4 output\DTcomment{output file folder}.
+		}
+	\caption{Hadoop directory tree.}
+	\end{figure}
+
+	With this directory structure, a possible user has just to place the files in the right directory (\lstinline|unknowns| if the text is unknown or in \lstinline|input| if the author is known) simply run the program.
+	
+	In order to run the program we wrote down a quick script, named \lstinline|exec.sh| which deletes the output directory, runs the jar file and cats the output properly ``grepped''.
+
+	\subsection{Performance considerations}
+	% 7m24s	
+
+	\newpage
 	\printbibheading
 	\printbibliography[nottype=book,heading=subbibliography,title={Online Sources}]
 
