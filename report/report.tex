@@ -3,7 +3,7 @@
 %\usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage{float}
+
 \usepackage{fixltx2e}
 \usepackage{booktabs}
 \usepackage{listings}
@@ -14,6 +14,7 @@
 \usepackage{lstautogobble}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[margin=3cm]{geometry}
+\usepackage{float}
 \usepackage{hyperref}
 \usepackage{fancyhdr}
 \usepackage{dirtree}
@@ -77,8 +78,8 @@ escapeinside={(*@}{@*)}
 		\vspace{1cm}
 		{\Large\scshape Big data course\\ \large project report\par}
 		\vspace{2cm}
-		{\Large Davide Bianchi VR424505\par
-		\Large Matteo Danzi VR424987\par}
+		{\large Davide Bianchi VR424505\par
+		\large Matteo Danzi VR424987\par}
 		\vspace{1cm}
 		\vspace{5cm}
 		\vspace*{\fill}
@@ -92,10 +93,21 @@ escapeinside={(*@}{@*)}
 	\newpage
 	
 	\section{Introduction}
-	The project aim was to design a tool which could establish the authorship of a manuscript by using specific criteria described later. 
-	The used architecture is based on Hadoop, a distributed filesystem simulator, running in a Docker container. The requirements of the project imposed the use of MapReduce programming model as seen in Laboratory Lessons of the Big Data course.
+	The project aim was to design a tool which could establish the authorship of a manuscript. The basic workflow of the project (which explained more in detail in the next sections) is the following:\begin{itemize}
+		\item build, using a priori known text, an author identity extracting text parameters;
+		\item try to find the closest match of an unknown text to the previously built authors.
+	\end{itemize}
 
-	\section{Background and System Description}
+	The used architecture is based on Hadoop, a distributed filesystem simulator, running in a Docker container. The requirements of the project imposed the use of MapReduce programming model as seen in Laboratory Lessons of the Big Data course.
+	
+	The report is divided in the following sections: \begin{itemize}
+		\item in Sec. \ref{backg} we present the Hadoop platform and give some basics notions of its functioning, we introduce the MapReduce framework and how it works;
+		\item in Sec. \ref{workflow} we give details about the project structure and workflow, the implementation of the mapreduce job, with some key code snippets, then we move onto the frequency calculation and the ranking method for establishing the author of an unknown text;
+		\item in Sec. \ref{sample} we give the data we used to run the project, providing data in table form, then we present and analyze the results;
+		\item in Sec. \ref{conclusion} we expose the issues we encountered during the whole development process, providing particular design choices and performance considerations.
+	\end{itemize}
+
+	\section{Background and System Description}\label{backg}
     \subsection{Cloudera Docker and system setup}
 		A container is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another. A Docker container image is an executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
 
@@ -197,7 +209,7 @@ escapeinside={(*@}{@*)}
 		\end{figure}
 	
 	\newpage
-	\section{Project workflow and structure}
+	\section{Project workflow and structure}\label{workflow}
 	The first step of the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. It performs the calculation of the frequencies of language parts used by the authors in their texts. Starting from these data, the following steps consist of taking unknown manuscripts as input and establishing the authorship by the comparing them with the ``dictionary'' previously created. 
 	
 	All the manuscripts are \texttt{.txt} files taken from the Project Gutenberg\parencite{Gutenberg} online library.
@@ -216,7 +228,7 @@ escapeinside={(*@}{@*)}
 
 	\subsection{Project structure}
 	The project main folder is divided in the following directories:
-	\begin{figure}[h!]
+	\begin{figure}[H]
 		\dirtree{%
 			.1 big-data-project. 
 			.2 doc\DTcomment{generated javadoc folder}. 
@@ -236,7 +248,7 @@ escapeinside={(*@}{@*)}
 
 	\subsection{Map Reduce Job}
 	The project only contains a single mapreduce job, alongside with other classes to hold temporary data. The mapreduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface to the HDFS functions. These libraries are:
-	\begin{figure}[h!]
+	\begin{figure}[H]
 		\dirtree{%
 			.1 libs. 
 			.2 hadoop-annotations.jar. 
@@ -282,9 +294,9 @@ public int run(String[] args) throws Exception {
 	\end{lstlisting}
 	
 	Note that several costants are used: \begin{itemize}
-		\item \lstinline|INPUT_PATH| is the input path for known texts;
-		\item \lstinline|OUTPUT_PATH| is the reduce output path;
-		\item \lstinline|UNKNOWNS_INPUT_PATH| is the input path for unknown texts (which are located in a subdirectory of \lstinline|INPUT_PATH|).
+		\item \lstinline|INPUT_PATH| (\lstinline|/user/root/authorship/input/|) is the input path for known texts;
+		\item \lstinline|OUTPUT_PATH| (\lstinline|/user/root/authorship/output/|) is the reduce output path;
+		\item \lstinline|UNKNOWNS_INPUT_PATH| (\lstinline|/user/root/authorship/input/unknowns/|) is the input path for unknown texts (which are located in a subdirectory of \lstinline|INPUT_PATH|).
 	\end{itemize}
 
 	The calls to \lstinline|setInputPaths| and \lstinline|setOutputPath|, as the name suggests, are used to set respectively the input and output paths of the job. We then add the single files using a call to \lstinline|addInputPath| for each input file we have. 
@@ -577,7 +589,7 @@ private void exec() {
 
 	
 	\newpage
-	\section{Running on a sample}
+	\section{Running on a sample}\label{sample}
 	\subsection{Extracted data}
 	During the development process, we tested the program on a bunch of samples (155 files, more or less 70 MB) from 4 different authors: \begin{itemize}
 	\item M. Shelley;
@@ -594,7 +606,7 @@ Running the program on the known texts, we got the following informations:
 	\small
 	\begin{tabular}{ccccccc}
 		\toprule
-		Author  & Articles & Conjunctions & Prepositions & Avg. P. Length & Dialogues & Commas \\
+		Author   & Articles    & Conjunctions & Prepositions & Avg. Period Length & Dialogues & Commas \\
 		\midrule
 		C. Dickens & 0.082019635 & 0.027478997 & 0.099212974 & 17.161312 & 0.04982827 & 0.113913454 \\
 		M.Shelley & 0.07756892 & 0.037609607 & 0.11023554 & 20.283638 & 0.112322 & 0.079789676 \\
@@ -612,11 +624,12 @@ Running the program on unknown texts, we obtained the following datas:
 		\toprule
 		Number & Articles & Conjunctions & Prepositions & Avg. P. Length & Dialogues & Commas \\
 		\midrule
-		1 & 0.09626386 & 0.021988558 & 0.07945284 & 14.235214 & 0.0 & 0.12905493 \\
-		2 & 0.09980532 & 0.03374432 & 0.13167702 & 21.634577 & 0.0 & 0.090312414\\
-		3 & 0.1098881 & 0.030936884 & 0.12828201 & 20.07046 & 0.0 & 0.10059972\\
-		4 & 0.09391441 & 0.025601724 & 0.11509038 & 25.835533 & 0.0 & 0.11042987\\
-		5 & 0.08151421 & 0.028299406 & 0.09406835 & 13.454352 & 0.0 & 0.123244435\\
+		\midrule
+		Unknown 1 & 0.09512767  & 0.028265182  & 0.10064157   & 15.1724             & 0.19409695  & 0.09657056  \\
+		Unknown 2 & 0.10238273  & 0.028543063  & 0.10702407   & 14.196617           & 0.0         & 0.096401095 \\
+		Unknown 3 & 0.09730647  & 0.028921144  & 0.1361749    & 20.7383             & 0.0         & 0.09636771  \\
+		Unknown 4 & 0.09376974  & 0.021347687  & 0.09346865   & 12.885504           & 0.0         & 0.13776492  \\
+		Unknown 5 & 0.09391441  & 0.025601724  & 0.11509038   & 25.835533           & 0.0         & 0.11042987  \\
 		\bottomrule
 	\end{tabular}
 \end{table}
@@ -810,7 +823,7 @@ Running the program on unknown texts, we obtained the following datas:
 
 	\clearpage
 	
-	\section{Conclusions}
+	\section{Conclusions}\label{conclusion}
 	\subsection{Implementation issues}
 	During the development process we encountered several issues and in order to solve them, we implemented some restrictive design choices.
 	
@@ -820,6 +833,8 @@ Running the program on unknown texts, we obtained the following datas:
 		\item \textbf{Virtualized filesystem access:} the access to the effective filesystem needed in order to manipulate files is quite tricky, in fact the filesystem reserved to the process is retrievable only by a specific call to the job configuration and the documentation is quite difficult to understand.
 		
 		\item \textbf{Input file naming format:} due to difficulties in the parsing process, we decide to format the input file names $author-title.txt$, and the unknown files as $unknown-unknown.txt$.
+		
+		\item \textbf{Dialogues format:} we noticed that dialogues are not formatted with same character everywhere. We still have to find a solution to this issue.
 	\end{itemize}
 
 	\subsection{Predefined paths and program running}
@@ -840,8 +855,9 @@ Running the program on unknown texts, we obtained the following datas:
 	
 	In order to run the program we wrote down a quick script, named \lstinline|exec.sh| which deletes the output directory, runs the jar file and cats the output properly ``grepped''.
 
-	\subsection{Performance considerations}
-	% 7m24s	
+	\subsection{Performance considerations} % 7m24s
+	The running time of the whole job is around 7 minutes. The number of mappers is always equal to the number of input texts and there is always an only reducer.
+	
 
 	\newpage
 	\printbibheading
