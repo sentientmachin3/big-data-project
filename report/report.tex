@@ -124,7 +124,7 @@ escapeinside={(*@}{@*)}
 		\bigskip
 		
 		\noindent
-		Cloudera provides an HDFS (\textit{Hadoop Distributed FileSystem})\parencite{Hadoop-Mapreduce}, used to store files across server collections. The Hadoop version used in this project is \texttt{Hadoop 2.6.0-cdh5.7.0}.
+		Cloudera provides an HDFS (\textit{Hadoop Distributed FileSystem})\parencite{Hadoop-Mapreduce}, used to store files across server collections. The Hadoop version used in this project is \texttt{Hadoop 2.6.0-cdh5.7.0}. 
 		
 		The distributed filesystem consists on two basic services: \begin{itemize}
 			\item \textit{NameNode}: is a single instance service, running on a master node, which is responsible for files and directory mantainance within the filesystem itself;
@@ -144,6 +144,21 @@ escapeinside={(*@}{@*)}
 		\end{figure}
 
 		For the installation of Docker, the Cloudera Docker image and the execution of jobs using jar file it have been used the instructions of the course. The project is written using Java version \texttt{11.0.4}. For the code compilation we used IntelliJ version \texttt{2019.2.4} compiling using compatibility mode with version \texttt{1.7}.
+
+		Machine specifications:
+		\begin{itemize}
+			\item Machine 1:\begin{itemize}
+			\item Operating System: \texttt{Ubuntu 16.04 LTS}, Kernel version \texttt{4.4.0-169-generic}, 64bit
+			\item Processor:\texttt{Intel Core\texttrademark\ i7-4510U CPU @ 2.00GHz x4}
+			\item Memory: \texttt{8 GB}
+		\end{itemize} 
+			\item Machine 2: \begin{itemize}
+				\item Operating System: \texttt{Linux Manjar}, Kernel version \texttt{5.3.12}, 64bit
+				\item Processor:  \texttt{Intel Core\texttrademark\ i7-5500U CPU @ 3.70GHz x2}
+				\item Memory: \texttt{12 GB}
+			\end{itemize}
+		\end{itemize}
+		
 
 		
 
@@ -348,8 +363,7 @@ private static final IntWritable ONE = new IntWritable(1);
 for (String word : WORD_BOUNDARY.split(lineText.toString())) {
 	String refWord = word.toLowerCase();
 	if (!word.isEmpty()) {
-		if (Authorship.ARTICLES.contains(refWord) || refWord.startsWith("l'") || refWord.startsWith("un'") || refWord.startsWith("gl'")) {
-		
+		if (Authorship.ARTICLES.contains(refWord)) {
 			text.set(filePathString + "*article");
 			context.write(text, ONE);
 		}
@@ -594,8 +608,8 @@ private void exec() {
 	During the development process, we tested the program on a bunch of samples (155 files, more or less 70 MB) from 4 different authors: \begin{itemize}
 	\item M. Shelley;
 	\item H. Melville;
-	\item C. Dickens (with unknown texts number 4 and 5);
-	\item J. Abbott (with unknown texts from 1 to 3).
+	\item C. Dickens (with unknown texts marked as Unknown4 and Unknown5);
+	\item J. Abbott (with unknown texts marked as Unknown1, Unknown2 and Unknown3).
 \end{itemize}
 
 
@@ -634,6 +648,7 @@ Running the program on unknown texts, we obtained the following datas:
 	\end{tabular}
 \end{table}
 
+	\newpage
 	\subsection{Results and analysis}
 
 	\begin{figure}[h!]
@@ -659,7 +674,7 @@ Running the program on unknown texts, we obtained the following datas:
 			legend pos=outer north east,
 			yticklabel={\pgfmathprintnumber{\tick}\,\%},
 			x tick label style={rotate=90},
-			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
+			xticklabels={articles,conjunctions,dialogues,punctuation,prepositions},
 			ylabel=Frequencies]
 			\addplot table [x=freq, y=abbott, col sep=comma] {frequencies.csv};
 			\addplot table [x=freq, y=shelley, col sep=comma] {frequencies.csv};
@@ -667,7 +682,7 @@ Running the program on unknown texts, we obtained the following datas:
 			\addplot[mark=*, black] table [x=freq, y=melville, col sep=comma] {frequencies.csv};
 			\end{axis}
 		\end{tikzpicture}
-		\caption{frequencies}
+		\caption{Language parts frequencies of all authors in all texts}
 		\label{tikz:frequencies}
 	\end{figure}
 
@@ -694,7 +709,7 @@ Running the program on unknown texts, we obtained the following datas:
 			ytick={0, 3, ..., 19},
 			legend pos=outer north east,
 			yticklabel={\footnotesize\pgfmathprintnumber{\tick}},
-			xticklabels={articles,conjunctions,dialogues,commas,prepositions}]
+			xticklabels={articles,conjunctions,dialogues,punctuation,prepositions}]
 			\addplot table [data cs=polarrad, x=freq, y=abbott, col sep=comma] {abbott-unknown.csv};
 			\addplot table [data cs=polarrad, x=freq, y=unknown1, col sep=comma] {abbott-unknown.csv};
 			\addplot table [data cs=polarrad, x=freq, y=unknown2, col sep=comma] {abbott-unknown.csv};
@@ -708,7 +723,7 @@ Running the program on unknown texts, we obtained the following datas:
 	\begin{figure}[h!]
 		\centering
 		\begin{tikzpicture}
-			\begin{axis}
+			\begin{polaraxis}
 			[
 			legend entries={Dickens, Unknown4, Unknown5},
 			legend style={
@@ -722,18 +737,15 @@ Running the program on unknown texts, we obtained the following datas:
 			grid=major,
 			height=8cm,
 			grid style={densely dotted},
-			ymin=-3,
 			xtick=data,
 			ytick={0, 3, ..., 19},
 			legend pos=outer north east,
-			yticklabel={\pgfmathprintnumber{\tick}\,\%},
-			x tick label style={rotate=90},
-			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
-			ylabel=Frequencies]
-			\addplot table [x=freq, y=dickens, col sep=comma] {dickens-unknown.csv};
-			\addplot table [x=freq, y=unknown4, col sep=comma] {dickens-unknown.csv};
-			\addplot table [x=freq, y=unknown5, col sep=comma] {dickens-unknown.csv};
-			\end{axis}
+			yticklabel={\footnotesize\pgfmathprintnumber{\tick}},
+			xticklabels={articles,conjunctions,dialogues,punctuation,prepositions}]
+			\addplot table [data cs=polarrad, x=freq, y=dickens, col sep=comma] {dickens-unknown.csv};
+			\addplot table [data cs=polarrad, x=freq, y=unknown4, col sep=comma] {dickens-unknown.csv};
+			\addplot table [data cs=polarrad, x=freq, y=unknown5, col sep=comma] {dickens-unknown.csv};
+			\end{polaraxis}
 		\end{tikzpicture}
 		\caption{Frequencies between Dickens and 2 unknowns}
 		\label{tikz:dickens-unk}
@@ -762,25 +774,36 @@ Running the program on unknown texts, we obtained the following datas:
 			legend pos=outer north east,
 			yticklabel={\pgfmathprintnumber{\tick}\,\%},
 			x tick label style={rotate=90},
-			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
+			xticklabels={articles,conjunctions,dialogues,punctuation,prepositions},
 			ylabel=Deltas]
 			
-			%\addplot table [mark=none, x=freq, y=dickens, col sep=comma] {deltas-dickens.csv};
-			\addplot table [mark=none, x=freq, y=unknown4, col sep=comma] {deltas-dickens.csv};
-			\addplot table [mark=none, x=freq, y=unknown5, col sep=comma] {deltas-dickens.csv};
-			\addplot+ [
+			\addplot[ultra thick, black] table [mark=none, x=freq, y=dickens, col sep=comma] {deltas-dickens.csv};
+			\addplot[thick,mark=none,blue] table [ x=freq, y=unknown4, col sep=comma] {deltas-dickens.csv};
+			\addplot[thick,mark=none,green] table [ x=freq, y=unknown5, col sep=comma] {deltas-dickens.csv};
+			\addplot[
                 error bars/.cd,
                     y explicit,
-                    y dir=minus,
+					y dir=minus,
+				error bar style={dashed,red},
+				error mark options={mark=none}
             ] table [
-                x=freq,
-                y=dickens,
-                y error plus expr=\thisrow{dickens}-\thisrow{unknown4},
+				x=freq,
+				y=dickens,
 				y error minus expr=\thisrow{dickens}-\thisrow{unknown5},
 				col sep=comma
+			] {deltas-dickens.csv};
+			\addplot[
+                error bars/.cd,
+                    y explicit,
+					y dir=minus,
+				error bar style={dashed,red},
+				error mark options={mark=none}
+            ] table [
+				x=freq,
+				y=dickens,
+				y error minus expr=\thisrow{dickens}-\thisrow{unknown4},
+				col sep=comma
             ] {deltas-dickens.csv};
-			%\addplot[ycomb, dashed] plot coordinates{() () () () ()};
-			%\addplot[ycomb, dashed] table [x=freq, y expr=\thisrow{dickens}-\thisrow{unknown4}, col sep=comma] {deltas-dickens.csv};
 			\end{axis}
 		\end{tikzpicture}
 		\caption{Deltas Dickens}
@@ -792,7 +815,7 @@ Running the program on unknown texts, we obtained the following datas:
 		\begin{tikzpicture}
 			\begin{axis}
 			[
-			legend entries={Unknown1, Unknown2, Unknown3},
+			legend entries={Abbott, Unknown1, Unknown2, Unknown3},
 			legend style={
 				at={(1.5,-0.2)},
 				anchor=north,
@@ -804,17 +827,28 @@ Running the program on unknown texts, we obtained the following datas:
 			grid=major,
 			height=8cm,
 			grid style={densely dotted},
-			ymin=-0.004,
+			ymin=-1,
 			xtick=data,
-			ytick={0.01, 0.025, ..., 0.2},
+			ytick={0, 3, ..., 16},
 			legend pos=outer north east,
 			yticklabel={\pgfmathprintnumber{\tick}\,\%},
 			x tick label style={rotate=90},
-			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
+			xticklabels={articles,conjunctions,dialogues,punctuation,prepositions},
 			ylabel=Deltas]
-			\addplot table [x=freq, y=unknown1, col sep=comma] {deltas-abbott.csv};
-			\addplot table [x=freq, y=unknown2, col sep=comma] {deltas-abbott.csv};
-			\addplot table [x=freq, y=unknown3, col sep=comma] {deltas-abbott.csv};
+			
+			\addplot[ultra thick, black] table [mark=none, x=freq, y=abbott, col sep=comma] {deltas-abbott.csv};
+			\addplot[mark=none,blue] table [ x=freq, y=unknown1, col sep=comma] {deltas-abbott.csv};
+			\addplot[mark=none,red] table [ x=freq, y=unknown2, col sep=comma] {deltas-abbott.csv};
+			\addplot[mark=none,green] table [ x=freq, y=unknown3, col sep=comma] {deltas-abbott.csv};
+			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
+				error mark options={mark=none} ] table [x=freq, y=abbott, y error minus expr=\thisrow{abbott}-\thisrow{unknown1},
+				col sep=comma ] {deltas-abbott.csv};
+			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
+				error mark options={mark=none} ] table [x=freq, y=abbott, y error minus expr=\thisrow{abbott}-\thisrow{unknown2},
+				col sep=comma ] {deltas-abbott.csv};
+			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
+				error mark options={mark=none} ] table [x=freq, y=abbott, y error minus expr=\thisrow{abbott}-\thisrow{unknown3},
+				col sep=comma ] {deltas-abbott.csv};
 			\end{axis}
 		\end{tikzpicture}
 		\caption{Deltas Abbott}
@@ -824,11 +858,11 @@ Running the program on unknown texts, we obtained the following datas:
 	\clearpage
 	
 	\section{Conclusions}\label{conclusion}
-	\subsection{Implementation issues}
+	\subsection{Designing choices}
 	During the development process we encountered several issues and in order to solve them, we implemented some restrictive design choices.
 	
 	\begin{itemize}
-		\item \textbf{Environment issues:} we lost quite some time to make hadoop work on linux. In fact, there seem to be some problems in running hadoop on Arch-based distributions (expecially the webserver part). Besides that, we noticed that some particular hardware configuration make hadoop crash or not work properly, we fixed by manually changing the amount of memory reserved to hadoop, in its configuration files.
+		\item \textbf{Environment:} we lost quite some time to make hadoop work on linux. In fact, there seem to be some problems in running hadoop on Arch-based distributions (expecially the webserver part). Besides that, we noticed that some particular hardware configuration make hadoop crash or not work properly, we fixed by manually changing the amount of memory reserved to hadoop, in its configuration files.
 		
 		\item \textbf{Virtualized filesystem access:} the access to the effective filesystem needed in order to manipulate files is quite tricky, in fact the filesystem reserved to the process is retrievable only by a specific call to the job configuration and the documentation is quite difficult to understand.
 		
@@ -856,7 +890,7 @@ Running the program on unknown texts, we obtained the following datas:
 	In order to run the program we wrote down a quick script, named \lstinline|exec.sh| which deletes the output directory, runs the jar file and cats the output properly ``grepped''.
 
 	\subsection{Performance considerations} % 7m24s
-	The running time of the whole job is around 7 minutes. The number of mappers is always equal to the number of input texts and there is always an only reducer.
+	The running time of the whole job is around 7 minutes. The number of mappers is always equal to the number of input texts and there is always only one reducer.
 	
 
 	\newpage
