@@ -76,8 +76,8 @@ escapeinside={(*@}{@*)}
 		\vspace{1cm}
 		{\Large\scshape Big data course\\ \large project report\par}
 		\vspace{2cm}
-		{\Large Davide Bianchi VR424505\par
-		\Large Matteo Danzi VR424987\par}
+		{\large Davide Bianchi VR424505\par
+		\large Matteo Danzi VR424987\par}
 		\vspace{1cm}
 		\vspace{5cm}
 		\vspace*{\fill}
@@ -91,10 +91,21 @@ escapeinside={(*@}{@*)}
 	\newpage
 	
 	\section{Introduction}
-	The project aim was to design a tool which could establish the authorship of a manuscript by using specific criteria described later. 
-	The used architecture is based on Hadoop, a distributed filesystem simulator, running in a Docker container. The requirements of the project imposed the use of MapReduce programming model as seen in Laboratory Lessons of the Big Data course.
+	The project aim was to design a tool which could establish the authorship of a manuscript. The basic workflow of the project (which explained more in detail in the next sections) is the following:\begin{itemize}
+		\item build, using a priori known text, an author identity extracting text parameters;
+		\item try to find the closest match of an unknown text to the previously built authors.
+	\end{itemize}
 
-	\section{Background and System Description}
+	The used architecture is based on Hadoop, a distributed filesystem simulator, running in a Docker container. The requirements of the project imposed the use of MapReduce programming model as seen in Laboratory Lessons of the Big Data course.
+	
+	The report is divided in the following sections: \begin{itemize}
+		\item in Sec. \ref{backg} we present the Hadoop platform and give some basics notions of its functioning, we introduce the MapReduce framework and how it works;
+		\item in Sec. \ref{workflow} we give details about the project structure and workflow, the implementation of the mapreduce job, with some key code snippets, then we move onto the frequency calculation and the ranking method for establishing the author of an unknown text;
+		\item in Sec. \ref{sample} we give the data we used to run the project, providing data in table form, then we present and analyze the results;
+		\item in Sec. \ref{conclusion} we expose the issues we encountered during the whole development process, providing particular design choices and performance considerations.
+	\end{itemize}
+
+	\section{Background and System Description}\label{backg}
     \subsection{Cloudera Docker and system setup}
 		A container is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another. A Docker container image is an executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
 
@@ -196,7 +207,7 @@ escapeinside={(*@}{@*)}
 		\end{figure}
 	
 	\newpage
-	\section{Project workflow and structure}
+	\section{Project workflow and structure}\label{workflow}
 	The first step of the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. It performs the calculation of the frequencies of language parts used by the authors in their texts. Starting from these data, the following steps consist of taking unknown manuscripts as input and establishing the authorship by the comparing them with the ``dictionary'' previously created. 
 	
 	All the manuscripts are \texttt{.txt} files taken from the Project Gutenberg\parencite{Gutenberg} online library.
@@ -215,7 +226,7 @@ escapeinside={(*@}{@*)}
 
 	\subsection{Project structure}
 	The project main folder is divided in the following directories:
-	\begin{figure}[h!]
+	\begin{figure}[H]
 		\dirtree{%
 			.1 big-data-project. 
 			.2 doc\DTcomment{generated javadoc folder}. 
@@ -235,7 +246,7 @@ escapeinside={(*@}{@*)}
 
 	\subsection{Map Reduce Job}
 	The project only contains a single mapreduce job, alongside with other classes to hold temporary data. The mapreduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface to the HDFS functions. These libraries are:
-	\begin{figure}[h!]
+	\begin{figure}[H]
 		\dirtree{%
 			.1 libs. 
 			.2 hadoop-annotations.jar. 
@@ -576,7 +587,7 @@ private void exec() {
 
 	
 	\newpage
-	\section{Running on a sample}
+	\section{Running on a sample}\label{sample}
 	\subsection{Extracted data}
 	During the development process, we tested the program on a bunch of samples (155 files, more or less 70 MB) from 4 different authors: \begin{itemize}
 	\item M. Shelley;
@@ -593,7 +604,7 @@ Running the program on the known texts, we got the following informations:
 	\small
 	\begin{tabular}{lllllll}
 		\toprule
-		author   & articles    & conjunctions & prepositions & avg period length & dialogues    & commas      \\
+		Author   & Articles    & Conjunctions & Prepositions & Avg. Period Length & Dialogues & Commas \\
 		\midrule
 		J.Abbott   & 0.0946804   & 0.030357495  & 0.11384052   & 18.227755           & 0.020080151 & 0.09961549  \\
 		H.Melville & 0.09492883  & 0.022307148  & 0.10162741   & 18.295984           & 0.152951    & 0.11895356  \\
@@ -785,7 +796,7 @@ Running the program on the known texts, we got the following informations:
 
 	\clearpage
 	
-	\section{Conclusions}
+	\section{Conclusions}\label{conclusion}
 	\subsection{Implementation issues}
 	During the development process we encountered several issues and in order to solve them, we implemented some restrictive design choices.
 	
