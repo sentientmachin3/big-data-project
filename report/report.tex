@@ -281,9 +281,9 @@ public int run(String[] args) throws Exception {
 	\end{lstlisting}
 	
 	Note that several costants are used: \begin{itemize}
-		\item \lstinline|INPUT_PATH| is the input path for known texts;
-		\item \lstinline|OUTPUT_PATH| is the reduce output path;
-		\item \lstinline|UNKNOWNS_INPUT_PATH| is the input path for unknown texts (which are located in a subdirectory of \lstinline|INPUT_PATH|).
+		\item \lstinline|INPUT_PATH| (\lstinline|/user/root/authorship/input/|) is the input path for known texts;
+		\item \lstinline|OUTPUT_PATH| (\lstinline|/user/root/authorship/output/|) is the reduce output path;
+		\item \lstinline|UNKNOWNS_INPUT_PATH| (\lstinline|/user/root/authorship/input/unknowns/|) is the input path for unknown texts (which are located in a subdirectory of \lstinline|INPUT_PATH|).
 	\end{itemize}
 
 	The calls to \lstinline|setInputPaths| and \lstinline|setOutputPath|, as the name suggests, are used to set respectively the input and output paths of the job. We then add the single files using a call to \lstinline|addInputPath| for each input file we have. 
@@ -589,34 +589,26 @@ private void exec() {
 The unknown writings are 5, two of them written by C.Dickens, and three by J.Abbott.
 
 Running the program on the known texts, we got the following informations:
-\begin{center}
-	\begin{tabular}{ccccccc}
+\begin{table}[h!]
+	\small
+	\begin{tabular}{lllllll}
 		\toprule
-		Author  & Articles & Conjunctions & Prepositions & Avg. P. Length & Dialogues & Commas \\
+		author   & articles    & conjunctions & prepositions & avg period length & dialogues    & commas      \\
 		\midrule
-		C. Dickens & 0.082019635 & 0.027478997 & 0.099212974 & 17.161312 & 0.04982827 & 0.113913454 \\
-		M.Shelley & 0.07756892 & 0.037609607 & 0.11023554 & 20.283638 & 0.112322 & 0.079789676 \\
-		H. Melville & 0.09492883 & 0.022307148 & 0.10162741 & 18.295984 & 0.152951 & 0.11895356 \\
-		J. Abbott & 0.09444337 & 0.030337486 & 0.11393475 & 18.103647 & 0.024209872 & 0.09896383 \\
+		J.Abbott   & 0.0946804   & 0.030357495  & 0.11384052   & 18.227755           & 0.020080151 & 0.09961549  \\
+		H.Melville & 0.09492883  & 0.022307148  & 0.10162741   & 18.295984           & 0.152951    & 0.11895356  \\
+		C.Dickens  & 0.081898294 & 0.027547827  & 0.09921892   & 17.166945           & 0.04982827  & 0.11376968 \\
+		M.Shelley  & 0.07756892  & 0.037609607  & 0.11023554   & 20.283638           & 0.112322    & 0.079789676 \\
+		\midrule
+		\midrule
+		Unknown 1 & 0.09512767  & 0.028265182  & 0.10064157   & 15.1724             & 0.19409695  & 0.09657056  \\
+		Unknown 2 & 0.10238273  & 0.028543063  & 0.10702407   & 14.196617           & 0.0         & 0.096401095 \\
+		Unknown 3 & 0.09730647  & 0.028921144  & 0.1361749    & 20.7383             & 0.0         & 0.09636771  \\
+		Unknown 4 & 0.09376974  & 0.021347687  & 0.09346865   & 12.885504           & 0.0         & 0.13776492  \\
+		Unknown 5 & 0.09391441  & 0.025601724  & 0.11509038   & 25.835533           & 0.0         & 0.11042987  \\
 		\bottomrule
 	\end{tabular}
-\end{center}
-\bigskip
-
-Running the program on unknown texts, we obtained the following datas:
-\begin{center}
-	\begin{tabular}{ccccccc}
-		\toprule
-		Number & Articles & Conjunctions & Prepositions & Avg. P. Length & Dialogues & Commas \\
-		\midrule
-		1 & 0.09626386 & 0.021988558 & 0.07945284 & 14.235214 & 0.0 & 0.12905493 \\
-		2 & 0.09980532 & 0.03374432 & 0.13167702 & 21.634577 & 0.0 & 0.090312414\\
-		3 & 0.1098881 & 0.030936884 & 0.12828201 & 20.07046 & 0.0 & 0.10059972\\
-		4 & 0.09391441 & 0.025601724 & 0.11509038 & 25.835533 & 0.0 & 0.11042987\\
-		5 & 0.08151421 & 0.028299406 & 0.09406835 & 13.454352 & 0.0 & 0.123244435\\
-		\bottomrule
-	\end{tabular}
-\end{center}
+\end{table}
 
 	\subsection{Results and analysis}
 
@@ -803,6 +795,8 @@ Running the program on unknown texts, we obtained the following datas:
 		\item \textbf{Virtualized filesystem access:} the access to the effective filesystem needed in order to manipulate files is quite tricky, in fact the filesystem reserved to the process is retrievable only by a specific call to the job configuration and the documentation is quite difficult to understand.
 		
 		\item \textbf{Input file naming format:} due to difficulties in the parsing process, we decide to format the input file names $author-title.txt$, and the unknown files as $unknown-unknown.txt$.
+		
+		\item \textbf{Dialogues format:} we noticed that dialogues are not formatted with same character everywhere. We still have to find a solution to this issue.
 	\end{itemize}
 
 	\subsection{Predefined paths and program running}
@@ -823,8 +817,9 @@ Running the program on unknown texts, we obtained the following datas:
 	
 	In order to run the program we wrote down a quick script, named \lstinline|exec.sh| which deletes the output directory, runs the jar file and cats the output properly ``grepped''.
 
-	\subsection{Performance considerations}
-	% 7m24s	
+	\subsection{Performance considerations} % 7m24s
+	The running time of the whole job is around 7 minutes. The number of mappers is always equal to the number of input texts and there is always an only reducer.
+	
 
 	\newpage
 	\printbibheading
