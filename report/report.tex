@@ -20,6 +20,7 @@
 \usepackage{pgfplots}
 \usepackage{filecontents}
 \usepackage{pgfplotstable}
+\usetikzlibrary{pgfplots.polar}
 \pgfplotsset{width=.60\textwidth, compat=newest}
 \usepackage{tikz}
 \usetikzlibrary{patterns}
@@ -589,7 +590,8 @@ private void exec() {
 The unknown writings are 5, two of them written by C.Dickens, and three by J.Abbott.
 
 Running the program on the known texts, we got the following informations:
-\begin{center}
+\begin{table}[h!]
+	\small
 	\begin{tabular}{ccccccc}
 		\toprule
 		Author  & Articles & Conjunctions & Prepositions & Avg. P. Length & Dialogues & Commas \\
@@ -600,11 +602,12 @@ Running the program on the known texts, we got the following informations:
 		J. Abbott & 0.09444337 & 0.030337486 & 0.11393475 & 18.103647 & 0.024209872 & 0.09896383 \\
 		\bottomrule
 	\end{tabular}
-\end{center}
+\end{table}
 \bigskip
 
 Running the program on unknown texts, we obtained the following datas:
-\begin{center}
+\begin{table}[h!]
+	\small
 	\begin{tabular}{ccccccc}
 		\toprule
 		Number & Articles & Conjunctions & Prepositions & Avg. P. Length & Dialogues & Commas \\
@@ -616,7 +619,7 @@ Running the program on unknown texts, we obtained the following datas:
 		5 & 0.08151421 & 0.028299406 & 0.09406835 & 13.454352 & 0.0 & 0.123244435\\
 		\bottomrule
 	\end{tabular}
-\end{center}
+\end{table}
 
 	\subsection{Results and analysis}
 
@@ -658,7 +661,7 @@ Running the program on unknown texts, we obtained the following datas:
 	\begin{figure}[h!]
 		\centering
 		\begin{tikzpicture}
-			\begin{axis}
+			\begin{polaraxis}
 			[
 			legend entries={Abbott, Unknown1, Unknown2, Unknown3},
 			legend style={
@@ -672,19 +675,18 @@ Running the program on unknown texts, we obtained the following datas:
 			grid=major,
 			height=8cm,
 			grid style={densely dotted},
-			ymin=-3,
+			yshift=0.5cm,
+			xshift=100,
 			xtick=data,
 			ytick={0, 3, ..., 19},
 			legend pos=outer north east,
-			yticklabel={\pgfmathprintnumber{\tick}\,\%},
-			x tick label style={rotate=90},
-			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
-			ylabel=Frequencies]
-			\addplot table [x=freq, y=abbott, col sep=comma] {abbott-unknown.csv};
-			\addplot[mark=square*, black] table [only marks, x=freq, y=unknown1, col sep=comma] {abbott-unknown.csv};
-			\addplot[mark=triangle*, red] table [only marks, x=freq, y=unknown2, col sep=comma] {abbott-unknown.csv};
-			\addplot[mark=o] table [only marks, x=freq, y=unknown3, col sep=comma] {abbott-unknown.csv};
-			\end{axis}
+			yticklabel={\footnotesize\pgfmathprintnumber{\tick}},
+			xticklabels={articles,conjunctions,dialogues,commas,prepositions}]
+			\addplot table [data cs=polarrad, x=freq, y=abbott, col sep=comma] {abbott-unknown.csv};
+			\addplot table [data cs=polarrad, x=freq, y=unknown1, col sep=comma] {abbott-unknown.csv};
+			\addplot table [data cs=polarrad, x=freq, y=unknown2, col sep=comma] {abbott-unknown.csv};
+			\addplot table [data cs=polarrad, x=freq, y=unknown3, col sep=comma] {abbott-unknown.csv};
+			\end{polaraxis}
 		\end{tikzpicture}
 		\caption{Frequencies between Abbott and 3 unknowns}
 		\label{tikz:abbott-unk}
@@ -729,7 +731,7 @@ Running the program on unknown texts, we obtained the following datas:
 		\begin{tikzpicture}
 			\begin{axis}
 			[
-			legend entries={Unknown4, Unknown5},
+			legend entries={Dickens, Unknown4, Unknown5},
 			legend style={
 				at={(1.5,-0.2)},
 				anchor=north,
@@ -741,16 +743,31 @@ Running the program on unknown texts, we obtained the following datas:
 			grid=major,
 			height=8cm,
 			grid style={densely dotted},
-			ymin=-0.005,
+			ymin=-1,
 			xtick=data,
-			ytick={0.010, 0.015, ..., 0.05},
+			ytick={0, 3, ..., 16},
 			legend pos=outer north east,
 			yticklabel={\pgfmathprintnumber{\tick}\,\%},
 			x tick label style={rotate=90},
 			xticklabels={articles,conjunctions,dialogues,commas,prepositions},
 			ylabel=Deltas]
-			\addplot table [x=freq, y=unknown4, col sep=comma] {deltas-dickens.csv};
-			\addplot table [x=freq, y=unknown5, col sep=comma] {deltas-dickens.csv};
+			
+			%\addplot table [mark=none, x=freq, y=dickens, col sep=comma] {deltas-dickens.csv};
+			\addplot table [mark=none, x=freq, y=unknown4, col sep=comma] {deltas-dickens.csv};
+			\addplot table [mark=none, x=freq, y=unknown5, col sep=comma] {deltas-dickens.csv};
+			\addplot+ [
+                error bars/.cd,
+                    y explicit,
+                    y dir=minus,
+            ] table [
+                x=freq,
+                y=dickens,
+                y error plus expr=\thisrow{dickens}-\thisrow{unknown4},
+				y error minus expr=\thisrow{dickens}-\thisrow{unknown5},
+				col sep=comma
+            ] {deltas-dickens.csv};
+			%\addplot[ycomb, dashed] plot coordinates{() () () () ()};
+			%\addplot[ycomb, dashed] table [x=freq, y expr=\thisrow{dickens}-\thisrow{unknown4}, col sep=comma] {deltas-dickens.csv};
 			\end{axis}
 		\end{tikzpicture}
 		\caption{Deltas Dickens}
