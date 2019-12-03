@@ -75,7 +75,7 @@ public class Authorship extends Configured implements Tool {
         // private static final Pattern DIALOGUE = Pattern.compile("“(.*?(\\s)*?)*”");
         // private static final Pattern DIALOGUE = Pattern.compile("[“”]|['][ ]|[\"]");
         //private static final Pattern DIALOGUE = Pattern.compile("(\u201D )|(\" )|(\' )");
-        private static final Pattern DIALOGUE = Pattern.compile("([\"'\u201D][. ])");
+        private static final Pattern DIALOGUE = Pattern.compile("([\"\'”][. ])");
         private static final IntWritable ONE = new IntWritable(1);
         private Text text = new Text();
 
