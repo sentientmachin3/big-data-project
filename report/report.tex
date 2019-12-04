@@ -780,30 +780,12 @@ Running the program on unknown texts, we obtained the following datas:
 			\addplot[ultra thick, black] table [mark=none, x=freq, y=dickens, col sep=comma] {deltas-dickens.csv};
 			\addplot[thick,mark=none,blue] table [ x=freq, y=unknown4, col sep=comma] {deltas-dickens.csv};
 			\addplot[thick,mark=none,green] table [ x=freq, y=unknown5, col sep=comma] {deltas-dickens.csv};
-			\addplot[
-                error bars/.cd,
-                    y explicit,
-					y dir=minus,
-				error bar style={dashed,red},
-				error mark options={mark=none}
-            ] table [
-				x=freq,
-				y=dickens,
-				y error minus expr=\thisrow{dickens}-\thisrow{unknown5},
-				col sep=comma
-			] {deltas-dickens.csv};
-			\addplot[
-                error bars/.cd,
-                    y explicit,
-					y dir=minus,
-				error bar style={dashed,red},
-				error mark options={mark=none}
-            ] table [
-				x=freq,
-				y=dickens,
-				y error minus expr=\thisrow{dickens}-\thisrow{unknown4},
-				col sep=comma
-            ] {deltas-dickens.csv};
+			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
+			 error mark options={mark=none} ] table [x=freq, y=dickens, y error minus expr=\thisrow{dickens}-\thisrow{unknown5},
+				col sep=comma ] {deltas-dickens.csv};
+			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
+				error mark options={mark=none}] table [x=freq, y=dickens, y error minus expr=\thisrow{dickens}-\thisrow{unknown4},
+				col sep=comma] {deltas-dickens.csv};
 			\end{axis}
 		\end{tikzpicture}
 		\caption{Deltas Dickens}
