@@ -33,10 +33,11 @@ import java.util.regex.Pattern;
  */
 public class Authorship extends Configured implements Tool {
     // speech parts used in wordcount-like job
-    private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not"));
+    private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not", "but", "yet", "though"));
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an"));
     private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between"));
-
+    private static final List<String> PRONOUNS = new ArrayList<>(Arrays.asList("I", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "them", "my", "your", "its", "our", "their", "that", "this", "which"));
+    private static final List<String> VERBS = new ArrayList<>(Arrays.asList("is", "be", "have", "has", "do", "don't", "say", "said", "says"));
     static final String INPUT_PATH = "/user/root/authorship/input";
     static final String OUTPUT_PATH = "/user/root/authorship/output";
     private static final String UNKNOWNS_INPUT_PATH = "/user/root/authorship/input/unknowns";
@@ -70,7 +71,7 @@ public class Authorship extends Configured implements Tool {
         private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
         private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
-        private static final Pattern DIALOGUE = Pattern.compile("([\"][. ])");
+        private static final Pattern DIALOGUE = Pattern.compile("[\"]");
         private static final IntWritable ONE = new IntWritable(1);
         private Text text = new Text();
 
@@ -94,6 +95,16 @@ public class Authorship extends Configured implements Tool {
 
                     if (Authorship.PREPOSITIONS.contains(refWord)) {
                         text.set(filePathString + "*prepositions");
+                        context.write(text, ONE);
+                    }
+
+                    if (Authorship.PRONOUNS.contains(refWord)) {
+                        text.set(filePathString + "*pronouns");
+                        context.write(text, ONE);
+                    }
+
+                    if (Authorship.VERBS.contains(refWord)) {
+                        text.set(filePathString + "*verbs");
                         context.write(text, ONE);
                     }
 
