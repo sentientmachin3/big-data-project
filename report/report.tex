@@ -93,7 +93,7 @@ escapeinside={(*@}{@*)}
 	\newpage
 	
 	\section{Introduction}
-	The project aim was to design a tool which could establish the authorship of a manuscript. The basic workflow of the project (which explained more in detail in the next sections) is the following:\begin{itemize}
+	The project aim was to design a tool which could establish the authorship of a manuscript. The basic workflow of the project (which is explained more in detail in the next sections) is the following:\begin{itemize}
 		\item build, using a priori known text, an author identity extracting text parameters;
 		\item try to find the closest match of an unknown text to the previously built authors.
 	\end{itemize}
@@ -622,10 +622,10 @@ Running the program on the known texts, we got the following informations:
 		\toprule
 		Author   & Articles    & Conjunctions & Prepositions & Avg. Period Length & Dialogues & Commas \\
 		\midrule
-		C. Dickens & 0.082019635 & 0.027478997 & 0.099212974 & 17.161312 & 0.04982827 & 0.113913454 \\
-		M.Shelley & 0.07756892 & 0.037609607 & 0.11023554 & 20.283638 & 0.112322 & 0.079789676 \\
-		H. Melville & 0.09492883 & 0.022307148 & 0.10162741 & 18.295984 & 0.152951 & 0.11895356 \\
-		J. Abbott & 0.09444337 & 0.030337486 & 0.11393475 & 18.103647 & 0.024209872 & 0.09896383 \\
+		J.Abbott   & 0.0946804   & 0.030357495  & 0.11384052   & 18.227755           & 0.020080151 & 0.09961549  \\
+		H.Melville & 0.09492883  & 0.022307148  & 0.10162741   & 18.295984           & 0.152951    & 0.11895356  \\
+		C.Dickens  & 0.081898294 & 0.027547827  & 0.09921892   & 17.166945           & 0.04982827  & 0.11376968 \\
+		M.Shelley  & 0.07756892  & 0.037609607  & 0.11023554   & 20.283638           & 0.112322    & 0.079789676 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
@@ -637,7 +637,6 @@ Running the program on unknown texts, we obtained the following datas:
 	\begin{tabular}{ccccccc}
 		\toprule
 		Number & Articles & Conjunctions & Prepositions & Avg. P. Length & Dialogues & Commas \\
-		\midrule
 		\midrule
 		Unknown 1 & 0.09512767  & 0.028265182  & 0.10064157   & 15.1724             & 0.19409695  & 0.09657056  \\
 		Unknown 2 & 0.10238273  & 0.028543063  & 0.10702407   & 14.196617           & 0.0         & 0.096401095 \\
