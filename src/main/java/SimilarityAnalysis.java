@@ -32,7 +32,7 @@ public class SimilarityAnalysis {
      * Runs the analysis. For each couple of known/unknwown author generates an AffinityMap instance.
      * The analysis runs in two phases: <ul>
      *     <li> Calculates the deltas for each couple of authors;</li>
-     *     <li> Sorts the AffintiyMap instances in order to have the most similar and the less similar in order.</li>
+     *     <li> Sorts the AffinityMap instances in order to have the most similar and the less similar in order.</li>
      * </ul>
      */
     private void exec() {
@@ -51,7 +51,10 @@ public class SimilarityAnalysis {
         // calc deltas for each FreqMapEntry combination
         for (FreqMapEntry kn : knowns) {
             for (FreqMapEntry unk : unknowns) {
-                this.deltas.add(computedDelta(kn, unk));
+                AffinityMap temp = computedDelta(kn, unk);
+                kn.getHighestFrequencyList().removeAll(unk.getHighestFrequencyList());
+                temp.setMatchingCommonWords(kn.getHighestFrequencyList().size());
+                this.deltas.add(temp);
             }
         }
 

@@ -38,6 +38,7 @@ public class Authorship extends Configured implements Tool {
     private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between"));
     private static final List<String> PRONOUNS = new ArrayList<>(Arrays.asList("I", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "them", "my", "your", "its", "our", "their", "that", "this", "which"));
     private static final List<String> VERBS = new ArrayList<>(Arrays.asList("is", "be", "have", "has", "do", "don't", "say", "said", "says"));
+
     static final String INPUT_PATH = "/user/root/authorship/input";
     static final String OUTPUT_PATH = "/user/root/authorship/output";
     private static final String UNKNOWNS_INPUT_PATH = "/user/root/authorship/input/unknowns";
@@ -68,10 +69,9 @@ public class Authorship extends Configured implements Tool {
 
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
-        private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
+        private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*");
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
         private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
-        private static final Pattern DIALOGUE = Pattern.compile("[\"]");
         private static final IntWritable ONE = new IntWritable(1);
         private Text text = new Text();
 
@@ -110,6 +110,14 @@ public class Authorship extends Configured implements Tool {
 
                     text.set(filePathString + "*nwords");
                     context.write(text, ONE);
+
+                    // common word?
+                    if (!Authorship.ARTICLES.contains(refWord) && !Authorship.PREPOSITIONS.contains(refWord) &&
+                            !Authorship.CONJUNCTIONS.contains(refWord) && !Authorship.PRONOUNS.contains(refWord) &&
+                            !Authorship.VERBS.contains(refWord)) {
+                        text.set(filePathString + "*commons:" + refWord);
+                        context.write(text, ONE);
+                    }
                 }
             }
 
@@ -128,14 +136,6 @@ public class Authorship extends Configured implements Tool {
                 text.set(filePathString + "*commas");
                 context.write(text, ONE);
             }
-
-            // dialogue quotes count
-            Matcher dialogue = DIALOGUE.matcher(refLineText);
-            while (dialogue.find()) {
-                text.set(filePathString + "*dialogues");
-                context.write(text, ONE);
-            }
-
 
         }
     }

@@ -12,6 +12,7 @@ public class AffinityMap implements Comparable {
     private String author;
     private String unknown;
     private HashMap<String, Double> map;
+    private int matchingCommonWords;
 
     /**
      * Generates an instance with empty comparison map.
@@ -33,6 +34,10 @@ public class AffinityMap implements Comparable {
      */
     public void append(String field, double delta) {
         this.map.put(field, delta);
+    }
+
+    public void setMatchingCommonWords(int matchingCommonWords) {
+        this.matchingCommonWords = matchingCommonWords;
     }
 
     @Override
@@ -62,9 +67,9 @@ public class AffinityMap implements Comparable {
         thisAvg /= 5;
         otherAvg /= 5;
 
-        if (thisAvg < otherAvg) {
+        if (thisAvg < otherAvg && this.matchingCommonWords < obj.matchingCommonWords) {
             return -1;
-        } else if (thisAvg > otherAvg) {
+        } else if (thisAvg > otherAvg && this.matchingCommonWords > obj.matchingCommonWords) {
             return 1;
         }
 
