@@ -1,5 +1,6 @@
 package main.java;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -11,13 +12,14 @@ public class FreqMapEntry {
     private String author;
     private String title;
     private HashMap<String, Float> frequencies = new HashMap<>();
+    private ArrayList<CommonWord> highestFrequencyList =new ArrayList<>();
 
     /**
      * Constructor for FreqMapEntry class.
      * <b>Note:</b> this constructor generates an empty map for the data.
      *
      * @param author the author name.
-     * @param title the title of the writing.
+     * @param title  the title of the writing.
      */
     public FreqMapEntry(String author, String title) {
         this.author = author;
@@ -29,9 +31,9 @@ public class FreqMapEntry {
      * and the value to be assigned to that field, most likely to be used to updated a map.</p>
      *
      * @param author the author's name.
-     * @param title the title of the manuscript.
-     * @param field the field name.
-     * @param value the value to be assigned to the field.
+     * @param title  the title of the manuscript.
+     * @param field  the field name.
+     * @param value  the value to be assigned to the field.
      */
     public FreqMapEntry(String author, String title, String field, float value) {
         this.author = author;
@@ -52,6 +54,10 @@ public class FreqMapEntry {
         return frequencies;
     }
 
+    public ArrayList<CommonWord> getHighestFrequencyList() {
+        return highestFrequencyList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof FreqMapEntry) {
@@ -63,6 +69,19 @@ public class FreqMapEntry {
 
         return false;
     }
+
+    public void addCommonWord(CommonWord commonWord) {
+        if (this.getHighestFrequencyList().size() < 10)
+            this.highestFrequencyList.add(commonWord);
+    }
+
+//    public void updateCommonWord(String word, float value) {
+//        for (CommonWord w: this.getHighestFrequencyList()) {
+//            if (w.getWord().equals(word)) {
+//                w.setValue(value);
+//            }
+//        }
+//    }
 
     @Override
     public int hashCode() {
