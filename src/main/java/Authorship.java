@@ -73,6 +73,7 @@ public class Authorship extends Configured implements Tool {
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
         private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
         private static final IntWritable ONE = new IntWritable(1);
+        private static final Pattern COMMONS = Pattern.compile("\\b[a-zA-Z']*\\b");
         private Text text = new Text();
 
         @Override
@@ -112,12 +113,16 @@ public class Authorship extends Configured implements Tool {
                     context.write(text, ONE);
 
                     // common word?
-                    if (!Authorship.ARTICLES.contains(refWord) && !Authorship.PREPOSITIONS.contains(refWord) &&
-                            !Authorship.CONJUNCTIONS.contains(refWord) && !Authorship.PRONOUNS.contains(refWord) &&
-                            !Authorship.VERBS.contains(refWord)) {
-                        text.set(filePathString + "*commons:" + refWord);
-                        context.write(text, ONE);
-                    }
+                }
+            }
+
+            Matcher commonWordsMatcher = COMMONS.matcher(lineText.toString());
+            while (commonWordsMatcher.find()) {
+                if (!Authorship.ARTICLES.contains(w) && !Authorship.PREPOSITIONS.contains(w) &&
+                        !Authorship.CONJUNCTIONS.contains(w) && !Authorship.PRONOUNS.contains(w) &&
+                        !Authorship.VERBS.contains(w)) {
+                    text.set(filePathString + "*commons:" + w);
+                    context.write(text, ONE);
                 }
             }
 
