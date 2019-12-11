@@ -73,7 +73,7 @@ public class Authorship extends Configured implements Tool {
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
         private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
         private static final IntWritable ONE = new IntWritable(1);
-        private static final Pattern COMMONS = Pattern.compile("\\b[a-zA-Z']*\\b");
+        private static final Pattern COMMONS = Pattern.compile("\\b\\w[a-zA-Z']*\\b");
         private Text text = new Text();
 
         @Override
@@ -117,7 +117,7 @@ public class Authorship extends Configured implements Tool {
 
             Matcher commonWordsMatcher = COMMONS.matcher(lineText.toString());
             while (commonWordsMatcher.find()) {
-                String w = commonWordsMatcher.group();
+                String w = commonWordsMatcher.group().toLowerCase();
                 if (!Authorship.ARTICLES.contains(w) && !Authorship.PREPOSITIONS.contains(w) &&
                         !Authorship.CONJUNCTIONS.contains(w) && !Authorship.PRONOUNS.contains(w) &&
                         !Authorship.VERBS.contains(w)) {

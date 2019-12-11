@@ -63,13 +63,6 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
                 w.setValue(w.getValue() / entry.getFrequencies().get("nwords"));
             }
 
-            Collections.sort(entry.getHighestFrequencyList(), new Comparator<CommonWord>() {
-                @Override
-                public int compare(CommonWord commonWord, CommonWord t1) {
-                    return commonWord.compareTo(t1);
-                }
-            });
-
             // computes the average period length by dividing the total number of words by the number of periods.
             entry.getFrequencies().put("avg_period_length", entry.getFrequencies().get("nwords") /
                     entry.getFrequencies().get("periods"));
@@ -146,7 +139,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         while ((line = bufferedReader.readLine()) != null) {
             String author = line.split("-")[0];
             String title = line.split(".txt\\*")[0].substring(line.split(".txt\\*")[0].indexOf("-") + 1);;
-            String field = null;
+            String field;
             float value;
             if (!line.contains("commons")) {
                 field = line.split(".txt\\*")[1].split("\t")[0];
@@ -155,8 +148,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
             } else {
                 // common words are formatted in a different way, so...
-                CommonWord comWord = null;
-                comWord = new CommonWord(line.split(":")[1].split("\t")[0],
+                CommonWord comWord = new CommonWord(line.split(":")[1].split("\t")[0],
                         Integer.parseInt(line.split(":")[1].split("\t")[1]));
                 this.updateCommonWord(author, title, comWord);
             }

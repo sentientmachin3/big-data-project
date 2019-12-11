@@ -73,20 +73,16 @@ public class FreqMapEntry {
     }
 
     public void buildTopTen() {
-        ArrayList<CommonWord> maxes = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            CommonWord max = Collections.max(this.highestFrequencyList, new Comparator<CommonWord>() {
-                @Override
-                public int compare(CommonWord commonWord, CommonWord t1) {
-                    return commonWord.compareTo(t1);
-                }
-            });
-            maxes.add(max);
-            this.highestFrequencyList.remove(max);
+        Collections.sort(this.highestFrequencyList, new Comparator<CommonWord>() {
+            @Override
+            public int compare(CommonWord commonWord, CommonWord t1) {
+                return commonWord.compareTo(t1);
+            }
+        });
+
+        for (int i = 10; i < this.highestFrequencyList.size(); i++) {
+            this.highestFrequencyList.remove(this.highestFrequencyList.get(i));
         }
-
-
-        this.highestFrequencyList = maxes;
 
     }
 
