@@ -1,8 +1,6 @@
 package main.java;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>A FreqMapEntry is an entry of a map containing the author name, the title of the manuscript and the map
@@ -71,8 +69,7 @@ public class FreqMapEntry {
     }
 
     public void addCommonWord(CommonWord commonWord) {
-        if (this.getHighestFrequencyList().size() < 10)
-            this.highestFrequencyList.add(commonWord);
+        this.highestFrequencyList.add(commonWord);
     }
 
 //    public void updateCommonWord(String word, float value) {

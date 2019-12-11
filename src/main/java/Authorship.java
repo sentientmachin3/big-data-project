@@ -117,7 +117,9 @@ public class Authorship extends Configured implements Tool {
             }
 
             Matcher commonWordsMatcher = COMMONS.matcher(lineText.toString());
+            String w;
             while (commonWordsMatcher.find()) {
+                w = commonWordsMatcher.group();
                 if (!Authorship.ARTICLES.contains(w) && !Authorship.PREPOSITIONS.contains(w) &&
                         !Authorship.CONJUNCTIONS.contains(w) && !Authorship.PRONOUNS.contains(w) &&
                         !Authorship.VERBS.contains(w)) {

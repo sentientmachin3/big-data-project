@@ -3,7 +3,7 @@
 %\usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{graphicx}
-
+\usepackage[justification=centering]{caption}
 \usepackage{fixltx2e}
 \usepackage{booktabs}
 \usepackage{listings}
@@ -254,6 +254,7 @@ escapeinside={(*@}{@*)}
 			.4 java. 
 			.5 AffinityMap.java. 
 			.5 Authorship.java. 
+			.5 CommonWord.java. 
 			.5 FreqMap.java. 
 			.5 FreqMapEntry.java. 
 			.5 Main.java. 
@@ -336,7 +337,6 @@ public int run(String[] args) throws Exception {
 private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
 private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
 private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
-private static final Pattern DIALOGUE = Pattern.compile("[\u201C\u201D]");
 private static final IntWritable ONE = new IntWritable(1);
 	\end{lstlisting}
 	
@@ -344,7 +344,6 @@ private static final IntWritable ONE = new IntWritable(1);
 		\item \lstinline|WORD_BOUNDARY|: splits on word separators characters;
 		\item \lstinline|END_PERIOD|: splits text on end-period characters;
 		\item \lstinline|MARKS_COMMAS|: splits on commas and exclamation/question marks;
-		\item \lstinline|DIALOGUE|: splits on dialogue quotes (\lstinline|\u201C| and \lstinline|\u201D| is their specification in Unicode, since these symbols are not in the standard ASCII table). 
 	\end{itemize}
 
 	The last constant is an \lstinline|IntWritable| value set to 1, and is used when a matching expression is detected.
@@ -352,7 +351,6 @@ private static final IntWritable ONE = new IntWritable(1);
 	The second section contains the text analysis itself, which is based on: \begin{itemize}
 		\item article, preposition and conjunction frequency;
 		\item average period length;
-		\item dialogues frequency;
 		\item punctuation mark frequency.
 	\end{itemize}
 	Besides this, we save additional informations, such as the total number of words in the input and the total number of periods, so we can get the frequency over the total dimension of the input.
@@ -375,14 +373,14 @@ for (String word : WORD_BOUNDARY.split(lineText.toString())) {
 	\end{lstlisting}
 	
 	In short terms, for each article found in the input text, the mapper writes a string formatted as follows:\begin{center}
-		\textit{author-title.txt*article\textless tab\textgreater \textless value\textgreater} 
+		\texttt{author-title.txt*article\textless tab\textgreater \textless value\textgreater} 
 	\end{center}
 
 	This procedure applies in the same way to preposition and conjunctions.
 	
 	\bigskip
 	\noindent
-	For periods, punctuation and dialogues we used a different method.
+	For periods and punctuation we used a different method.
 	\begin{lstlisting}[firstnumber=109, caption={Periods counting in Map method}, captionpos=b]
 Matcher matcher = END_PERIOD.matcher(refLineText);
 while (matcher.find()) {
@@ -426,11 +424,10 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 		\item number of words in the input;
 		\item number of periods in the input;
 		\item frequency of punctuation marks;
-		\item frequency of dialogue sentences.
 		\item average period length.
 	\end{itemize}
 
-	Note that the frequency of articles, prepositions, cojunctions and punctuation symbols is determined over the total number of words, while the frequency of dialogue sentences is calculated over the total number of periods.
+	Note that the frequency of articles, prepositions, cojunctions and punctuation symbols is determined over the total number of words.
 	
 	After this phase, we will have a frequency map for every text of every author, for example: \begin{align*}
 		\text{author}&: M. Shelley \\
@@ -442,8 +439,7 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 			periods &3441 \\
 			nwords &69796.0 \\
 			avg\text{-}period\text{-}length &20.283638 \\
-			commas &0.079789676 \\
-			dialogues &0.112322
+			commas &0.079789676 
 		\end{cases}
 	\end{align*}
 	 What we need now is a map of frequencies relative to a single author, order to generate a ``stylistic identikit''  of an author, so then we can compare any unknown text to that author.
@@ -607,55 +603,60 @@ private void exec() {
 	\subsection{Extracted data}
 	During the development process, we tested the program on a bunch of samples (155 files, more or less 70 MB) from 4 different authors: \begin{itemize}
 	\item M. Shelley;
-	\item H. Melville;
 	\item C. Dickens (with unknown texts marked as Unknown4 and Unknown5);
 	\item J. Abbott (with unknown texts marked as Unknown1, Unknown2 and Unknown3).
 \end{itemize}
 
+These texts are taken from the Project Gutenberg online library. The unknown writings are 5, two of them written by C.Dickens, and three by J.Abbott.
 
-The unknown writings are 5, two of them written by C.Dickens, and three by J.Abbott.
+\bigskip
 
 Running the program on the known texts, we got the following informations:
 \begin{table}[h!]
 	\small
-	\begin{tabular}{ccccccc}
+	\begin{tabular}{cccccc}
 		\toprule
-		Author   & Articles    & Conjunctions & Prepositions & Avg. Period Length & Dialogues & Commas \\
+		Author   & Articles    & Conjunctions & Prepositions & Avg. Period Length & Commas \\
 		\midrule
-		J.Abbott   & 0.0946804   & 0.030357495  & 0.11384052   & 18.227755           & 0.020080151 & 0.09961549  \\
-		H.Melville & 0.09492883  & 0.022307148  & 0.10162741   & 18.295984           & 0.152951    & 0.11895356  \\
-		C.Dickens  & 0.081898294 & 0.027547827  & 0.09921892   & 17.166945           & 0.04982827  & 0.11376968 \\
-		M.Shelley  & 0.07756892  & 0.037609607  & 0.11023554   & 20.283638           & 0.112322    & 0.079789676 \\
+		J.Abbott   & 0.0946804   & 0.030357495  & 0.11384052   & 18.227755 & 0.09961549  \\
+		C.Dickens  & 0.081898294 & 0.027547827  & 0.09921892   & 17.166945 & 0.11376968 \\
+		M.Shelley  & 0.07756892  & 0.037609607  & 0.11023554   & 20.283638 & 0.079789676 \\
 		\bottomrule
 	\end{tabular}
+	\caption{Frequencies in known authors' texts}
+	\label{tab:known-freq}
 \end{table}
 \bigskip
 
 Running the program on unknown texts, we obtained the following datas:
 \begin{table}[h!]
 	\small
-	\begin{tabular}{ccccccc}
+	\begin{tabular}{cccccc}
 		\toprule
-		Number & Articles & Conjunctions & Prepositions & Avg. P. Length & Dialogues & Commas \\
+		Number & Articles & Conjunctions & Prepositions & Avg. Period Length & Commas \\
 		\midrule
-		Unknown 1 & 0.09512767  & 0.028265182  & 0.10064157   & 15.1724             & 0.19409695  & 0.09657056  \\
-		Unknown 2 & 0.10238273  & 0.028543063  & 0.10702407   & 14.196617           & 0.0         & 0.096401095 \\
-		Unknown 3 & 0.09730647  & 0.028921144  & 0.1361749    & 20.7383             & 0.0         & 0.09636771  \\
-		Unknown 4 & 0.09376974  & 0.021347687  & 0.09346865   & 12.885504           & 0.0         & 0.13776492  \\
-		Unknown 5 & 0.09391441  & 0.025601724  & 0.11509038   & 25.835533           & 0.0         & 0.11042987  \\
+		Unknown 1 & 0.09512767  & 0.028265182  & 0.10064157   & 15.1724    & 0.09657056  \\
+		Unknown 2 & 0.10238273  & 0.028543063  & 0.10702407   & 14.196617  & 0.096401095 \\
+		Unknown 3 & 0.09730647  & 0.028921144  & 0.1361749    & 20.7383    & 0.09636771  \\
+		Unknown 4 & 0.09376974  & 0.021347687  & 0.09346865   & 12.885504  & 0.13776492  \\
+		Unknown 5 & 0.09391441  & 0.025601724  & 0.11509038   & 25.835533  & 0.11042987  \\
 		\bottomrule
 	\end{tabular}
+	\caption{Frequencies in unknown authors' texts}
+	\label{tab:unknown-freq}
 \end{table}
 
 	\newpage
 	\subsection{Results and analysis}
+
+	\subsubsection{Global Frequencies for all authors}
 
 	\begin{figure}[h!]
 		\centering
 		\begin{tikzpicture}
 			\begin{axis}
 			[
-			legend entries={Abbott, Shelley, Dickens, Melville},
+			legend entries={Abbott, Shelley, Dickens},
 			legend style={
 				at={(1.5,-0.2)},
 				anchor=north,
@@ -673,17 +674,18 @@ Running the program on unknown texts, we obtained the following datas:
 			legend pos=outer north east,
 			yticklabel={\pgfmathprintnumber{\tick}\,\%},
 			x tick label style={rotate=90},
-			xticklabels={articles,conjunctions,dialogues,punctuation,prepositions},
+			xticklabels={articles,conjunctions,punctuation,prepositions},
 			ylabel=Frequencies]
-			\addplot table [x=freq, y=abbott, col sep=comma] {frequencies.csv};
-			\addplot table [x=freq, y=shelley, col sep=comma] {frequencies.csv};
-			\addplot[mark=*, brown] table [x=freq, y=dickens, col sep=comma] {frequencies.csv};
-			\addplot[mark=*, black] table [x=freq, y=melville, col sep=comma] {frequencies.csv};
+			\addplot table [x=freq, y=abbott, col sep=comma] {csv-files/frequencies.csv};
+			\addplot table [x=freq, y=shelley, col sep=comma] {csv-files/frequencies.csv};
+			\addplot[mark=*, brown] table [x=freq, y=dickens, col sep=comma] {csv-files/frequencies.csv};
 			\end{axis}
 		\end{tikzpicture}
 		\caption{Language parts frequencies of all authors in all texts}
 		\label{tikz:frequencies}
 	\end{figure}
+
+	\subsubsection{Frequencies between known and uknown authors}
 
 	\begin{figure}[h!]
 		\centering
@@ -700,7 +702,7 @@ Running the program on unknown texts, we obtained the following datas:
 				rounded corners=2pt,
 			},
 			grid=major,
-			height=8cm,
+			height=9cm,
 			grid style={densely dotted},
 			yshift=0.5cm,
 			xshift=100,
@@ -708,16 +710,18 @@ Running the program on unknown texts, we obtained the following datas:
 			ytick={0, 3, ..., 19},
 			legend pos=outer north east,
 			yticklabel={\footnotesize\pgfmathprintnumber{\tick}},
-			xticklabels={articles,conjunctions,dialogues,punctuation,prepositions}]
-			\addplot table [data cs=polarrad, x=freq, y=abbott, col sep=comma] {abbott-unknown.csv};
-			\addplot table [data cs=polarrad, x=freq, y=unknown1, col sep=comma] {abbott-unknown.csv};
-			\addplot table [data cs=polarrad, x=freq, y=unknown2, col sep=comma] {abbott-unknown.csv};
-			\addplot table [data cs=polarrad, x=freq, y=unknown3, col sep=comma] {abbott-unknown.csv};
+			xticklabels={articles,conjunctions,punctuation,prepositions}]
+			\addplot table [data cs=polarrad, x=freq, y=abbott, col sep=comma] {csv-files/abbott-unknown.csv};
+			\addplot table [data cs=polarrad, x=freq, y=unknown1, col sep=comma] {csv-files/abbott-unknown.csv};
+			\addplot table [data cs=polarrad, x=freq, y=unknown2, col sep=comma] {csv-files/abbott-unknown.csv};
+			\addplot table [data cs=polarrad, x=freq, y=unknown3, col sep=comma] {csv-files/abbott-unknown.csv};
 			\end{polaraxis}
 		\end{tikzpicture}
-		\caption{Frequencies between Abbott and 3 unknowns}
+		\caption{Frequencies between Abbott and 3 unknowns.\\
+		We can observe that there is quite a similarity between Abbott frequencies and the unknown authors' texts. The only difference is the use in prepositions in the Unknown3 text, but it is still included in deltas intervals.}
 		\label{tikz:abbott-unk}
 	\end{figure}
+	  
 
 	\begin{figure}[h!]
 		\centering
@@ -734,63 +738,24 @@ Running the program on unknown texts, we obtained the following datas:
 				rounded corners=2pt,
 			},
 			grid=major,
-			height=8cm,
+			height=9cm,
 			grid style={densely dotted},
 			xtick=data,
 			ytick={0, 3, ..., 19},
 			legend pos=outer north east,
 			yticklabel={\footnotesize\pgfmathprintnumber{\tick}},
-			xticklabels={articles,conjunctions,dialogues,punctuation,prepositions}]
-			\addplot table [data cs=polarrad, x=freq, y=dickens, col sep=comma] {dickens-unknown.csv};
-			\addplot table [data cs=polarrad, x=freq, y=unknown4, col sep=comma] {dickens-unknown.csv};
-			\addplot table [data cs=polarrad, x=freq, y=unknown5, col sep=comma] {dickens-unknown.csv};
+			xticklabels={articles,conjunctions,punctuation,prepositions}]
+			\addplot table [data cs=polarrad, x=freq, y=dickens, col sep=comma] {csv-files/dickens-unknown.csv};
+			\addplot table [data cs=polarrad, x=freq, y=unknown4, col sep=comma] {csv-files/dickens-unknown.csv};
+			\addplot table [data cs=polarrad, x=freq, y=unknown5, col sep=comma] {csv-files/dickens-unknown.csv};
 			\end{polaraxis}
 		\end{tikzpicture}
-		\caption{Frequencies between Dickens and 2 unknowns}
+		\caption{Frequencies between Dickens and 2 unknowns\\
+		We can observe that there is quite a similarity between Dickens frequencies and the unknown authors' texts.}
 		\label{tikz:dickens-unk}
 	\end{figure}
-
-	\begin{figure}[h!]
-		\centering
-		\begin{tikzpicture}
-			\begin{axis}
-			[
-			legend entries={Dickens, Unknown4, Unknown5},
-			legend style={
-				at={(1.5,-0.2)},
-				anchor=north,
-				legend columns=1,
-				cells={anchor=west},
-				font=\footnotesize,
-				rounded corners=2pt,
-			},
-			grid=major,
-			height=8cm,
-			grid style={densely dotted},
-			ymin=-1,
-			xtick=data,
-			ytick={0, 3, ..., 16},
-			legend pos=outer north east,
-			yticklabel={\pgfmathprintnumber{\tick}\,\%},
-			x tick label style={rotate=90},
-			xticklabels={articles,conjunctions,dialogues,punctuation,prepositions},
-			ylabel=Deltas]
-			
-			\addplot[ultra thick, black] table [mark=none, x=freq, y=dickens, col sep=comma] {deltas-dickens.csv};
-			\addplot[thick,mark=none,blue] table [ x=freq, y=unknown4, col sep=comma] {deltas-dickens.csv};
-			\addplot[thick,mark=none,green] table [ x=freq, y=unknown5, col sep=comma] {deltas-dickens.csv};
-			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
-			 error mark options={mark=none} ] table [x=freq, y=dickens, y error minus expr=\thisrow{dickens}-\thisrow{unknown5},
-				col sep=comma ] {deltas-dickens.csv};
-			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
-				error mark options={mark=none}] table [x=freq, y=dickens, y error minus expr=\thisrow{dickens}-\thisrow{unknown4},
-				col sep=comma] {deltas-dickens.csv};
-			\end{axis}
-		\end{tikzpicture}
-		\caption{Deltas Dickens}
-		\label{tikz:dickens-deltas}
-	\end{figure}
-
+	
+	\subsubsection{Deltas differences between known and unknown authors}
 	\begin{figure}[h!]
 		\centering
 		\begin{tikzpicture}
@@ -814,26 +779,67 @@ Running the program on unknown texts, we obtained the following datas:
 			legend pos=outer north east,
 			yticklabel={\pgfmathprintnumber{\tick}\,\%},
 			x tick label style={rotate=90},
-			xticklabels={articles,conjunctions,dialogues,punctuation,prepositions},
+			xticklabels={articles,conjunctions,punctuation,prepositions},
 			ylabel=Deltas]
 			
-			\addplot[ultra thick, black] table [mark=none, x=freq, y=abbott, col sep=comma] {deltas-abbott.csv};
-			\addplot[mark=none,blue] table [ x=freq, y=unknown1, col sep=comma] {deltas-abbott.csv};
-			\addplot[mark=none,red] table [ x=freq, y=unknown2, col sep=comma] {deltas-abbott.csv};
-			\addplot[mark=none,green] table [ x=freq, y=unknown3, col sep=comma] {deltas-abbott.csv};
+			\addplot[ultra thick, black] table [mark=none, x=freq, y=abbott, col sep=comma] {csv-files/deltas-abbott.csv};
+			\addplot[mark=none,blue] table [ x=freq, y=unknown1, col sep=comma] {csv-files/deltas-abbott.csv};
+			\addplot[mark=none,red] table [ x=freq, y=unknown2, col sep=comma] {csv-files/deltas-abbott.csv};
+			\addplot[mark=none,green] table [ x=freq, y=unknown3, col sep=comma] {csv-files/deltas-abbott.csv};
 			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
 				error mark options={mark=none} ] table [x=freq, y=abbott, y error minus expr=\thisrow{abbott}-\thisrow{unknown1},
-				col sep=comma ] {deltas-abbott.csv};
+				col sep=comma ] {csv-files/deltas-abbott.csv};
 			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
 				error mark options={mark=none} ] table [x=freq, y=abbott, y error minus expr=\thisrow{abbott}-\thisrow{unknown2},
-				col sep=comma ] {deltas-abbott.csv};
+				col sep=comma ] {csv-files/deltas-abbott.csv};
 			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
 				error mark options={mark=none} ] table [x=freq, y=abbott, y error minus expr=\thisrow{abbott}-\thisrow{unknown3},
-				col sep=comma ] {deltas-abbott.csv};
+				col sep=comma ] {csv-files/deltas-abbott.csv};
 			\end{axis}
 		\end{tikzpicture}
-		\caption{Deltas Abbott}
+		\caption{Abbott differences between Abbott known texts and other Abbott texts marked as unknown}
 		\label{tikz:abbott-deltas}
+	\end{figure}
+
+	\begin{figure}[h!]
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}
+			[
+			legend entries={Dickens, Unknown4, Unknown5},
+			legend style={
+				at={(1.5,-0.2)},
+				anchor=north,
+				legend columns=1,
+				cells={anchor=west},
+				font=\footnotesize,
+				rounded corners=2pt,
+			},
+			grid=major,
+			height=8cm,
+			grid style={densely dotted},
+			ymin=-1,
+			xtick=data,
+			ytick={0, 3, ..., 16},
+			legend pos=outer north east,
+			yticklabel={\pgfmathprintnumber{\tick}\,\%},
+			x tick label style={rotate=90},
+			xticklabels={articles,conjunctions,punctuation,prepositions},
+			ylabel=Deltas]
+			
+			\addplot[ultra thick, black] table [mark=none, x=freq, y=dickens, col sep=comma] {csv-files/deltas-dickens.csv};
+			\addplot[thick,mark=none,blue] table [ x=freq, y=unknown4, col sep=comma] {csv-files/deltas-dickens.csv};
+			\addplot[thick,mark=none,green] table [ x=freq, y=unknown5, col sep=comma] {csv-files/deltas-dickens.csv};
+			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
+			 error mark options={mark=none} ] table [x=freq, y=dickens, y error minus expr=\thisrow{dickens}-\thisrow{unknown5},
+				col sep=comma ] {csv-files/deltas-dickens.csv};
+			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
+				error mark options={mark=none}] table [x=freq, y=dickens, y error minus expr=\thisrow{dickens}-\thisrow{unknown4},
+				col sep=comma] {csv-files/deltas-dickens.csv};
+			\end{axis}
+		\end{tikzpicture}
+		\caption{Deltas differences between Dickens known texts and other Dickens texts marked as unknown}
+		\label{tikz:dickens-deltas}
 	\end{figure}
 
 	\clearpage
@@ -843,13 +849,11 @@ Running the program on unknown texts, we obtained the following datas:
 	During the development process we encountered several issues and in order to solve them, we implemented some restrictive design choices.
 	
 	\begin{itemize}
-		\item \textbf{Environment:} we lost quite some time to make hadoop work on linux. In fact, there seem to be some problems in running hadoop on Arch-based distributions (expecially the webserver part). Besides that, we noticed that some particular hardware configuration make hadoop crash or not work properly, we fixed by manually changing the amount of memory reserved to hadoop, in its configuration files.
+		\item \textbf{Environment:} we spent quite some time to make hadoop work on linux. In fact, there seem to be some problems in running hadoop on Arch-based distributions (expecially the webserver part). Besides that, we noticed that some particular hardware configuration make hadoop crash or not work properly, we fixed by manually changing the amount of memory reserved to hadoop, in its configuration files.
 		
 		\item \textbf{Virtualized filesystem access:} the access to the effective filesystem needed in order to manipulate files is quite tricky, in fact the filesystem reserved to the process is retrievable only by a specific call to the job configuration and the documentation is quite difficult to understand.
 		
-		\item \textbf{Input file naming format:} due to difficulties in the parsing process, we decide to format the input file names $author-title.txt$, and the unknown files as $unknown-unknown.txt$.
-		
-		\item \textbf{Dialogues format:} we noticed that dialogues are not formatted with same character everywhere. We still have to find a solution to this issue.
+		\item \textbf{Input file naming format:} due to difficulties in the parsing process, we decide to format the input file names \texttt{author-title.txt}, and the unknown files as \texttt{unknown-unknown.txt}.
 	\end{itemize}
 
 	\subsection{Predefined paths and program running}
