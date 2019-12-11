@@ -41,8 +41,14 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
      * Method filling the frequency map with the frequencies of the fields needed.
      */
     private void calculateFrequencies() {
+        // gets the first ten words
+        for (FreqMapEntry entry: this.entries) {
+            entry.buildTopTen();
+        }
+
         // for each entry computes the frequency of articles, conjunctions and prepositions by dividing the counted words
         // by the total number of words
+
         for (FreqMapEntry entry : entries) {
             for (String field : entry.getFrequencies().keySet()) {
                 if (field.equals("articles") || field.equals("conjunctions") || field.equals("prepositions") ||
@@ -136,16 +142,13 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(path)));
 
         // value parsing
-        // string format: author-tit-le.txt*speechpart \t value
         String line;
         while ((line = bufferedReader.readLine()) != null) {
-            String author = null;
-            String title = null;
+            String author = line.split("-")[0];
+            String title = line.split(".txt\\*")[0].substring(line.split(".txt\\*")[0].indexOf("-") + 1);;
             String field = null;
             float value;
             if (!line.contains("commons")) {
-                author = line.split(".txt\\*")[0].split("-")[0];
-                title = line.split(".txt\\*")[0].substring(line.split(".txt\\*")[0].indexOf("-") + 1);
                 field = line.split(".txt\\*")[1].split("\t")[0];
                 value = Float.parseFloat(line.split(".txt\\*")[1].split("\t")[1]);
                 this.update(author, title, field, value);
@@ -158,7 +161,6 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
                 this.updateCommonWord(author, title, comWord);
             }
         }
-
         this.calculateFrequencies();
     }
 

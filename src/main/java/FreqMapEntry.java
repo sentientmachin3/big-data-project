@@ -1,8 +1,6 @@
 package main.java;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>A FreqMapEntry is an entry of a map containing the author name, the title of the manuscript and the map
@@ -12,7 +10,7 @@ public class FreqMapEntry {
     private String author;
     private String title;
     private HashMap<String, Float> frequencies = new HashMap<>();
-    private ArrayList<CommonWord> highestFrequencyList =new ArrayList<>();
+    private ArrayList<CommonWord> highestFrequencyList = new ArrayList<>();
 
     /**
      * Constructor for FreqMapEntry class.
@@ -71,17 +69,26 @@ public class FreqMapEntry {
     }
 
     public void addCommonWord(CommonWord commonWord) {
-        if (this.getHighestFrequencyList().size() < 10)
-            this.highestFrequencyList.add(commonWord);
+        this.highestFrequencyList.add(commonWord);
     }
 
-//    public void updateCommonWord(String word, float value) {
-//        for (CommonWord w: this.getHighestFrequencyList()) {
-//            if (w.getWord().equals(word)) {
-//                w.setValue(value);
-//            }
-//        }
-//    }
+    public void buildTopTen() {
+        ArrayList<CommonWord> maxes = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            CommonWord max = Collections.max(this.highestFrequencyList, new Comparator<CommonWord>() {
+                @Override
+                public int compare(CommonWord commonWord, CommonWord t1) {
+                    return commonWord.compareTo(t1);
+                }
+            });
+            maxes.add(max);
+            this.highestFrequencyList.remove(max);
+        }
+
+
+        this.highestFrequencyList = maxes;
+
+    }
 
     @Override
     public int hashCode() {
@@ -91,8 +98,15 @@ public class FreqMapEntry {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
+        str.append("\nENTRY: " + this.author + " " + this.title + "\n");
         for (String field : this.frequencies.keySet()) {
-            str.append(this.author).append("-").append(this.title).append("-").append(field).append("=").append(this.frequencies.get(field)).append("\n");
+            str.append("\t");
+            str.append(field).append("=").append(this.frequencies.get(field)).append("\n");
+        }
+
+        str.append("------------------\n");
+        for (CommonWord c : this.highestFrequencyList) {
+            str.append("\t").append(c).append("\n");
         }
         return str.toString();
 

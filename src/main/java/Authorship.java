@@ -112,12 +112,12 @@ public class Authorship extends Configured implements Tool {
                     text.set(filePathString + "*nwords");
                     context.write(text, ONE);
 
-                    // common word?
                 }
             }
 
             Matcher commonWordsMatcher = COMMONS.matcher(lineText.toString());
             while (commonWordsMatcher.find()) {
+                String w = commonWordsMatcher.group();
                 if (!Authorship.ARTICLES.contains(w) && !Authorship.PREPOSITIONS.contains(w) &&
                         !Authorship.CONJUNCTIONS.contains(w) && !Authorship.PRONOUNS.contains(w) &&
                         !Authorship.VERBS.contains(w)) {

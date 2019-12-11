@@ -26,10 +26,15 @@ public class CommonWord implements Comparable {
     public int compareTo(Object o) {
         CommonWord com = (CommonWord) o;
         if (this.value < com.value) {
-            return -1;
-        } else if (this.value > com.value) {
             return 1;
+        } else if (this.value > com.value) {
+            return -1;
         }
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        return this.word  + " = " + this.value;
     }
 }
