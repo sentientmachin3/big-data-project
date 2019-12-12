@@ -80,10 +80,7 @@ public class FreqMapEntry {
             }
         });
 
-        for (int i = 10; i < this.highestFrequencyList.size(); i++) {
-            this.highestFrequencyList.remove(this.highestFrequencyList.get(i));
-        }
-
+        this.highestFrequencyList.subList(0, 10);
     }
 
     @Override

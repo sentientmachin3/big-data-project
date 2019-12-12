@@ -139,7 +139,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         while ((line = bufferedReader.readLine()) != null) {
             String author = line.split("-")[0];
             String title = line.split(".txt\\*")[0].substring(line.split(".txt\\*")[0].indexOf("-") + 1);;
-            String field;
+            String field = null;
             float value;
             if (!line.contains("commons")) {
                 field = line.split(".txt\\*")[1].split("\t")[0];

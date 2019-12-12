@@ -35,8 +35,8 @@ public class Authorship extends Configured implements Tool {
     // speech parts used in wordcount-like job
     private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not", "but", "yet", "though"));
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an"));
-    private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between"));
-    private static final List<String> PRONOUNS = new ArrayList<>(Arrays.asList("I", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "them", "my", "your", "its", "our", "their", "that", "this", "which"));
+    private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between", "at"));
+    private static final List<String> PRONOUNS = new ArrayList<>(Arrays.asList("i", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "them", "my", "your", "its", "our", "their", "that", "this", "which"));
     private static final List<String> VERBS = new ArrayList<>(Arrays.asList("is", "be", "have", "has", "do", "don't", "say", "said", "says"));
 
     static final String INPUT_PATH = "/user/root/authorship/input";
