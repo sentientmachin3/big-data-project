@@ -56,6 +56,10 @@ public class FreqMapEntry {
         return highestFrequencyList;
     }
 
+    public void setHighestFrequencyList(ArrayList<CommonWord> highestFrequencyList) {
+        this.highestFrequencyList = highestFrequencyList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof FreqMapEntry) {
@@ -80,7 +84,7 @@ public class FreqMapEntry {
             }
         });
 
-        this.highestFrequencyList.subList(0, 10);
+        this.setHighestFrequencyList(new ArrayList<>(this.highestFrequencyList.subList(0, 10)));
     }
 
     @Override
