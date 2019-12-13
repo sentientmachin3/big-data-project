@@ -31,8 +31,8 @@ public class SimilarityAnalysis {
     /**
      * Runs the analysis. For each couple of known/unknwown author generates an AffinityMap instance.
      * The analysis runs in two phases: <ul>
-     *     <li> Calculates the deltas for each couple of authors;</li>
-     *     <li> Sorts the AffinityMap instances in order to have the most similar and the less similar in order.</li>
+     * <li> Calculates the deltas for each couple of authors;</li>
+     * <li> Sorts the AffinityMap instances in order to have the most similar and the less similar in order.</li>
      * </ul>
      */
     private void exec() {
@@ -70,7 +70,7 @@ public class SimilarityAnalysis {
     /**
      * Writes the current SimilarityAnalysis to an output file.
      *
-     * @param fs the filesystem where the file is written.
+     * @param fs         the filesystem where the file is written.
      * @param outputPath the path where the file is about to be saved.
      * @throws IOException if an IOException writing the file occurs.
      */
@@ -90,7 +90,7 @@ public class SimilarityAnalysis {
      * Calculates the deltas between the frequency map of a known and an unknown author.
      * The operation performed is the absolute value of the difference between respective field names of the two maps.
      *
-     * @param kn the known author frequency map.
+     * @param kn  the known author frequency map.
      * @param unk the unknown frequency map.
      * @return an AffinityMap instance containing the comparison result.
      */
