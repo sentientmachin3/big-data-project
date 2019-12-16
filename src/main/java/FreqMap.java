@@ -91,15 +91,47 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
         // sums by field, entries are grouped by author
         int authorEntries = 0;
+        CommonWord word = new CommonWord("", 0);
+        ArrayList<CommonWord> globalCommon = global.getHighestFrequencyList();
         for (FreqMapEntry entry : this.entries) {
             if (entry.getAuthor().equals(author)) {
+                System.out.println("Author: " + author);
                 authorEntries++;
                 for (String field : entry.getFrequencies().keySet()) {
                     float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
                     global.getFrequencies().put(field, upvalue);
                 }
+
+
+                for(CommonWord w : entry.getHighestFrequencyList()) {
+                    boolean contained = false;
+                    if(!global.getHighestFrequencyList().isEmpty()) {
+                        for(CommonWord w0 : globalCommon) {
+                            if(w0.getWord().equals(w.getWord())) {
+                                contained = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(!contained) {
+                        globalCommon.add(w);
+                    }
+                }
+
+                for(CommonWord w2 : entry.getHighestFrequencyList()) {
+                    for (CommonWord commonWord : globalCommon) {
+                        if (commonWord.getWord().equals(w2.getWord())) {
+                            float value = commonWord.getValue() + w2.getValue();
+                            commonWord.setValue(value);
+                            System.out.println(commonWord);
+                        }
+                    }
+                }
             }
         }
+
+        global.setHighestFrequencyList(globalCommon);
+        global.buildTopTen();
 
         // average using number of entries
         for (String field : global.getFrequencies().keySet()) {
