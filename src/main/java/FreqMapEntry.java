@@ -43,7 +43,6 @@ public class FreqMapEntry {
         return author;
     }
 
-
     public String getTitle() {
         return title;
     }
@@ -54,6 +53,10 @@ public class FreqMapEntry {
 
     public ArrayList<CommonWord> getHighestFrequencyList() {
         return highestFrequencyList;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setHighestFrequencyList(ArrayList<CommonWord> highestFrequencyList) {

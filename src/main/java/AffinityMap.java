@@ -36,7 +36,7 @@ public class AffinityMap implements Comparable {
         this.map.put(field, delta);
     }
 
-    public void setMatchingCommonWords(int matchingCommonWords) {
+    void setMatchingCommonWords(int matchingCommonWords) {
         this.matchingCommonWords = matchingCommonWords;
     }
 

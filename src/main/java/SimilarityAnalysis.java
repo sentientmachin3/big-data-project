@@ -52,7 +52,7 @@ public class SimilarityAnalysis {
         for (FreqMapEntry kn : knowns) {
             for (FreqMapEntry unk : unknowns) {
                 AffinityMap temp = computedDelta(kn, unk);
-                kn.getHighestFrequencyList().removeAll(unk.getHighestFrequencyList());
+                kn.getHighestFrequencyList().retainAll(unk.getHighestFrequencyList());
                 temp.setMatchingCommonWords(kn.getHighestFrequencyList().size());
                 this.deltas.add(temp);
             }
