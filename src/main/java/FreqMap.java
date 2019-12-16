@@ -3,6 +3,7 @@ package main.java;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.util.hash.Hash;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
      */
     private void calculateFrequencies() {
         // gets the first ten words
-        for (FreqMapEntry entry: this.entries) {
+        for (FreqMapEntry entry : this.entries) {
             entry.buildTopTen();
         }
 
@@ -90,54 +91,95 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         }
 
         // sums by field, entries are grouped by author
-        int authorEntries = 0;
-        CommonWord word = new CommonWord("", 0);
-        ArrayList<CommonWord> globalCommon = global.getHighestFrequencyList();
-        for (FreqMapEntry entry : this.entries) {
-            if (entry.getAuthor().equals(author)) {
-                System.out.println("Author: " + author);
-                authorEntries++;
-                for (String field : entry.getFrequencies().keySet()) {
-                    float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
-                    global.getFrequencies().put(field, upvalue);
-                }
+        ArrayList<FreqMapEntry> authorEntries = new ArrayList<>();
+        HashSet<CommonWord> wordsPerAuthor = new HashSet<>();
+        HashMap<String, Float> globalWordsPerAuthor = new HashMap<>();
+        ArrayList<CommonWord> res = new ArrayList<>();
 
 
-                for(CommonWord w : entry.getHighestFrequencyList()) {
-                    boolean contained = false;
-                    if(!global.getHighestFrequencyList().isEmpty()) {
-                        for(CommonWord w0 : globalCommon) {
-                            if(w0.getWord().equals(w.getWord())) {
-                                contained = true;
-                                break;
-                            }
-                        }
-                    }
-                    if(!contained) {
-                        globalCommon.add(w);
-                    }
-                }
+//        for (FreqMapEntry entry : this.entries) {
+//            if (entry.getAuthor().equals(author)) {
+//                authorEntries++;
+//                for (String field : entry.getFrequencies().keySet()) {
+//                    float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
+//                    global.getFrequencies().put(field, upvalue);
+//                }
+//
+//
+//                for(CommonWord w : entry.getHighestFrequencyList()) {
+//                    boolean contained = false;
+//                    if(!globalCommon.isEmpty()) {
+//                        for(CommonWord w0 : globalCommon) {
+//                            if(w0.getWord().equals(w.getWord())) {
+//                                contained = true;
+//                                break;
+//                            }
+//                        }
+//                    }
+//
+//                    if(!contained) {
+//                        globalCommon.add(w);
+//                    }
+//                }
+//
+//                for(CommonWord w2 : entry.getHighestFrequencyList()) {
+//                    for (CommonWord commonWord : globalCommon) {
+//                        if (commonWord.getWord().equals(w2.getWord())) {
+//                            float value = commonWord.getValue() + w2.getValue();
+//                            commonWord.setValue(value);
+//
+//                        }
+//                    }
+//                }
+//            }
 
-                for(CommonWord w2 : entry.getHighestFrequencyList()) {
-                    for (CommonWord commonWord : globalCommon) {
-                        if (commonWord.getWord().equals(w2.getWord())) {
-                            float value = commonWord.getValue() + w2.getValue();
-                            commonWord.setValue(value);
-                            System.out.println(commonWord);
-                        }
-                    }
-                }
+        // merge words
+        for (FreqMapEntry f : this.entries) {
+            if (f.getAuthor().equals(author)) {
+                wordsPerAuthor.addAll(f.getHighestFrequencyList());
             }
         }
 
-        global.setHighestFrequencyList(globalCommon);
-        global.buildTopTen();
+        for (CommonWord c : wordsPerAuthor) {
+            globalWordsPerAuthor.put(c.getWord(), 0.0f);
+        }
+
+
+        // collect entries from the same author
+        for (FreqMapEntry e : this.entries) {
+            if (e.getAuthor().equals(author)) {
+                authorEntries.add(e);
+            }
+        }
 
         // average using number of entries
         for (String field : global.getFrequencies().keySet()) {
-            global.getFrequencies().put(field, global.getFrequencies().get(field) / authorEntries);
+            global.getFrequencies().put(field, global.getFrequencies().get(field) / authorEntries.size());
         }
 
+        // collect words avg
+        for (FreqMapEntry entry : authorEntries) {
+            for (CommonWord cw : entry.getHighestFrequencyList()) {
+                globalWordsPerAuthor.put(cw.getWord(), globalWordsPerAuthor.get(cw.getWord()) + cw.getValue());
+            }
+        }
+
+        for (String s : globalWordsPerAuthor.keySet()) {
+            globalWordsPerAuthor.put(s, globalWordsPerAuthor.get(s) / authorEntries.size());
+        }
+
+        for (String s : globalWordsPerAuthor.keySet()) {
+            res.add(new CommonWord(s, globalWordsPerAuthor.get(s)));
+        }
+
+
+//        for (CommonWord cw : globalCommon) {
+//            System.out.println(cw);
+//        }
+//        System.out.println("-----------------------");
+//
+        global.setHighestFrequencyList(res);
+        global.buildTopTen();
         this.entries.add(global);
     }
 
@@ -170,7 +212,8 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             String author = line.split("-")[0];
-            String title = line.split(".txt\\*")[0].substring(line.split(".txt\\*")[0].indexOf("-") + 1);;
+            String title = line.split(".txt\\*")[0].substring(line.split(".txt\\*")[0].indexOf("-") + 1);
+            ;
             String field = null;
             float value;
             if (!line.contains("commons")) {

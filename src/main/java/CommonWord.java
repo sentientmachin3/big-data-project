@@ -10,6 +10,11 @@ public class CommonWord implements Comparable {
         this.word = word;
     }
 
+    public CommonWord (String word, float value) {
+        this.value = value;
+        this.word = word;
+    }
+
     public String getWord() {
         return word;
     }
@@ -36,5 +41,10 @@ public class CommonWord implements Comparable {
     @Override
     public String toString() {
         return this.word  + " = " + this.value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof CommonWord && this.word.equals(((CommonWord) obj).word);
     }
 }
