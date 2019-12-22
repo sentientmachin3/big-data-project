@@ -33,9 +33,11 @@ import java.util.regex.Pattern;
  */
 public class Authorship extends Configured implements Tool {
     // speech parts used in wordcount-like job
-    private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not"));
-    private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an"));
-    private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between"));
+    private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not", "but", "yet", "though", "when", "how", "so", "if"));
+    private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an", "one"));
+    private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between", "at", "by", "like", "but", "as", "out", "about","there"));
+    private static final List<String> PRONOUNS = new ArrayList<>(Arrays.asList("i", "you", "he", "she", "it", "we", "they", "me", "him", "her", "his", "us", "them", "my", "your", "its", "our", "their", "that", "this", "which", "what", "where", "all"));
+    private static final List<String> VERBS = new ArrayList<>(Arrays.asList("is", "are", "be", "been", "was", "were", "have", "has", "had", "do", "don't", "say", "said", "says", "would", "could"));
 
     static final String INPUT_PATH = "/user/root/authorship/input";
     static final String OUTPUT_PATH = "/user/root/authorship/output";
@@ -67,11 +69,11 @@ public class Authorship extends Configured implements Tool {
 
 
     public static class Map extends Mapper<LongWritable, Text, Text, IntWritable> {
-        private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
+        private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s*");
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
         private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
-        private static final Pattern DIALOGUE = Pattern.compile("[\u201C\u201D]");
         private static final IntWritable ONE = new IntWritable(1);
+        private static final Pattern COMMONS = Pattern.compile("\\b\\w[a-zA-Z']*\\b");
         private Text text = new Text();
 
         @Override
@@ -97,7 +99,29 @@ public class Authorship extends Configured implements Tool {
                         context.write(text, ONE);
                     }
 
+                    if (Authorship.PRONOUNS.contains(refWord)) {
+                        text.set(filePathString + "*pronouns");
+                        context.write(text, ONE);
+                    }
+
+                    if (Authorship.VERBS.contains(refWord)) {
+                        text.set(filePathString + "*verbs");
+                        context.write(text, ONE);
+                    }
+
                     text.set(filePathString + "*nwords");
+                    context.write(text, ONE);
+
+                }
+            }
+
+            Matcher commonWordsMatcher = COMMONS.matcher(lineText.toString());
+            while (commonWordsMatcher.find()) {
+                String w = commonWordsMatcher.group().toLowerCase();
+                if (!Authorship.ARTICLES.contains(w) && !Authorship.PREPOSITIONS.contains(w) &&
+                        !Authorship.CONJUNCTIONS.contains(w) && !Authorship.PRONOUNS.contains(w) &&
+                        !Authorship.VERBS.contains(w)) {
+                    text.set(filePathString + "*commons:" + w);
                     context.write(text, ONE);
                 }
             }
@@ -117,14 +141,6 @@ public class Authorship extends Configured implements Tool {
                 text.set(filePathString + "*commas");
                 context.write(text, ONE);
             }
-
-            // dialogue quotes count
-            Matcher dialogue = DIALOGUE.matcher(refLineText);
-            while (dialogue.find()) {
-                text.set(filePathString + "*dialogues");
-                context.write(text, ONE);
-            }
-
 
         }
     }

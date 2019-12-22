@@ -1,5 +1,9 @@
 UNKNOWNS = 5
-deltas = open('deltas.txt')
+try:
+    deltas = open('deltas.txt')
+except IOError:
+    print("IOERROR: can't open deltas.txt")
+    
 rankings = {}
 for i in range(0, UNKNOWNS):
     rankings['unknown' + str(i+1)] = []
@@ -10,7 +14,6 @@ for line in deltas:
     if (kn not in rankings[unk]):
         rankings[unk].append(kn)
 
-rank = 1
-for key in rankings:
-    print(str(rank) + '. ' + key + ' = ' + rankings[key][0])
+for rank in range(0, len(rankings)):
+    print('unknown' + str(rank + 1) + ' = ' + rankings['unknown' + str(rank + 1)][0])
     rank += 1
