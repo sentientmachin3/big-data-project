@@ -1,5 +1,7 @@
 package main.java;
 
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -12,7 +14,8 @@ public class AffinityMap implements Comparable {
     private String author;
     private String unknown;
     private HashMap<String, Double> map;
-    private int matchingCommonWords;
+    private FreqMap freqMap;
+    private Ranking ranking;
 
     /**
      * Generates an instance with empty comparison map.
@@ -26,6 +29,13 @@ public class AffinityMap implements Comparable {
         this.map = new HashMap<>();
     }
 
+    public AffinityMap( String auth, String unk, FreqMap freqMap) {
+        this.author = auth;
+        this.unknown = unk;
+        this.map = new HashMap<>();
+        this.freqMap = freqMap;
+    }
+
     /**
      * Appends a field and its relative delta to the map.
      *
@@ -36,43 +46,58 @@ public class AffinityMap implements Comparable {
         this.map.put(field, delta);
     }
 
-    void setMatchingCommonWords(int matchingCommonWords) {
-        this.matchingCommonWords = matchingCommonWords;
+    void setFreqMap(FreqMap map) {
+        this.freqMap = map;
     }
 
     @Override
     public String toString() {
-        String init = this.author + "-" + this.unknown + "-";
         StringBuilder sb = new StringBuilder();
-        for (String f : map.keySet()) {
-            sb.append(init).append(f).append("=").append(this.map.get(f)).append("\n");
+        for (String field : this.map.keySet()) {
+            sb.append(this.author).append("-").append(this.unknown).append("-").append(field).append("-")
+                    .append(this.map.get(field)).append("\n");
         }
 
-        return sb.toString().substring(0, sb.toString().length() - 1);
+        for (CommonWord c : this.freqMap.getCWSFromAuthor(this.author)) {
+            if (this.freqMap.getCWSFromAuthor(this.unknown).contains(c)) {
+                sb.append(this.author).append("-").append(this.unknown).append("-").append("common").append("-")
+                        .append(c.getWord()).append("\n");
+            }
+        }
+
+        return sb.toString();
     }
 
 
     @Override
     public int compareTo(Object o) {
         AffinityMap obj = (AffinityMap) o;
-        double thisAvg = 0.0;
-        double otherAvg = 0.0;
-        for (String field : this.map.keySet()) {
-            if (!field.equals("avg_period_length")){
-                thisAvg += this.map.get(field);
-                otherAvg += obj.map.get(field);
-            }
-        }
-
-        thisAvg /= 5;
-        otherAvg /= 5;
-
-        if (thisAvg < otherAvg && this.matchingCommonWords < obj.matchingCommonWords) {
-            return -1;
-        } else if (thisAvg > otherAvg && this.matchingCommonWords > obj.matchingCommonWords) {
-            return 1;
-        }
-
+        // TODO: end method
         return 0;
     }
+
+//    private ArrayList<CommonWord> cwIntersection() {
+//        FreqMapEntry known = null;
+//        FreqMapEntry unknown = null;
+//
+//        for (FreqMapEntry e : this.freqMap.getEntries()) {
+//            if (e.getAuthor().equals(this.author)) {
+//                known = e;
+//            } else if (e.getAuthor().equals(this.unknown)) {
+//                unknown = e;
+//            }
+//        }
+//
+//        assert unknown != null && known != null;
+//        ArrayList<CommonWord> commonWords = new ArrayList<>();
+//        for (CommonWord c : known.getHighestFrequencyList()) {
+//            if (unknown.getHighestFrequencyList().contains(c)) {
+//                commonWords.add(c);
+//            }
+//        }
+//
+//        return commonWords;
+//    }
+
+
 }

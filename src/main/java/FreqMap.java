@@ -3,7 +3,6 @@ package main.java;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.util.hash.Hash;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -63,6 +62,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
             entry.getFrequencies().put("avg_period_length", entry.getFrequencies().get("nwords") /
                     entry.getFrequencies().get("periods"));
 
+            // since the unknown authors have a single entry, it's useless to generate another global entry for them
             if (entry.isUnknown()) {
                 entry.setTitle("global");
                 entry.buildTopTen();
@@ -94,7 +94,6 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
             global.getFrequencies().put(field, (float) 0);
         }
 
-        // sums by field, entries are grouped by author
         ArrayList<FreqMapEntry> authorEntries = new ArrayList<>();
         HashSet<CommonWord> wordsPerAuthor = new HashSet<>();
         HashMap<String, Float> globalWordsPerAuthor = new HashMap<>();
@@ -187,7 +186,6 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         while ((line = bufferedReader.readLine()) != null) {
             String author = line.split("-")[0];
             String title = line.split(".txt\\*")[0].substring(line.split(".txt\\*")[0].indexOf("-") + 1);
-            ;
             String field = null;
             float value;
             if (!line.contains("commons")) {
@@ -232,6 +230,16 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
                 e.addCommonWord(comWord);
             }
         }
+    }
+
+    public ArrayList<CommonWord> getCWSFromAuthor(String author) {
+        for (FreqMapEntry entry: this.entries) {
+            if (entry.getAuthor().equals(author) && entry.isGlobal()) {
+                return entry.getHighestFrequencyList();
+            }
+        }
+
+        return null;
     }
 
     /*

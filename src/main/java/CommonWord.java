@@ -40,7 +40,7 @@ public class CommonWord implements Comparable {
 
     @Override
     public String toString() {
-        return this.word  + " = " + this.value;
+        return this.word  + "=" + this.value;
     }
 
     @Override

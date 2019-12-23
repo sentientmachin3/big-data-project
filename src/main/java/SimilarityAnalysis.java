@@ -28,6 +28,10 @@ public class SimilarityAnalysis {
         this.exec();
     }
 
+    public ArrayList<AffinityMap> getDeltas() {
+        return this.deltas;
+    }
+
     /**
      * Runs the analysis. For each couple of known/unknwown author generates an AffinityMap instance.
      * The analysis runs in two phases: <ul>
@@ -51,10 +55,7 @@ public class SimilarityAnalysis {
         // calc deltas for each FreqMapEntry combination
         for (FreqMapEntry kn : knowns) {
             for (FreqMapEntry unk : unknowns) {
-                AffinityMap temp = computedDelta(kn, unk);
-                kn.getHighestFrequencyList().retainAll(unk.getHighestFrequencyList());
-                temp.setMatchingCommonWords(kn.getHighestFrequencyList().size());
-                this.deltas.add(temp);
+
             }
         }
 
@@ -77,7 +78,7 @@ public class SimilarityAnalysis {
     public void toFile(FileSystem fs, Path outputPath) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (AffinityMap a : this.deltas) {
-            sb.append(a.toString()).append("\n");
+            sb.append(a.toString());
         }
 
         FSDataOutputStream outputStream = fs.create(outputPath);
