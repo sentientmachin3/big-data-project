@@ -224,6 +224,13 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         entries.add(new FreqMapEntry(author, title, field, value));
     }
 
+    /**
+     * Adds a new instance of common word to the FreqMapEntry the author and title refer.
+     *
+     * @param author the author's name
+     * @param title the title of the writing
+     * @param comWord the common word to be added
+     */
     private void updateCommonWord(String author, String title, CommonWord comWord) {
         for (FreqMapEntry e : this.entries) {
             if (e.getAuthor().equals(author) && e.getTitle().equals(title)) {
@@ -232,6 +239,12 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         }
     }
 
+    /**
+     * Collects the most common words for an author.
+     *
+     * @param author the author's name
+     * @return the common words as an ArrayList instance
+     */
     public ArrayList<CommonWord> getCWSFromAuthor(String author) {
         for (FreqMapEntry entry: this.entries) {
             if (entry.getAuthor().equals(author) && entry.isGlobal()) {

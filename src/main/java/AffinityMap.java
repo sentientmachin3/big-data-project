@@ -36,6 +36,10 @@ public class AffinityMap implements Comparable {
         this.freqMap = freqMap;
     }
 
+    public void addRanking(Ranking r) {
+        this.ranking = r;
+    }
+
     /**
      * Appends a field and its relative delta to the map.
      *
@@ -71,33 +75,11 @@ public class AffinityMap implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        AffinityMap obj = (AffinityMap) o;
+        AffinityMap other = (AffinityMap) o;
         // TODO: end method
+
+
         return 0;
     }
-
-//    private ArrayList<CommonWord> cwIntersection() {
-//        FreqMapEntry known = null;
-//        FreqMapEntry unknown = null;
-//
-//        for (FreqMapEntry e : this.freqMap.getEntries()) {
-//            if (e.getAuthor().equals(this.author)) {
-//                known = e;
-//            } else if (e.getAuthor().equals(this.unknown)) {
-//                unknown = e;
-//            }
-//        }
-//
-//        assert unknown != null && known != null;
-//        ArrayList<CommonWord> commonWords = new ArrayList<>();
-//        for (CommonWord c : known.getHighestFrequencyList()) {
-//            if (unknown.getHighestFrequencyList().contains(c)) {
-//                commonWords.add(c);
-//            }
-//        }
-//
-//        return commonWords;
-//    }
-
 
 }

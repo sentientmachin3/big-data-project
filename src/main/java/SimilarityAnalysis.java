@@ -33,7 +33,7 @@ public class SimilarityAnalysis {
     }
 
     /**
-     * Runs the analysis. For each couple of known/unknwown author generates an AffinityMap instance.
+     * Runs the analysis. For each couple of known/unknown author generates an AffinityMap instance.
      * The analysis runs in two phases: <ul>
      * <li> Calculates the deltas for each couple of authors;</li>
      * <li> Sorts the AffinityMap instances in order to have the most similar and the less similar in order.</li>
@@ -53,9 +53,9 @@ public class SimilarityAnalysis {
         }
 
         // calc deltas for each FreqMapEntry combination
-        for (FreqMapEntry kn : knowns) {
-            for (FreqMapEntry unk : unknowns) {
-
+        for (FreqMapEntry unk : unknowns) {
+            for (FreqMapEntry kn : knowns) {
+                this.deltas.add(computeDelta(kn, unk, knowns));
             }
         }
 
@@ -95,7 +95,7 @@ public class SimilarityAnalysis {
      * @param unk the unknown frequency map.
      * @return an AffinityMap instance containing the comparison result.
      */
-    private AffinityMap computedDelta(FreqMapEntry kn, FreqMapEntry unk) {
+    private AffinityMap computeDelta(FreqMapEntry kn, FreqMapEntry unk, ArrayList<FreqMapEntry> knowns) {
         AffinityMap af = new AffinityMap(kn.getAuthor(), unk.getAuthor());
 
         // delta diff = |kn - unk| for each field in map
@@ -103,6 +103,9 @@ public class SimilarityAnalysis {
             if (!field.equals("nwords") && !field.equals("periods"))
                 af.append(field, Math.abs(kn.getFrequencies().get(field) - unk.getFrequencies().get(field)));
         }
+
+        // adding the ranking in order to have an author's rank
+        af.addRanking(new Ranking(unk, knowns));
 
         return af;
     }
