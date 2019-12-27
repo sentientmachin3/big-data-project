@@ -1,5 +1,6 @@
-package main.java;
+package main.java.hadoop;
 
+import main.java.Main;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -39,8 +40,8 @@ public class Authorship extends Configured implements Tool {
     private static final List<String> PRONOUNS = new ArrayList<>(Arrays.asList("i", "you", "he", "she", "it", "we", "they", "me", "him", "her", "his", "us", "them", "my", "your", "its", "our", "their", "that", "this", "which", "what", "where", "who", "all"));
     private static final List<String> VERBS = new ArrayList<>(Arrays.asList("is", "are", "be", "been", "was", "were", "have", "has", "had", "do", "don't", "say", "said", "says", "would", "could"));
 
-    static final String INPUT_PATH = "/user/root/authorship/input";
-    static final String OUTPUT_PATH = "/user/root/authorship/output";
+    public static final String INPUT_PATH = "/user/root/authorship/input";
+    public static final String OUTPUT_PATH = "/user/root/authorship/output";
     private static final String UNKNOWNS_INPUT_PATH = "/user/root/authorship/input/unknowns";
 
 

@@ -1,4 +1,4 @@
-package main.java;
+package main.java.analysis.ranking;
 
 public class Pair<F, S> {
     private F first;

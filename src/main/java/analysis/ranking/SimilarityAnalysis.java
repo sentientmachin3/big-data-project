@@ -1,6 +1,8 @@
-package main.java;
+package main.java.analysis.ranking;
 
 
+import main.java.analysis.frequencies.FreqMap;
+import main.java.analysis.frequencies.FreqMapEntry;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;

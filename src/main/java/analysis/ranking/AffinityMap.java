@@ -1,7 +1,9 @@
-package main.java;
+package main.java.analysis.ranking;
 
 
-import java.util.ArrayList;
+import main.java.analysis.frequencies.CommonWord;
+import main.java.analysis.frequencies.FreqMap;
+
 import java.util.HashMap;
 
 /**

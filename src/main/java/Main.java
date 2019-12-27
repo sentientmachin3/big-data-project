@@ -1,5 +1,8 @@
 package main.java;
 
+import main.java.analysis.frequencies.FreqMap;
+import main.java.analysis.ranking.SimilarityAnalysis;
+import main.java.hadoop.Authorship;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
@@ -35,7 +38,7 @@ public class Main {
      * @return a list of paths as String instances.
      * @throws IOException if an IOException occurs (permission problems and so on...)
      */
-    static LinkedList<String> buildPaths(Authorship authorship) throws IOException {
+    public static LinkedList<String> buildPaths(Authorship authorship) throws IOException {
         FileSystem fs = FileSystem.get(authorship.getConf());
         RemoteIterator<LocatedFileStatus> remoteIterator = fs.listFiles(new Path(Authorship.INPUT_PATH), false);
         LinkedList<String> names = new LinkedList<>();

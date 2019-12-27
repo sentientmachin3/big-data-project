@@ -1,4 +1,4 @@
-package main.java;
+package main.java.analysis.frequencies;
 
 
 public class CommonWord implements Comparable {

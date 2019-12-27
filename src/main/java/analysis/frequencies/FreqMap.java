@@ -1,4 +1,4 @@
-package main.java;
+package main.java.analysis.frequencies;
 
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
@@ -19,7 +19,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
     /**
      * Empty constructor for an instance. Simply generates an empty set.
      */
-    FreqMap() {
+    public FreqMap() {
         this.entries = new HashSet<>();
     }
 
@@ -178,7 +178,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
      * @param path the path where the file is located.
      * @throws IOException if an IOException reading the file occurs.
      */
-    void fromFile(FileSystem fs, Path path) throws IOException {
+    public void fromFile(FileSystem fs, Path path) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(path)));
 
         // value parsing
