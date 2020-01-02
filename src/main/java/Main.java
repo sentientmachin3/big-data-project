@@ -20,14 +20,12 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Authorship authorship = new Authorship();
         ToolRunner.run(authorship, args);
-        FileSystem fs = FileSystem.get(authorship.getConf());
-        FreqMap freqMap = new FreqMap();
-
-        freqMap.fromFile(fs, new Path(Authorship.OUTPUT_PATH + "/part-r-00000"));
+        FileSystem fileSystem = FileSystem.get(authorship.getConf());
+        FreqMap freqMap = FreqMap.getInstance().load(fileSystem, new Path(Authorship.OUTPUT_PATH + "/part-r-00000"));
 //        freqMap.toFile(fs, new Path(Authorship.OUTPUT_PATH + "/known-frequencies.txt"));
 
         SimilarityAnalysis similarityAnalysis = new SimilarityAnalysis(freqMap);
-        similarityAnalysis.toFile(fs, new Path(Authorship.OUTPUT_PATH + "/deltas.txt"));
+        similarityAnalysis.toFile(fileSystem, new Path(Authorship.OUTPUT_PATH + "/deltas.txt"));
 
     }
 

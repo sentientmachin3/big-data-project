@@ -1,5 +1,6 @@
 package main.java.analysis.frequencies;
 
+import main.java.hadoop.Authorship;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -13,18 +14,12 @@ import java.util.*;
  * Class representing a FreqMapEntry instance. A FreqMap is a set of entries (instances of FreqMapEntry) containing,
  * for each author and each text, the results of the analysis of a single input file.
  */
-public class FreqMap implements Map<String, HashMap<String, Float>> {
-    private HashSet<FreqMapEntry> entries;
+public class FreqMap implements Iterable<FreqMapEntry> {
+    private static FreqMap instance = new FreqMap();
+    private HashSet<FreqMapEntry> entries = new HashSet<>();
 
-    /**
-     * Empty constructor for an instance. Simply generates an empty set.
-     */
-    public FreqMap() {
-        this.entries = new HashSet<>();
-    }
-
-    public HashSet<FreqMapEntry> getEntries() {
-        return this.entries;
+    public static FreqMap getInstance() {
+        return instance;
     }
 
     @Override
@@ -72,10 +67,13 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
 
         // call the method for global frequencies (average of author's parameters)
-        for (String s : this.keySet()) {
-            if (!s.contains("unknown"))
-                this.globalAuthorFrequency(s);
+        ArrayList<FreqMapEntry> globals = new ArrayList<>();
+        for (FreqMapEntry entry : this) {
+            if (!entry.getAuthor().contains("unknown"))
+                globals.add(globalAuthorFrequency(entry.getAuthor()));
         }
+
+        this.entries.addAll(globals);
 
     }
 
@@ -85,7 +83,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
      *
      * @param author the author's name to compute the average of.
      */
-    private void globalAuthorFrequency(String author) {
+    private FreqMapEntry globalAuthorFrequency(String author) {
 
         FreqMapEntry global = new FreqMapEntry(author, "global");
 
@@ -147,28 +145,21 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
 
         global.setHighestFrequencyList(res);
         global.buildTopTen();
-        this.entries.add(global);
+        return global;
     }
 
-    /**
-     * Writes to file this FreqMap.
-     *
-     * @param fs   the filesystem where the file is written.
-     * @param path the path where the file is about to be saved.
-     * @throws IOException if an IOException writing the file occurs.
-     */
-    void toFile(FileSystem fs, Path path) throws IOException {
-        FSDataOutputStream outputStream = fs.create(path);
-        for (FreqMapEntry entry : this.entries) {
-            if (entry.isGlobal()) {
-                outputStream.writeBytes(entry.toString());
-                outputStream.flush();
-            }
-        }
-
-        outputStream.flush();
-        outputStream.close();
-    }
+    //    public void toFile(FileSystem fs, Path path) throws IOException {
+    //        FSDataOutputStream outputStream = fs.create(path);
+    //        for (FreqMapEntry entry : this.entries) {
+    //            if (entry.isGlobal()) {
+    //                outputStream.writeBytes(entry.toString());
+    //                outputStream.flush();
+    //            }
+    //        }
+    //
+    //        outputStream.flush();
+    //        outputStream.close();
+    //    }
 
     /**
      * Fetches a FreqMap instance from the job output file. This method also calls the
@@ -178,7 +169,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
      * @param path the path where the file is located.
      * @throws IOException if an IOException reading the file occurs.
      */
-    public void fromFile(FileSystem fs, Path path) throws IOException {
+    public FreqMap load(FileSystem fs, Path path) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(fs.open(path)));
 
         // value parsing
@@ -201,6 +192,7 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
             }
         }
         this.calculateFrequencies();
+        return this;
     }
 
     /**
@@ -255,120 +247,10 @@ public class FreqMap implements Map<String, HashMap<String, Float>> {
         return null;
     }
 
-    /*
-     * Map inherited methods
-     * */
-    @Override
-    public int size() {
-        return entries.size();
-    }
 
     @Override
-    public boolean isEmpty() {
-        return entries.isEmpty();
+    public Iterator<FreqMapEntry> iterator() {
+        return this.entries.iterator();
     }
 
-    @Override
-    public boolean containsKey(Object o) {
-        for (FreqMapEntry entry : this.entries) {
-            if (o.equals(entry.getAuthor()))
-                return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean containsValue(Object o) {
-        for (FreqMapEntry entry : this.entries) {
-            if (entry.getFrequencies().containsValue(o))
-                return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public HashMap<String, Float> get(Object o) {
-        for (FreqMapEntry entry : entries) {
-            if (entry.getAuthor().equals(o))
-                return entry.getFrequencies();
-        }
-
-        return null;
-    }
-
-    @Override
-    public HashMap<String, Float> put(String o, HashMap<String, Float> o2) {
-        return null;
-    }
-
-    @Override
-    public HashMap<String, Float> remove(Object o) {
-        if (o instanceof FreqMapEntry)
-            this.entries.remove(o);
-
-        for (FreqMapEntry entry : entries) {
-            if (entry.getAuthor().equals(o)) {
-                this.entries.remove(entry);
-            }
-        }
-
-        return null;
-
-    }
-
-    @Override
-    public void putAll(Map<? extends String, ? extends HashMap<String, Float>> map) {
-    }
-
-    @Override
-    public void clear() {
-        this.entries.clear();
-    }
-
-    @Override
-    public Set<String> keySet() {
-        HashSet<String> names = new HashSet<>();
-        for (FreqMapEntry entry : entries) {
-            names.add(entry.getAuthor());
-        }
-
-        return names;
-    }
-
-    @Override
-    public Collection<HashMap<String, Float>> values() {
-        HashSet<HashMap<String, Float>> set = new HashSet<>();
-        for (FreqMapEntry entry : entries) {
-            set.add(entry.getFrequencies());
-        }
-
-        return set;
-    }
-
-    @Override
-    public Set<Entry<String, HashMap<String, Float>>> entrySet() {
-        HashSet<Entry<String, HashMap<String, Float>>> set = new HashSet<>();
-        for (final FreqMapEntry entry : entries) {
-            set.add(new Entry<String, HashMap<String, Float>>() {
-                @Override
-                public String getKey() {
-                    return entry.getAuthor();
-                }
-
-                @Override
-                public HashMap<String, Float> getValue() {
-                    return entry.getFrequencies();
-                }
-
-                @Override
-                public HashMap<String, Float> setValue(HashMap<String, Float> stringFloatHashMap) {
-                    return stringFloatHashMap;
-                }
-            });
-        }
-
-        return set;
-    }
 }
