@@ -15,12 +15,8 @@ import java.util.*;
  * for each author and each text, the results of the analysis of a single input file.
  */
 public class FreqMap implements Iterable<FreqMapEntry> {
-    private static FreqMap instance = new FreqMap();
+    public static FreqMap INSTANCE = new FreqMap();
     private HashSet<FreqMapEntry> entries = new HashSet<>();
-
-    public static FreqMap getInstance() {
-        return instance;
-    }
 
     @Override
     public String toString() {

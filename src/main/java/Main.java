@@ -21,11 +21,10 @@ public class Main {
         Authorship authorship = new Authorship();
         ToolRunner.run(authorship, args);
         FileSystem fileSystem = FileSystem.get(authorship.getConf());
-        FreqMap freqMap = FreqMap.getInstance().load(fileSystem, new Path(Authorship.OUTPUT_PATH + "/part-r-00000"));
+        FreqMap.INSTANCE.load(fileSystem, new Path(Authorship.OUTPUT_PATH + "/part-r-00000"));
 //        freqMap.toFile(fs, new Path(Authorship.OUTPUT_PATH + "/known-frequencies.txt"));
 
-        SimilarityAnalysis similarityAnalysis = new SimilarityAnalysis(freqMap);
-        similarityAnalysis.toFile(fileSystem, new Path(Authorship.OUTPUT_PATH + "/deltas.txt"));
+        SimilarityAnalysis.INSTANCE.toFile(fileSystem, new Path(Authorship.OUTPUT_PATH + "/deltas.txt"));
 
     }
 

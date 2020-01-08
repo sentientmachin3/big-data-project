@@ -16,17 +16,14 @@ import java.util.Comparator;
  * The class contains the methods in order to run a similarity analysis between authors.
  */
 public class SimilarityAnalysis {
-    private FreqMap freqMap;
-    private ArrayList<AffinityMap> deltas;
+    public static SimilarityAnalysis INSTANCE = new SimilarityAnalysis();
+    private ArrayList<AffinityMap> deltas = new ArrayList<>();
 
     /**
-     * Generates an instance, using a FreqMap of known authors.
+     * Generates an instance.
      *
-     * @param known the FreqMap instance with the known author's data.
-     */
-    public SimilarityAnalysis(FreqMap known) {
-        this.freqMap = known;
-        this.deltas = new ArrayList<>();
+     * */
+    private SimilarityAnalysis() {
         this.exec();
     }
 
@@ -46,7 +43,7 @@ public class SimilarityAnalysis {
         ArrayList<FreqMapEntry> unknowns = new ArrayList<>();
         ArrayList<FreqMapEntry> knowns = new ArrayList<>();
 
-        for (FreqMapEntry entry : this.freqMap) {
+        for (FreqMapEntry entry : FreqMap.INSTANCE) {
             if (entry.isUnknown() && entry.isGlobal()) {
                 unknowns.add(entry);
             } else if (!entry.isUnknown() && entry.isGlobal()) {
@@ -80,7 +77,7 @@ public class SimilarityAnalysis {
     public void toFile(FileSystem fs, Path outputPath) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (AffinityMap a : this.deltas) {
-            a.setFreqMap(this.freqMap);
+            a.setFreqMap(FreqMap.INSTANCE);
             sb.append(a.toString());
         }
 
