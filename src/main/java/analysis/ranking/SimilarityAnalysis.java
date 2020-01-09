@@ -1,6 +1,8 @@
-package main.java;
+package main.java.analysis.ranking;
 
 
+import main.java.analysis.frequencies.FreqMap;
+import main.java.analysis.frequencies.FreqMapEntry;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -14,22 +16,23 @@ import java.util.Comparator;
  * The class contains the methods in order to run a similarity analysis between authors.
  */
 public class SimilarityAnalysis {
-    private FreqMap freqMap;
-    private ArrayList<AffinityMap> deltas;
+    public static SimilarityAnalysis INSTANCE = new SimilarityAnalysis();
+    private ArrayList<AffinityMap> deltas = new ArrayList<>();
 
     /**
-     * Generates an instance, using a FreqMap of known authors.
+     * Generates an instance.
      *
-     * @param known the FreqMap instance with the known author's data.
-     */
-    public SimilarityAnalysis(FreqMap known) {
-        this.freqMap = known;
-        this.deltas = new ArrayList<>();
+     * */
+    private SimilarityAnalysis() {
         this.exec();
     }
 
+    public ArrayList<AffinityMap> getDeltas() {
+        return this.deltas;
+    }
+
     /**
-     * Runs the analysis. For each couple of known/unknwown author generates an AffinityMap instance.
+     * Runs the analysis. For each couple of known/unknown author generates an AffinityMap instance.
      * The analysis runs in two phases: <ul>
      * <li> Calculates the deltas for each couple of authors;</li>
      * <li> Sorts the AffinityMap instances in order to have the most similar and the less similar in order.</li>
@@ -40,7 +43,7 @@ public class SimilarityAnalysis {
         ArrayList<FreqMapEntry> unknowns = new ArrayList<>();
         ArrayList<FreqMapEntry> knowns = new ArrayList<>();
 
-        for (FreqMapEntry entry : this.freqMap.getEntries()) {
+        for (FreqMapEntry entry : FreqMap.INSTANCE) {
             if (entry.isUnknown() && entry.isGlobal()) {
                 unknowns.add(entry);
             } else if (!entry.isUnknown() && entry.isGlobal()) {
@@ -49,22 +52,19 @@ public class SimilarityAnalysis {
         }
 
         // calc deltas for each FreqMapEntry combination
-        for (FreqMapEntry kn : knowns) {
-            for (FreqMapEntry unk : unknowns) {
-                AffinityMap temp = computedDelta(kn, unk);
-                kn.getHighestFrequencyList().retainAll(unk.getHighestFrequencyList());
-                temp.setMatchingCommonWords(kn.getHighestFrequencyList().size());
-                this.deltas.add(temp);
+        for (FreqMapEntry unk : unknowns) {
+            for (FreqMapEntry kn : knowns) {
+                this.deltas.add(computeDelta(kn, unk, knowns));
             }
         }
 
-        Collections.sort(this.deltas, new Comparator<AffinityMap>() {
-            // comparison method between two affinity maps, used to sort the analysis
-            @Override
-            public int compare(AffinityMap affinityMap, AffinityMap t1) {
-                return affinityMap.compareTo(t1);
-            }
-        });
+//        Collections.sort(this.deltas, new Comparator<AffinityMap>() {
+//            // comparison method between two affinity maps, used to sort the analysis
+//            @Override
+//            public int compare(AffinityMap affinityMap, AffinityMap t1) {
+//                return affinityMap.compareTo(t1);
+//            }
+//        });
     }
 
     /**
@@ -77,7 +77,8 @@ public class SimilarityAnalysis {
     public void toFile(FileSystem fs, Path outputPath) throws IOException {
         StringBuilder sb = new StringBuilder();
         for (AffinityMap a : this.deltas) {
-            sb.append(a.toString()).append("\n");
+            a.setFreqMap(FreqMap.INSTANCE);
+            sb.append(a.toString());
         }
 
         FSDataOutputStream outputStream = fs.create(outputPath);
@@ -94,7 +95,7 @@ public class SimilarityAnalysis {
      * @param unk the unknown frequency map.
      * @return an AffinityMap instance containing the comparison result.
      */
-    private AffinityMap computedDelta(FreqMapEntry kn, FreqMapEntry unk) {
+    private AffinityMap computeDelta(FreqMapEntry kn, FreqMapEntry unk, ArrayList<FreqMapEntry> knowns) {
         AffinityMap af = new AffinityMap(kn.getAuthor(), unk.getAuthor());
 
         // delta diff = |kn - unk| for each field in map
@@ -102,6 +103,9 @@ public class SimilarityAnalysis {
             if (!field.equals("nwords") && !field.equals("periods"))
                 af.append(field, Math.abs(kn.getFrequencies().get(field) - unk.getFrequencies().get(field)));
         }
+
+        // adding the ranking in order to have an author's rank
+        af.addRanking(new Ranking(unk, knowns));
 
         return af;
     }

@@ -1,4 +1,4 @@
-package main.java;
+package main.java.analysis.frequencies;
 
 import java.util.*;
 
@@ -6,7 +6,7 @@ import java.util.*;
  * <p>A FreqMapEntry is an entry of a map containing the author name, the title of the manuscript and the map
  * of data extracted from the analysis.</p>
  */
-public class FreqMapEntry {
+public class FreqMapEntry implements Comparable {
     private String author;
     private String title;
     private HashMap<String, Float> frequencies = new HashMap<>();
@@ -118,5 +118,10 @@ public class FreqMapEntry {
 
     public boolean isGlobal() {
         return this.title.contains("global");
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return 0;
     }
 }
