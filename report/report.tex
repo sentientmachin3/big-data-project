@@ -342,7 +342,7 @@ public int run(String[] args) throws Exception {
 	
 	The first one contains the declaration of patterns during the analysis.
 	
-	\begin{lstlisting}[firstnumber=70, caption={Declaration of Regular Expression Patterns}, captionpos=b]
+	\begin{lstlisting}[firstnumber=73, caption={Declaration of Regular Expression Patterns}, captionpos=b]
 private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
 private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
 private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
@@ -366,7 +366,7 @@ private static final IntWritable ONE = new IntWritable(1);
 
 	In this section the previous pattern matchers are used to reach these words and write the corresponding \lstinline|ONE| in the job contest. 
 	
-	We report an example for articles count: \begin{lstlisting}[firstnumber=82, caption={Articles counting in Map method}, captionpos=b]
+	We report an example for articles count: \begin{lstlisting}[firstnumber=85, caption={Articles counting in Map method}, captionpos=b]
 for (String word : WORD_BOUNDARY.split(lineText.toString())) {
 	String refWord = word.toLowerCase();
 	if (!word.isEmpty()) {
@@ -402,7 +402,7 @@ while (matcher.find()) {
 	A \lstinline|Matcher| instance tries to match the pattern to an input line. As soon as the matcher finds occurences of the pattern in the text passed as parameter, the mapper writes a line similar to the previous one (i.e. formatted in the same way) to the context. The procedure repeats for punctuation marks, commas and periods delimitators. \\
 	
 	The last thing the mapper performs the count of the words which have not been counted in the previous matchings. The code running this task is the following:
-	\begin{lstlisting}[firstnumber=119]
+	\begin{lstlisting}[firstnumber=119, caption={Common words counting in the Map method.}, captionpos=b]
 Matcher commonWordsMatcher = COMMONS.matcher(lineText.toString());
 while (commonWordsMatcher.find()) {
 	String w = commonWordsMatcher.group().toLowerCase();
@@ -415,9 +415,13 @@ while (commonWordsMatcher.find()) {
 		
 	\end{lstlisting}
 	
+	The string used to format the common words is a bit different: \begin{center}
+		\texttt{author-title.txt*common:\textless word\textgreater\textless tab\textgreater \textless value\textgreater} 
+	\end{center}
+	
 	\subsubsection{Reducer implementation}
 	The reducer implementation is pretty much the same as in the \lstinline|Wordcount| example. Since it's just a few lines we report the full code:
-	\begin{lstlisting}[firstnumber=135, caption={Reduce method}, captionpos=b]
+	\begin{lstlisting}[firstnumber=152, caption={Reduce method}, captionpos=b]
 @Override
 protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
 	int sum = 0;
@@ -430,6 +434,7 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 	
 	Since the context has now a lot of lines associated with same value (the \lstinline|IntWritable| instance for ``ones''), the combiner and the reducer are responsible for grouping lines with the same key and count these lines, writing the total into the context.
 	
+	For the common words, the reducer counts all the occurrences of the same word for an author in a text.
 	
 	\subsection{Frequency Calculations}
 	Once the hadoop job has terminated, the control passes to a simple Java program. This section of the program generates an instance of the class \lstinline|FreqMap| parsing the reducer output file.
