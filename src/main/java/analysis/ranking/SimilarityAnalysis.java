@@ -58,13 +58,13 @@ public class SimilarityAnalysis {
             }
         }
 
-        Collections.sort(this.deltas, new Comparator<AffinityMap>() {
-            // comparison method between two affinity maps, used to sort the analysis
-            @Override
-            public int compare(AffinityMap affinityMap, AffinityMap t1) {
-                return affinityMap.compareTo(t1);
-            }
-        });
+//        Collections.sort(this.deltas, new Comparator<AffinityMap>() {
+//            // comparison method between two affinity maps, used to sort the analysis
+//            @Override
+//            public int compare(AffinityMap affinityMap, AffinityMap t1) {
+//                return affinityMap.compareTo(t1);
+//            }
+//        });
     }
 
     /**
