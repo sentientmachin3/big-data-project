@@ -1,4 +1,4 @@
-package main.java;
+package main.java.analysis.frequencies;
 
 import java.util.*;
 
@@ -6,11 +6,11 @@ import java.util.*;
  * <p>A FreqMapEntry is an entry of a map containing the author name, the title of the manuscript and the map
  * of data extracted from the analysis.</p>
  */
-public class FreqMapEntry {
+public class FreqMapEntry implements Comparable {
     private String author;
     private String title;
     private HashMap<String, Float> frequencies = new HashMap<>();
-    private ArrayList<CommonWord> highestFrequencyList =new ArrayList<>();
+    private ArrayList<CommonWord> highestFrequencyList = new ArrayList<>();
 
     /**
      * Constructor for FreqMapEntry class.
@@ -43,7 +43,6 @@ public class FreqMapEntry {
         return author;
     }
 
-
     public String getTitle() {
         return title;
     }
@@ -54,6 +53,14 @@ public class FreqMapEntry {
 
     public ArrayList<CommonWord> getHighestFrequencyList() {
         return highestFrequencyList;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setHighestFrequencyList(ArrayList<CommonWord> highestFrequencyList) {
+        this.highestFrequencyList = highestFrequencyList;
     }
 
     @Override
@@ -72,13 +79,16 @@ public class FreqMapEntry {
         this.highestFrequencyList.add(commonWord);
     }
 
-//    public void updateCommonWord(String word, float value) {
-//        for (CommonWord w: this.getHighestFrequencyList()) {
-//            if (w.getWord().equals(word)) {
-//                w.setValue(value);
-//            }
-//        }
-//    }
+    public void buildTopTen() {
+        Collections.sort(this.highestFrequencyList, new Comparator<CommonWord>() {
+            @Override
+            public int compare(CommonWord commonWord, CommonWord t1) {
+                return commonWord.compareTo(t1);
+            }
+        });
+
+        this.setHighestFrequencyList(new ArrayList<>(this.highestFrequencyList.subList(0, 10)));
+    }
 
     @Override
     public int hashCode() {
@@ -88,8 +98,15 @@ public class FreqMapEntry {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
+        str.append("\nENTRY: " + this.author + " " + this.title + "\n");
         for (String field : this.frequencies.keySet()) {
-            str.append(this.author).append("-").append(this.title).append("-").append(field).append("=").append(this.frequencies.get(field)).append("\n");
+            str.append("\t");
+            str.append(field).append("=").append(this.frequencies.get(field)).append("\n");
+        }
+
+        str.append("------------------\n");
+        for (CommonWord c : this.highestFrequencyList) {
+            str.append("\t").append(c).append("\n");
         }
         return str.toString();
 
@@ -101,5 +118,10 @@ public class FreqMapEntry {
 
     public boolean isGlobal() {
         return this.title.contains("global");
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return 0;
     }
 }
