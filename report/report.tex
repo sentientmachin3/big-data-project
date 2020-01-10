@@ -225,7 +225,9 @@ escapeinside={(*@}{@*)}
 	
 	\newpage
 	\section{Project workflow and structure}\label{workflow}
-	The first step of the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. It performs the calculation of the frequencies of language parts used by the authors in their texts. Starting from these data, the following steps consist of taking unknown manuscripts as input and establishing the authorship by the comparing them with the ``dictionary'' previously created. 
+	The first step of the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. It performs the calculation of the frequencies of language parts used by the authors in their texts and counts the most common words for each author, excluding the ones counted in the previous step.
+	
+	Starting from these data, the following phases consist of taking unknown manuscripts as input and establishing the authorship by the comparing them with the ``dictionary'' previously created. 
 	
 	All the manuscripts are \texttt{.txt} files taken from the Project Gutenberg\parencite{Gutenberg} online library.
 	The Project Workflow is the following:
@@ -237,13 +239,14 @@ escapeinside={(*@}{@*)}
 			\item Reducer performs the counting of language parts by putting together data taken from the Mappers. The reducer output  
 		\end{enumerate}
 		\item Calculating the frequencies of language parts for each text.
+		\item Calculating the most common words for each author.
 		\item Obtaining an author ``identikit'' based on the texts that have been analyzed written by that specific author. The author characteristics are built merging the data resulting from the text analysis.
 		\item Analyzing unknown texts and comparing them to the known author is order to have a rank of similarity between the unknown texts and the known authors.
 	\end{enumerate}
 
 	\subsection{Project structure}
 	The project main folder is divided in the following directories:
-	\begin{figure}[H]
+	\begin{figure}[h!]
 		\dirtree{%
 			.1 big-data-project. 
 			.2 doc\DTcomment{generated javadoc folder}. 
@@ -252,13 +255,19 @@ escapeinside={(*@}{@*)}
 			.2 src \DTcomment{code sources}. 
 			.3 main. 
 			.4 java. 
-			.5 AffinityMap.java. 
-			.5 Authorship.java. 
-			.5 CommonWord.java. 
-			.5 FreqMap.java. 
-			.5 FreqMapEntry.java. 
+			.5 analysis. 
+			.6 frequencies. 
+			.7 CommonWord.java. 
+			.7 FreqMapEntry.java. 
+			.7 FreqMap.java. 
+			.6 ranking. 
+			.7 AffinityMap.java. 
+			.7 Pair.java. 
+			.7 Ranking.java. 
+			.7 SimilarityAnalysis.java. 
+			.5 hadoop. 
+			.6 Authorship.java. 
 			.5 Main.java. 
-			.5 SimilarityAnalysis.java. 
 		}
 	\end{figure}
 
@@ -285,7 +294,7 @@ escapeinside={(*@}{@*)}
 	Contains the job configuration, setting input and output paths.
 	The job is configured as follows:
 	
-	\begin{lstlisting}[firstnumber=45, caption={Run method}, captionpos=b]
+	\begin{lstlisting}[firstnumber=48, caption={Run method}, captionpos=b]
 @Override
 public int run(String[] args) throws Exception {
 	Job job = Job.getInstance(this.getConf(), "authorship");
@@ -333,7 +342,7 @@ public int run(String[] args) throws Exception {
 	
 	The first one contains the declaration of patterns during the analysis.
 	
-	\begin{lstlisting}[firstnumber=70, caption={Declaration of Regular Expression Patterns}, captionpos=b]
+	\begin{lstlisting}[firstnumber=73, caption={Declaration of Regular Expression Patterns}, captionpos=b]
 private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
 private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
 private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
@@ -357,7 +366,7 @@ private static final IntWritable ONE = new IntWritable(1);
 
 	In this section the previous pattern matchers are used to reach these words and write the corresponding \lstinline|ONE| in the job contest. 
 	
-	We report an example for articles count: \begin{lstlisting}[firstnumber=82, caption={Articles counting in Map method}, captionpos=b]
+	We report an example for articles count: \begin{lstlisting}[firstnumber=85, caption={Articles counting in Map method}, captionpos=b]
 for (String word : WORD_BOUNDARY.split(lineText.toString())) {
 	String refWord = word.toLowerCase();
 	if (!word.isEmpty()) {
@@ -376,7 +385,7 @@ for (String word : WORD_BOUNDARY.split(lineText.toString())) {
 		\texttt{author-title.txt*article\textless tab\textgreater \textless value\textgreater} 
 	\end{center}
 
-	This procedure applies in the same way to preposition and conjunctions.
+	This procedure applies in the same way to preposition, conjunctions and other language parts.
 	
 	\bigskip
 	\noindent
@@ -390,11 +399,29 @@ while (matcher.find()) {
 	...
 	\end{lstlisting}
 	
-	A \lstinline|Matcher| instance tries to match the pattern to an input line. As soon as the matcher finds occurences of the pattern in the text passed as parameter, the mapper writes a line similar to the previous one (i.e. formatted in the same way) to the context. The procedure repeats for punctuation marks, commas and periods delimitators.
+	A \lstinline|Matcher| instance tries to match the pattern to an input line. As soon as the matcher finds occurences of the pattern in the text passed as parameter, the mapper writes a line similar to the previous one (i.e. formatted in the same way) to the context. The procedure repeats for punctuation marks, commas and periods delimitators. \\
+	
+	The last thing the mapper performs the count of the words which have not been counted in the previous matchings. The code running this task is the following:
+	\begin{lstlisting}[firstnumber=119, caption={Common words counting in the Map method.}, captionpos=b]
+Matcher commonWordsMatcher = COMMONS.matcher(lineText.toString());
+while (commonWordsMatcher.find()) {
+	String w = commonWordsMatcher.group().toLowerCase();
+	if (!Authorship.ARTICLES.contains(w) && ... &&
+		!Authorship.VERBS.contains(w)) {
+			text.set(filePathString + "*commons:" + w);
+			context.write(text, ONE);
+	}
+}
+		
+	\end{lstlisting}
+	
+	The string used to format the common words is a bit different: \begin{center}
+		\texttt{author-title.txt*common:\textless word\textgreater\textless tab\textgreater \textless value\textgreater} 
+	\end{center}
 	
 	\subsubsection{Reducer implementation}
 	The reducer implementation is pretty much the same as in the \lstinline|Wordcount| example. Since it's just a few lines we report the full code:
-	\begin{lstlisting}[firstnumber=135, caption={Reduce method}, captionpos=b]
+	\begin{lstlisting}[firstnumber=152, caption={Reduce method}, captionpos=b]
 @Override
 protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
 	int sum = 0;
@@ -407,17 +434,19 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 	
 	Since the context has now a lot of lines associated with same value (the \lstinline|IntWritable| instance for ``ones''), the combiner and the reducer are responsible for grouping lines with the same key and count these lines, writing the total into the context.
 	
+	For the common words, the reducer counts all the occurrences of the same word for an author in a text.
 	
 	\subsection{Frequency Calculations}
-	Once the hadoop job has terminated, the control passes to a simple Java program. This section of the program generates an instance of the class \lstinline|FreqMap| parsing the reducer output file.
+	Once the hadoop job has terminated, the control passes to a simple Java program. This section of the program generates an instance of the class \lstinline|FreqMap| (implemented as a singleton) which parsing the reducer output file and builds a set of \lstinline|FreqMapEntries|.
 	
 	A \lstinline|FreqMap| instance is a set of \lstinline|FreqMapEntry|, which are entries text-specific. More in detail an instance of \lstinline|FreqMapEntry| consists of: \begin{itemize}
 		\item a \lstinline|String| author name;
 		\item a \lstinline|String| text title;
 		\item a map \lstinline|String| $\to$ \lstinline|Float|, containing field names (text features extracted from the mapreduce framework) and their respective values.
+		\item  a list of \lstinline|String| instances, which contains the most common words for the text specified in the title.
 	\end{itemize}
 
-	More in detail, a complete entry contains the following fields: \begin{itemize}
+	More in detail, the map from strings to float contains the following fields: \begin{itemize}
 		\item frequency of articles;
 		\item frequency of prepositions;
 		\item frequency of conjunctions;
@@ -440,49 +469,19 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 			nwords &69796.0 \\
 			avg\text{-}period\text{-}length &20.283638 \\
 			commas &0.079789676 
-		\end{cases}
+		\end{cases} \\
+		\text{highestFrequencyList}&: \lbrack \dots \rbrack
 	\end{align*}
-	 What we need now is a map of frequencies relative to a single author, order to generate a ``stylistic identikit''  of an author, so then we can compare any unknown text to that author.
+	 What we need now is a map of frequencies relative to a single author, in order to generate a ``stylistic identikit''  of an author, so then we can compare any unknown text to that author.
 	 
 	 In order to do so we pick all the informations we got about every known text of every author and we merge this maps into a single one, which is relative to an author. That is, if we have multiple texts of the same author, we generate a new \lstinline|FreqMapEntry|, were the author remains the same, but we set as title a \lstinline|String| set to the value \lstinline|"global"|, in order to identify that map as the author identikit we were talking some lines above.
 	 
 	 \bigskip
 	 \noindent
-	 The global entries are generated with the following method.
-	 \begin{lstlisting}[firstnumber=79, caption={globalAuthorFrequency method}, captionpos=b]
-private void globalAuthorFrequency(String author) {
-	FreqMapEntry global = new FreqMapEntry(author, "global");(*@\label{eighty}@*)
-	
-	// init map to 0
-	for (String field : entries.iterator().next().getFrequencies().keySet()) {
-		global.getFrequencies().put(field, (float) 0);(*@\label{eightyfour}@*)
-	}
-	
-	// sums by field, entries are grouped by author
-	int authorEntries = 0;(*@\label{eightyeight}@*)
-	for (FreqMapEntry entry : this.entries) {
-		if (entry.getAuthor().equals(author)) {
-			authorEntries++;
-			for (String field : entry.getFrequencies().keySet()) {
-				float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
-				global.getFrequencies().put(field, upvalue);(*@\label{ninetyfour}@*)
-			}
-		}
-	}
-	
-	// average using number of entries
-	for (String field : global.getFrequencies().keySet()) {(*@\label{100}@*)
-		global.getFrequencies().put(field, global.getFrequencies().get(field) / authorEntries);
-	}(*@\label{102}@*)
-	
-	this.entries.add(global);
-}
-	 \end{lstlisting}
-	 
-	 The methods proceeds following these steps: \begin{enumerate}
-	 	\item lines \ref{eighty} :: \ref{eightyfour} build the map reserved for the complexive values of the author, and initializes all the fields to 0;
-	 	\item lines \ref{eightyeight} :: \ref{ninetyfour} query all the previous instances of \lstinline|FreqMap| entry, get a specific field value and sum this value to all other matching fields in other instances.
-	 	\item lines \ref{100} :: \ref{102} generate an average value for the global entry, dividing the sums obtained at the previous step by the total number of entries with the specific author name.
+	 The global entries are generated with the method named \lstinline|globalAuthorFrequency()|, which performs, in order, the following tasks: \begin{enumerate}
+	 	\item merges all the common words from the same author into a one, huge list, orders these words by their frequency and cuts the first ten;
+	 	\item calculates, for each field of the map, the average values for the different language parts, and fills the global entry with the average values;
+	 	\item creates a new \lstinline|FreqMapEntry| with the results of points 1 and 2.
 	 \end{enumerate}
 	 
 	 \bigskip

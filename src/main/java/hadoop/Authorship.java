@@ -1,5 +1,6 @@
-package main.java;
+package main.java.hadoop;
 
+import main.java.Main;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -33,14 +34,14 @@ import java.util.regex.Pattern;
  */
 public class Authorship extends Configured implements Tool {
     // speech parts used in wordcount-like job
-    private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not", "but", "yet", "though"));
-    private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an"));
-    private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between"));
-    private static final List<String> PRONOUNS = new ArrayList<>(Arrays.asList("I", "you", "he", "she", "it", "we", "they", "me", "him", "her", "us", "them", "my", "your", "its", "our", "their", "that", "this", "which"));
-    private static final List<String> VERBS = new ArrayList<>(Arrays.asList("is", "be", "have", "has", "do", "don't", "say", "said", "says"));
+    private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not", "but", "yet", "though", "when", "how", "so", "if"));
+    private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an", "one"));
+    private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between", "at", "by", "like", "but", "as", "out", "about","there"));
+    private static final List<String> PRONOUNS = new ArrayList<>(Arrays.asList("i", "you", "he", "she", "it", "we", "they", "me", "him", "her", "his", "us", "them", "my", "your", "its", "our", "their", "that", "this", "which", "what", "where", "who", "all"));
+    private static final List<String> VERBS = new ArrayList<>(Arrays.asList("is", "are", "be", "been", "was", "were", "have", "has", "had", "do", "don't", "say", "said", "says", "would", "could"));
 
-    static final String INPUT_PATH = "/user/root/authorship/input";
-    static final String OUTPUT_PATH = "/user/root/authorship/output";
+    public static final String INPUT_PATH = "/user/root/authorship/input";
+    public static final String OUTPUT_PATH = "/user/root/authorship/output";
     private static final String UNKNOWNS_INPUT_PATH = "/user/root/authorship/input/unknowns";
 
 
@@ -73,7 +74,7 @@ public class Authorship extends Configured implements Tool {
         private static final Pattern END_PERIOD = Pattern.compile("[a-z][.!?]");
         private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
         private static final IntWritable ONE = new IntWritable(1);
-        private static final Pattern COMMONS = Pattern.compile("\\b[a-zA-Z']*\\b");
+        private static final Pattern COMMONS = Pattern.compile("\\b\\w[a-zA-Z']*\\b");
         private Text text = new Text();
 
         @Override
@@ -112,14 +113,13 @@ public class Authorship extends Configured implements Tool {
                     text.set(filePathString + "*nwords");
                     context.write(text, ONE);
 
-                    // common word?
                 }
             }
 
             Matcher commonWordsMatcher = COMMONS.matcher(lineText.toString());
             String w;
             while (commonWordsMatcher.find()) {
-                w = commonWordsMatcher.group();
+                String w = commonWordsMatcher.group().toLowerCase();
                 if (!Authorship.ARTICLES.contains(w) && !Authorship.PREPOSITIONS.contains(w) &&
                         !Authorship.CONJUNCTIONS.contains(w) && !Authorship.PRONOUNS.contains(w) &&
                         !Authorship.VERBS.contains(w)) {
