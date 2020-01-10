@@ -144,18 +144,18 @@ public class FreqMap implements Iterable<FreqMapEntry> {
         return global;
     }
 
-    //    public void toFile(FileSystem fs, Path path) throws IOException {
-    //        FSDataOutputStream outputStream = fs.create(path);
-    //        for (FreqMapEntry entry : this.entries) {
-    //            if (entry.isGlobal()) {
-    //                outputStream.writeBytes(entry.toString());
-    //                outputStream.flush();
-    //            }
-    //        }
-    //
-    //        outputStream.flush();
-    //        outputStream.close();
-    //    }
+    public void toFile(FileSystem fs, Path path) throws IOException {
+        FSDataOutputStream outputStream = fs.create(path);
+        for (FreqMapEntry entry : this.entries) {
+            if (entry.isGlobal()) {
+                outputStream.writeBytes(entry.toString());
+                outputStream.flush();
+            }
+        }
+
+        outputStream.flush();
+        outputStream.close();
+    }
 
     /**
      * Fetches a FreqMap instance from the job output file. This method also calls the

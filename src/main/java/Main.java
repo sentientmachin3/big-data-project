@@ -22,7 +22,7 @@ public class Main {
         ToolRunner.run(authorship, args);
         FileSystem fileSystem = FileSystem.get(authorship.getConf());
         FreqMap.INSTANCE.load(fileSystem, new Path(Authorship.OUTPUT_PATH + "/part-r-00000"));
-//        freqMap.toFile(fs, new Path(Authorship.OUTPUT_PATH + "/known-frequencies.txt"));
+        FreqMap.INSTANCE.toFile(fileSystem, new Path(Authorship.OUTPUT_PATH + "/known-frequencies.txt"));
 
         SimilarityAnalysis.INSTANCE.toFile(fileSystem, new Path(Authorship.OUTPUT_PATH + "/deltas.txt"));
 

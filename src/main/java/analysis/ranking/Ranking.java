@@ -32,7 +32,7 @@ public class Ranking {
         Collections.sort(this.ranking, new Comparator<Pair<FreqMapEntry, Integer>>() {
             @Override
             public int compare(Pair<FreqMapEntry, Integer> o1, Pair<FreqMapEntry, Integer> o2) {
-                return o1.getSecond().compareTo(o2.getSecond());
+                return -o1.getSecond().compareTo(o2.getSecond());
             }
         });
     }
