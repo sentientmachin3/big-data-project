@@ -76,9 +76,16 @@ public class SimilarityAnalysis {
      */
     public void toFile(FileSystem fs, Path outputPath) throws IOException {
         StringBuilder sb = new StringBuilder();
+        ArrayList<Ranking> entries = new ArrayList<>();
+
         for (AffinityMap a : this.deltas) {
-            a.setFreqMap(FreqMap.INSTANCE);
-            sb.append(a.toString());
+            if (!entries.contains(a.getRanking())) {
+                entries.add(a.getRanking());
+            }
+        }
+
+        for (Ranking r: entries) {
+            sb.append(r.toString());
         }
 
         FSDataOutputStream outputStream = fs.create(outputPath);

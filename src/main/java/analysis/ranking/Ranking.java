@@ -32,7 +32,7 @@ public class Ranking {
         Collections.sort(this.ranking, new Comparator<Pair<FreqMapEntry, Integer>>() {
             @Override
             public int compare(Pair<FreqMapEntry, Integer> o1, Pair<FreqMapEntry, Integer> o2) {
-                return -o1.getSecond().compareTo(o2.getSecond());
+                return -(o1.getSecond().compareTo(o2.getSecond()));
             }
         });
     }
@@ -47,4 +47,16 @@ public class Ranking {
     }
 
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.unknownEntry.getAuthor()).append(":");
+        for (Pair p: this.ranking) {
+            sb.append(((FreqMapEntry) p.getFirst()).getAuthor()).append("-");
+        }
+
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append("\n");
+        return sb.toString();
+    }
 }
