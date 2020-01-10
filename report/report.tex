@@ -437,15 +437,16 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 	For the common words, the reducer counts all the occurrences of the same word for an author in a text.
 	
 	\subsection{Frequency Calculations}
-	Once the hadoop job has terminated, the control passes to a simple Java program. This section of the program generates an instance of the class \lstinline|FreqMap| parsing the reducer output file.
+	Once the hadoop job has terminated, the control passes to a simple Java program. This section of the program generates an instance of the class \lstinline|FreqMap| (implemented as a singleton) which parsing the reducer output file and builds a set of \lstinline|FreqMapEntries|.
 	
 	A \lstinline|FreqMap| instance is a set of \lstinline|FreqMapEntry|, which are entries text-specific. More in detail an instance of \lstinline|FreqMapEntry| consists of: \begin{itemize}
 		\item a \lstinline|String| author name;
 		\item a \lstinline|String| text title;
 		\item a map \lstinline|String| $\to$ \lstinline|Float|, containing field names (text features extracted from the mapreduce framework) and their respective values.
+		\item  a list of \lstinline|String| instances, which contains the most common words for the text specified in the title.
 	\end{itemize}
 
-	More in detail, a complete entry contains the following fields: \begin{itemize}
+	More in detail, the map from strings to float contains the following fields: \begin{itemize}
 		\item frequency of articles;
 		\item frequency of prepositions;
 		\item frequency of conjunctions;
@@ -468,49 +469,19 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 			nwords &69796.0 \\
 			avg\text{-}period\text{-}length &20.283638 \\
 			commas &0.079789676 
-		\end{cases}
+		\end{cases} \\
+		\text{highestFrequencyList}&: \lbrack \dots \rbrack
 	\end{align*}
-	 What we need now is a map of frequencies relative to a single author, order to generate a ``stylistic identikit''  of an author, so then we can compare any unknown text to that author.
+	 What we need now is a map of frequencies relative to a single author, in order to generate a ``stylistic identikit''  of an author, so then we can compare any unknown text to that author.
 	 
 	 In order to do so we pick all the informations we got about every known text of every author and we merge this maps into a single one, which is relative to an author. That is, if we have multiple texts of the same author, we generate a new \lstinline|FreqMapEntry|, were the author remains the same, but we set as title a \lstinline|String| set to the value \lstinline|"global"|, in order to identify that map as the author identikit we were talking some lines above.
 	 
 	 \bigskip
 	 \noindent
-	 The global entries are generated with the following method.
-	 \begin{lstlisting}[firstnumber=79, caption={globalAuthorFrequency method}, captionpos=b]
-private void globalAuthorFrequency(String author) {
-	FreqMapEntry global = new FreqMapEntry(author, "global");(*@\label{eighty}@*)
-	
-	// init map to 0
-	for (String field : entries.iterator().next().getFrequencies().keySet()) {
-		global.getFrequencies().put(field, (float) 0);(*@\label{eightyfour}@*)
-	}
-	
-	// sums by field, entries are grouped by author
-	int authorEntries = 0;(*@\label{eightyeight}@*)
-	for (FreqMapEntry entry : this.entries) {
-		if (entry.getAuthor().equals(author)) {
-			authorEntries++;
-			for (String field : entry.getFrequencies().keySet()) {
-				float upvalue = global.getFrequencies().get(field) + entry.getFrequencies().get(field);
-				global.getFrequencies().put(field, upvalue);(*@\label{ninetyfour}@*)
-			}
-		}
-	}
-	
-	// average using number of entries
-	for (String field : global.getFrequencies().keySet()) {(*@\label{100}@*)
-		global.getFrequencies().put(field, global.getFrequencies().get(field) / authorEntries);
-	}(*@\label{102}@*)
-	
-	this.entries.add(global);
-}
-	 \end{lstlisting}
-	 
-	 The methods proceeds following these steps: \begin{enumerate}
-	 	\item lines \ref{eighty} :: \ref{eightyfour} build the map reserved for the complexive values of the author, and initializes all the fields to 0;
-	 	\item lines \ref{eightyeight} :: \ref{ninetyfour} query all the previous instances of \lstinline|FreqMap| entry, get a specific field value and sum this value to all other matching fields in other instances.
-	 	\item lines \ref{100} :: \ref{102} generate an average value for the global entry, dividing the sums obtained at the previous step by the total number of entries with the specific author name.
+	 The global entries are generated with the method named \lstinline|globalAuthorFrequency()|, which performs, in order, the following tasks: \begin{enumerate}
+	 	\item merges all the common words from the same author into a one, huge list, orders these words by their frequency and cuts the first ten;
+	 	\item calculates, for each field of the map, the average values for the different language parts, and fills the global entry with the average values;
+	 	\item creates a new \lstinline|FreqMapEntry| with the results of points 1 and 2.
 	 \end{enumerate}
 	 
 	 \bigskip
