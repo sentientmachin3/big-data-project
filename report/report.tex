@@ -229,7 +229,7 @@ escapeinside={(*@}{@*)}
 	
 	Starting from these data, the following phases consist of taking unknown manuscripts as input and establishing the authorship by the comparing them with the ``dictionary'' previously created. 
 	
-	All the manuscripts are \texttt{.txt} files taken from the Project Gutenberg\parencite{Gutenberg} online library.
+	All the manuscripts are \texttt{.txt} files taken from the Project Gutenberg \parencite{Gutenberg} online library.
 	The Project Workflow is the following:
 	\begin{enumerate}
 		\item Parsing all the files using Hadoop Map Reduce job: 
@@ -610,6 +610,8 @@ These texts are taken from the Project Gutenberg online library. The unknown wri
 
 \bigskip
 
+We used most common words used by authors as the most relevant parameter to check authorship. In this case all unknown texts are correctly recognized. If the most common words are the same in the unknown text and in more than one author ``dictionary'' of texts, this check is irrelevant. So we decided to consider period length as the second parameter of recognition. At last if the period length check is irrelevant too, we count each article, preposition, conjunction, pronoun, verb and punctuation mark frequency.
+
 Running the program on the known texts, we got the following informations:
 \begin{table}[h!]
 	\small
@@ -843,8 +845,7 @@ Running the program on unknown texts, we obtained the following datas:
 
 	\clearpage
 	
-	\section{Conclusions}\label{conclusion}
-	\subsection{Designing choices}
+	\section{Designing choices}\label{designing choices}
 	During the development process we encountered several issues and in order to solve them, we implemented some restrictive design choices.
 	
 	\begin{itemize}
