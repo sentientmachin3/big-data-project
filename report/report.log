@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.3)  11 JAN 2020 22:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.3)  11 JAN 2020 22:46
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1470,30 +1470,25 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [6]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 298.
+(Font)              scaled to size 9.0pt on input line 297.
  [7]
-Overfull \hbox (5.70062pt too wide) in paragraph at lines 324--325
+Overfull \hbox (5.70062pt too wide) in paragraph at lines 323--324
 [][][][][] \OT1/LinuxLibertineT-TLF/m/n/10.95 ([][][][][][][][][][][][][][][][][][][][][][][][]) is the in-put path for un-known
  []
 
-
-Overfull \hbox (2.23495pt too wide) in paragraph at lines 327--328
-\OT1/LinuxLibertineT-TLF/m/n/10.95 tively the in-put and out-put paths of the job. We then add the sin-gle files us-ing a call to []
- []
-
 [8]
-Underfull \hbox (badness 10000) in paragraph at lines 402--403
+Underfull \hbox (badness 10000) in paragraph at lines 409--410
 
  []
 
 [9] [10] [11] [12]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 608.
+(Font)              scaled to size 8.0pt on input line 632.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.0pt on input line 608.
+(Font)              scaled to size 6.0pt on input line 632.
  [13] [14]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 633.
+(Font)              scaled to size 10.0pt on input line 662.
  [15]
 PGFPlots: reading {csv-files/frequencies.csv}
 PGFPlots: reading {csv-files/frequencies.csv}
@@ -1527,7 +1522,7 @@ PGFPlots: reading {csv-files/deltas-dickens.csv}
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [17] [18]
-Overfull \hbox (6.85526pt too wide) in paragraph at lines 884--885
+Overfull \hbox (6.85526pt too wide) in paragraph at lines 914--915
 \OT1/LinuxLibertineT-TLF/m/n/10.95 the in-put file names \OT1/cmtt/m/n/10.95 author-title.txt\OT1/LinuxLibertineT-TLF/m/n/10.95 , and the un-known files as \OT1/cmtt/m/n/10.95 unknown-unknown.txt\OT1/LinuxLibertineT-TLF/m/n/10.95 . 
  []
 
@@ -1537,22 +1532,22 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 [19
 
 ]
-Overfull \hbox (9.74063pt too wide) in paragraph at lines 911--911
+Overfull \hbox (9.74063pt too wide) in paragraph at lines 941--941
 []\OT1/LinuxLibertineT-TLF/m/n/10.95 M. Afzali, N. Singh, and S. Ku-mar. \  Hadoop-MapReduce: A plat-form for min-ing large datasets".
  []
 
 [20]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 917.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 917.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 947.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 947.
  (/home/matteo/Documenti/Uni_Magistrale/Primo_anno/Big Data/big-data-project/report/report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 917.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 917.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 947.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 947.
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: D91F5E8D20F8A1C6DFD5C45287194F14;1546.
+(rerunfilecheck)             Checksum: 0033433167B9B74B2AD77AB46036E21D;1545.
 Package logreq Info: Writing requests to 'report.run.xml'.
 \openout1 = `report.run.xml'.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 917.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 947.
  ) 
 Here is how much of TeX's memory you used:
  41273 strings out of 493109
@@ -1563,7 +1558,7 @@ Here is how much of TeX's memory you used:
  1141 hyphenation exceptions out of 8191
  62i,19n,104p,1047b,3202s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/libertine/lbtn_xogrpz.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/libertine/lbtn_c7kyj5.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/libertine/lbtn_lu7m2n.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/libertine/lbtn_tltjc6.enc}</usr/local/texlive/2014/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb>
-Output written on "/home/matteo/Documenti/Uni_Magistrale/Primo_anno/Big Data/big-data-project/report/report.pdf" (20 pages, 425782 bytes).
+Output written on "/home/matteo/Documenti/Uni_Magistrale/Primo_anno/Big Data/big-data-project/report/report.pdf" (20 pages, 425776 bytes).
 PDF statistics:
  489 PDF objects out of 1000 (max. 8388607)
  449 compressed objects within 5 object streams

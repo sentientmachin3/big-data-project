@@ -103,7 +103,7 @@ escapeinside={(*@}{@*)}
 	
 	The report is divided in the following sections: \begin{itemize}
 		\item in Sec. \ref{backg} we present the Hadoop platform and give some basics notions of its functioning, we introduce the MapReduce framework and how it works;
-		\item in Sec. \ref{workflow} we give details about the project structure and workflow, the implementation of the mapreduce job, with some key code snippets, then we move onto the frequency calculation and the ranking method for establishing the author of an unknown text;
+		\item in Sec. \ref{workflow} we give details about the project structure and workflow, the implementation of the MapReduce job, with some key code snippets, then we move onto the frequency calculation and the ranking method for establishing the author of an unknown text;
 		\item in Sec. \ref{sample} we give the data we used to run the project, providing data in table form, then we present and analyze the results;
 		\item in Sec. \ref{designing choices} we expose the issues we encountered during the whole development process, providing particular design choices and performance considerations.
 	\end{itemize}
@@ -128,7 +128,7 @@ escapeinside={(*@}{@*)}
 		Cloudera provides an HDFS (\textit{Hadoop Distributed FileSystem})\parencite{Hadoop-Mapreduce}, used to store files across server collections. The Hadoop version used in this project is \texttt{Hadoop 2.6.0-cdh5.7.0}. 
 		
 		The distributed filesystem consists on two basic services: \begin{itemize}
-			\item \textit{NameNode}: is a single instance service, running on a master node, which is responsible for files and directory mantainance within the filesystem itself;
+			\item \textit{NameNode}: is a single instance service, running on a master node, which is responsible for files and directory maintenance within the filesystem itself;
 			
 			\item \textit{DataNode}: running on multiple nodes (many instances are allowed), are supposed to retrieve the application data when they are told by the NameNode.
 		\end{itemize}
@@ -164,10 +164,9 @@ escapeinside={(*@}{@*)}
 		
 
 	\subsection{Map Reduce Framework}
-		MapReduce is a programming paradigm which works on parallel platforms in order to process large amounts of data in the best possible way. The client has to implement a map function, which is supposed to take raw data as input and process them into intermediate \textit{key-value} pairs, and the reduce function, which aim is to regroup key-value pairs relying on the key and generate key-value output pairs. The mapreduce model is explained more in detail in the next section.
+		MapReduce is a programming paradigm which works on parallel platforms in order to process large amounts of data in the best possible way. The client has to implement a map function, which is supposed to take raw data as input and process them into intermediate \textit{key-value} pairs, and the reduce function, which aim is to regroup key-value pairs relying on the key and generate key-value output pairs. The MapReduce model is explained more in detail in the next section.
 		
 		\bigskip
-
 
 		\noindent
 		This Programming Model consists of two main actions:
@@ -236,7 +235,7 @@ escapeinside={(*@}{@*)}
 		\begin{enumerate}
 			\item Mapper performs the counting of all the specified language parts in each file. These parts are ArrayList instances. The Mapper associates each language part with an integer flag set to 1. The collected data are explained more in detail in the next sections. 
 			
-			\item Reducer performs the counting of language parts by putting together data taken from the Mappers. The reducer output 
+			\item Reducer performs the counting of language parts by putting together data taken from the Mappers.
 		\end{enumerate}
 		\item Calculating the frequencies of language parts for each text.
 		\item Calculating the most common words for each author.
@@ -245,54 +244,54 @@ escapeinside={(*@}{@*)}
 	\end{enumerate}
 
 	\subsection{Project structure}
-	The project main folder is divided in the following directories:
-	\begin{figure}[h!]
-		\dirtree{%
-			.1 big-data-project. 
-			.2 doc\DTcomment{generated javadoc folder}. 
-			.2 libs \DTcomment{Hadoop libraries}. 
-			.2 report\DTcomment{project report}. 
-			.2 src \DTcomment{code sources}. 
-			.3 main. 
-			.4 java. 
-			.5 analysis. 
-			.6 frequencies. 
-			.7 CommonWord.java. 
-			.7 FreqMapEntry.java. 
-			.7 FreqMap.java. 
-			.6 ranking. 
-			.7 AffinityMap.java. 
-			.7 Pair.java. 
-			.7 Ranking.java. 
-			.7 SimilarityAnalysis.java. 
-			.5 hadoop. 
-			.6 Authorship.java. 
-			.5 Main.java. 
-		}
-	\end{figure}
+		The project main folder is divided in the following directories:
+		\begin{figure}[h!]
+			\dirtree{%
+				.1 big-data-project. 
+				.2 doc\DTcomment{generated javadoc folder}. 
+				.2 libs \DTcomment{Hadoop libraries}. 
+				.2 report\DTcomment{project report}. 
+				.2 src \DTcomment{code sources}. 
+				.3 main. 
+				.4 java. 
+				.5 analysis. 
+				.6 frequencies. 
+				.7 CommonWord.java. 
+				.7 FreqMapEntry.java. 
+				.7 FreqMap.java. 
+				.6 ranking. 
+				.7 AffinityMap.java. 
+				.7 Pair.java. 
+				.7 Ranking.java. 
+				.7 SimilarityAnalysis.java. 
+				.5 hadoop. 
+				.6 Authorship.java. 
+				.5 Main.java. 
+			}
+		\end{figure}
 
 	\subsection{Map Reduce Job}
-	The project only contains a single mapreduce job, alongside with other classes to hold temporary data. The mapreduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface to the HDFS functions. These libraries are:
-	\begin{figure}[H]
-		\dirtree{%
-			.1 libs. 
-			.2 hadoop-annotations.jar. 
-			.2 hadoop-common.jar. 
-			.2 hadoop-core-2.6.0-mr1-cdh5.7.0.jar. 
-			.2 hadoop-hdfs.jar. 
-			.2 log4j-1.2.17.jar. 
-		}
-	\end{figure}
+		The project contains only a single MapReduce job, alongside with other classes to hold temporary data. The MapReduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface to the HDFS functions. These libraries are:
+		\begin{figure}[H]
+			\dirtree{%
+				.1 libs. 
+				.2 hadoop-annotations.jar. 
+				.2 hadoop-common.jar. 
+				.2 hadoop-core-2.6.0-mr1-cdh5.7.0.jar. 
+				.2 hadoop-hdfs.jar. 
+				.2 log4j-1.2.17.jar. 
+			}
+		\end{figure}
 
-	Before diving into the implementation of the job, we have to assure that the current class (compiled into a \verb|jar| file), will run as an hadoop job. In order to do so, we have to add \lstinline|extends Configured implements Tool| to the class declaration.
-	
-	\bigskip
-	\noindent
-	As said in the previous sections, the client has to manually implement the map and the reduce functions, alongside with a \lstinline|run| method to configure the job itself.
+		Before diving into the implementation of the job, we have to assure that the current class (compiled into a \verb|jar| file), will run as an hadoop job. In order to do so, we have to add \lstinline|extends Configured implements Tool| to the class declaration.
+		
+		\bigskip
+		\noindent
+		As said in the previous sections, the client has to manually implement the map and the reduce functions, alongside with a \lstinline|run| method to configure the job itself.
 
 	\subsubsection{Run method}
-	Contains the job configuration, setting input and output paths.
-	The job is configured as follows:
+		It contains the job configuration, setting input and output paths.
+		The job is configured as follows:
 	
 	\begin{lstlisting}[firstnumber=48, caption={Run method}, captionpos=b]
 @Override
@@ -318,29 +317,34 @@ public int run(String[] args) throws Exception {
 }
 	\end{lstlisting}
 	
-	Note that several costants are used: \begin{itemize}
-		\item \lstinline|INPUT_PATH| (\lstinline|/user/root/authorship/input/|) is the input path for known texts;
-		\item \lstinline|OUTPUT_PATH| (\lstinline|/user/root/authorship/output/|) is the reduce output path;
-		\item \lstinline|UNKNOWNS_INPUT_PATH| (\lstinline|/user/root/authorship/input/unknowns/|) is the input path for unknown texts (which are located in a subdirectory of \lstinline|INPUT_PATH|).
-	\end{itemize}
+		Note that several costants are used: \begin{itemize}
+			\item \lstinline|INPUT_PATH| (\lstinline|/user/root/authorship/input/|) is the input path for known texts;
+			\item \lstinline|OUTPUT_PATH| (\lstinline|/user/root/authorship/output/|) is the reduce output path;
+			\item \lstinline|UNKNOWNS_INPUT_PATH| (\lstinline|/user/root/authorship/input/unknowns/|) is the input path for unknown texts (which are located in a subdirectory of \lstinline|INPUT_PATH|).
+		\end{itemize}
 
-	The calls to \lstinline|setInputPaths| and \lstinline|setOutputPath|, as the name suggests, are used to set respectively the input and output paths of the job. We then add the single files using a call to \lstinline|addInputPath| for each input file we have. 
-	
-	\bigskip
-	\noindent
-	In the following lines, we configure the mapper and reducer input and output types and classes.
-	Respectively: \begin{itemize}
-		\item mapper output key is \lstinline|Text| (the hadoop-like type for \lstinline|String|);
-		\item mapper output value is \lstinline|IntWritable| (standing for \lstinline|Integer|);
-		\item reducer output key is \lstinline|Text|;
-		\item reducer output value is \lstinline|Integer|.
-	\end{itemize}
+		\noindent
+		The calls to \lstinline|setInputPaths| and \lstinline|setOutputPath|, as the name suggests, are used to set respectively the input and output paths of the job. Then we add the single files using a call to \lstinline|addInputPath| for each input file we have. 
+		
+		\bigskip
+		\noindent
+		In the following lines, we configure the mapper and reducer input and output types and classes.
+		Respectively: \begin{itemize}
+			\item mapper output key is \lstinline|Text| (the hadoop-like type for \lstinline|String|);
+			\item mapper output value is \lstinline|IntWritable| (standing for \lstinline|Integer|);
+			\item reducer output key is \lstinline|Text|;
+			\item reducer output value is \lstinline|Integer|.
+		\end{itemize}
 
-	Calls to \lstinline|job.setMapperClass|, \lstinline|job.setReducerClass| and \lstinline|job.setCombinerClass| just tell the interpreter which is the class respinsible for describing the mapping, reducing and combining function.
-	
-	\subsubsection{Mapper implementation.} The mapper is implemented in an inner class, and we can summarize the content by dividing it in three sections.
-	
-	The first one contains the declaration of patterns during the analysis.
+		\noindent
+		The calls to \lstinline|job.setMapperClass|, \lstinline|job.setReducerClass| and \lstinline|job.setCombinerClass| just tell the interpreter which is the class responsible for describing the mapping, reducing and combining function.
+		
+	\subsubsection{Mapper implementation} 
+		
+		The mapper is implemented in an inner class, and we can summarize the content by dividing it in three sections.
+
+		\noindent
+		The first one contains the declaration of patterns during the analysis.
 	
 	\begin{lstlisting}[firstnumber=73, caption={Declaration of Regular Expression Patterns}, captionpos=b]
 private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
@@ -349,20 +353,23 @@ private static final Pattern MARKS_COMMAS = Pattern.compile("[,!?]");
 private static final IntWritable ONE = new IntWritable(1);
 	\end{lstlisting}
 	
-	These pattern are used in the text analysis. Briefly: \begin{itemize}
-		\item \lstinline|WORD_BOUNDARY|: splits on word separators characters;
-		\item \lstinline|END_PERIOD|: splits text on end-period characters;
-		\item \lstinline|MARKS_COMMAS|: splits on commas and exclamation/question marks;
-	\end{itemize}
+		\noindent
+		These pattern are used in the text analysis. Briefly: \begin{itemize}
+			\item \lstinline|WORD_BOUNDARY|: splits on word separators characters;
+			\item \lstinline|END_PERIOD|: splits text on end-period characters;
+			\item \lstinline|MARKS_COMMAS|: splits on commas and exclamation/question marks;
+		\end{itemize}
 
+	\noindent
 	The last constant is an \lstinline|IntWritable| value set to 1, and is used when a matching expression is detected.
 
+	\noindent
 	The second section contains the text analysis itself, which is based on: \begin{itemize}
-		\item article, preposition and conjunction frequency;
+		\item articles, prepositions, conjunctions, verbs and pronouns frequency;
 		\item average period length;
 		\item punctuation mark frequency.
 	\end{itemize}
-	Besides this, we save additional informations, such as the total number of words in the input and the total number of periods, so we can get the frequency over the total dimension of the input.
+	Besides this, we save additional information, such as the total number of words in the input and the total number of periods, so we can get the frequency over the total dimension of the input.
 
 	In this section the previous pattern matchers are used to reach these words and write the corresponding \lstinline|ONE| in the job contest. 
 	
@@ -401,7 +408,7 @@ while (matcher.find()) {
 	
 	A \lstinline|Matcher| instance tries to match the pattern to an input line. As soon as the matcher finds occurences of the pattern in the text passed as parameter, the mapper writes a line similar to the previous one (i.e. formatted in the same way) to the context. The procedure repeats for punctuation marks, commas and periods delimitators. \\
 	
-	The last thing the mapper performs the count of the words which have not been counted in the previous matchings. The code running this task is the following:
+	At last the mapper performs the count of the words which have not been counted in the previous matchings. The code running this task is the following:
 	\begin{lstlisting}[firstnumber=119, caption={Common words counting in the Map method.}, captionpos=b]
 Matcher commonWordsMatcher = COMMONS.matcher(lineText.toString());
 while (commonWordsMatcher.find()) {
@@ -420,7 +427,7 @@ while (commonWordsMatcher.find()) {
 	\end{center}
 	
 	\subsubsection{Reducer implementation}
-	The reducer implementation is pretty much the same as in the \lstinline|Wordcount| example. Since it's just a few lines we report the full code:
+		The reducer implementation is pretty much the same as in the \lstinline|Wordcount| example. Since it's just a few lines we report the full code:
 	\begin{lstlisting}[firstnumber=152, caption={Reduce method}, captionpos=b]
 @Override
 protected void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
@@ -432,33 +439,39 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 }
 	\end{lstlisting}
 	
-	Since the context has now a lot of lines associated with same value (the \lstinline|IntWritable| instance for ``ones''), the combiner and the reducer are responsible for grouping lines with the same key and count these lines, writing the total into the context.
-	
-	For the common words, the reducer counts all the occurrences of the same word for an author in a text.
+		Since the context has now a lot of lines associated with same value (the \lstinline|IntWritable| instance for ``ones''), the combiner and the reducer are responsible for grouping lines with the same key and count these lines, writing the total into the context.
+		
+		For the common words, the reducer counts all the occurrences of the same word for an author in a text.
 	
 	\subsection{Frequency Calculations}
-	Once the hadoop job has terminated, the control passes to a simple Java program. This section of the program generates an instance of the class \lstinline|FreqMap| (implemented as a singleton) which parsing the reducer output file and builds a set of \lstinline|FreqMapEntries|.
-	
-	A \lstinline|FreqMap| instance is a set of \lstinline|FreqMapEntry|, which are entries text-specific. More in detail an instance of \lstinline|FreqMapEntry| consists of: \begin{itemize}
-		\item a \lstinline|String| author name;
-		\item a \lstinline|String| text title;
-		\item a map \lstinline|String| $\to$ \lstinline|Float|, containing field names (text features extracted from the mapreduce framework) and their respective values.
-		\item  a list of \lstinline|String| instances, which contains the most common words for the text specified in the title.
-	\end{itemize}
+		Once the hadoop job has terminated, the control switches to a simple Java program. This section of the program generates an instance of the class \lstinline|FreqMap| (implemented as a singleton) which parses the reducer output file and builds a set of \lstinline|FreqMapEntries|.
+		
+		\noindent
+		A \lstinline|FreqMap| instance is a set of \lstinline|FreqMapEntry|, which are text-specific entries. More in detail an instance of \lstinline|FreqMapEntry| consists of: \begin{itemize}
+			\item A \lstinline|String| author name;
+			\item A \lstinline|String| text title;
+			\item A map \lstinline|String| $\to$ \lstinline|Float|, containing field names (text features extracted from the MapReduce framework) and their respective values;
+			\item  A list of \lstinline|String| instances, which contains the most common words for the text specified in the title.
+		\end{itemize}
 
-	More in detail, the map from strings to float contains the following fields: \begin{itemize}
-		\item frequency of articles;
-		\item frequency of prepositions;
-		\item frequency of conjunctions;
-		\item number of words in the input;
-		\item number of periods in the input;
-		\item frequency of punctuation marks;
-		\item average period length.
-	\end{itemize}
+		\noindent
+		More in detail, the map from strings to float contains the following fields: \begin{itemize}
+			\item Frequency of articles;
+			\item Frequency of prepositions;
+			\item Frequency of conjunctions;
+			\item Frequency of verbs;
+			\item Frequency of pronouns;
+			\item Number of words in the input;
+			\item Number of periods in the input;
+			\item Frequency of punctuation marks;
+			\item Average period length.
+		\end{itemize}
 
-	Note that the frequency of articles, prepositions, cojunctions and punctuation symbols is determined over the total number of words.
-	
-	After this phase, we will have a frequency map for every text of every author, for example:
+		\noindent
+		Note that the frequency of articles, prepositions, conjunctions, verbs, pronouns and punctuation symbols is determined over the total number of words.
+		
+		\noindent
+		After this phase, we will have a frequency map for every text of every author, for example:
 
 	\begin{figure}[h!]
 		\centering
@@ -487,36 +500,44 @@ Common Words:
 	great   0.0011296555
 	\end{BVerbatim}
 \end{figure}
-	
-	 What we need now is a map of frequencies relative to a single author, in order to generate a ``stylistic identikit''  of an author, so then we can compare any unknown text to that author.
-	 
-	 In order to do so we pick all the informations we got about every known text of every author and we merge this maps into a single one, which is relative to an author. That is, if we have multiple texts of the same author, we generate a new \lstinline|FreqMapEntry|, were the author remains the same, but we set as title a \lstinline|String| set to the value \lstinline|"global"|, in order to identify that map as the author identikit we were talking some lines above.
-	 
-	 \bigskip
-	 \noindent
-	 The global entries are generated with the method named \lstinline|globalAuthorFrequency()|, which performs, in order, the following tasks: \begin{enumerate}
-	 	\item merges all the common words from the same author into a one, huge list, orders these words by their frequency and cuts the first ten;
-	 	\item calculates, for each field of the map, the average values for the different language parts, and fills the global entry with the average values;
-	 	\item creates a new \lstinline|FreqMapEntry| with the results of points 1 and 2.
-	 \end{enumerate}
-	 
-	 \bigskip
-	 \noindent
-	 At the end we will have in the beginning \lstinline|FreqMap| instance an entry for each text of each author and a global entry for every author.
+
+		\noindent
+		What we need now is a map of frequencies relative to a single author, in order to generate a ``stylistic identikit''  of an author, so then we can compare any unknown text to that author.
+
+		\noindent
+		In order to do so we pick all the information we got about every known text of every author and we merge this maps into a single one, which is relative to an author. That is, if we have multiple texts of the same author, we generate a new \lstinline|FreqMapEntry|, were the author remains the same, but we set as title a \lstinline|String| set to the value \lstinline|"global"|, in order to identify that map as the author identikit we were talking some lines above.
+
+		\bigskip
+		\noindent
+		The global entries are generated with the method named \lstinline|globalAuthorFrequency()|, which performs, in order, the following tasks: \begin{enumerate}
+		\item Merges all the common words from the same author into a one, huge list, orders these words by their frequency and keeps the first ten words;
+		\item Calculates, for each field of the map, the average values for the different language parts, and fills the global entry with the average values;
+		\item Creates a new \lstinline|FreqMapEntry| with the results of points 1 and 2.
+		\end{enumerate}
+
+		\bigskip
+		\noindent
+		At the end we will have in the beginning \lstinline|FreqMap| instance an entry for each text of each author and a global entry for every author.
 	
 	\subsection{Similarity Analysis}
-	The last phase of the working project is the design of the mechanism which allows to attribute an hypotethic author to an unknown text.
-	
-	The task is done through the following steps: \begin{enumerate}
-		\item generating a partial comparison between every couple of unknown text-known author;
-		\item sorting this comparisons in order to get the most similar couples as the most correlated author to each unknown text.
-	\end{enumerate}
+		The last phase of the working project is the design of the mechanism which allows to attribute an hypothetical author to an unknown text.
+		
+		\noindent
+		The task is done through the following steps: 
+		\begin{enumerate}
+			\item Generating a partial comparison between every couple of unknown text-known author;
+			\item Sorting this comparisons in order to get the most similar couples as the most correlated author to each unknown text.
+		\end{enumerate}
 
-	This steps are implemented in \lstinline|AffinityMap| and \lstinline|SimilarityAnalysis| classes.
-	
-	 An \lstinline|AffinityMap| instance represents a comparison of authors, the first is known and the second is not. The compared fields are represented as a map \lstinline|String| $\to$ \lstinline|Double|, as in previous classes. The \lstinline|AffinityMap| instance implements the \lstinline|Comparable| interface, in order to be able to compare two instances and determine a sort of ``hierarchy''.
-	 
-	 The comparison method is the following:\begin{lstlisting}[firstnumber=51,caption={AffinityMap comparison method}, captionpos=b, label={lst:comparemethod}]
+		\noindent
+		This steps are implemented in \lstinline|AffinityMap| and \lstinline|SimilarityAnalysis| classes.
+		
+		\noindent
+		An \lstinline|AffinityMap| instance represents a comparison of authors, the first is known and the second is not. The compared fields are represented as a map \lstinline|String| $\to$ \lstinline|Double|, as in previous classes. The \lstinline|AffinityMap| instance implements the \lstinline|Comparable| interface, in order to be able to compare two instances and determine a sort of ``hierarchy''.
+		
+		\noindent
+		The comparison method is the following:
+		\begin{lstlisting}[firstnumber=51,caption={AffinityMap comparison method}, captionpos=b, label={lst:comparemethod}]
 @Override
 public int compareTo(Object o) {
 	AffinityMap rec = (AffinityMap) o;
@@ -551,16 +572,19 @@ public int compareTo(Object o) {
 }
 	 \end{lstlisting}
 	 
-	 The code here is not clearly readable, we break it down to its basics. Before we dive into it, we have to recall the functioning of the standard \lstinline|compareTo(Object o)| method, inherited from the \lstinline|Comparable| interface. This method returns \begin{itemize}
-	 	\item $0$ if the objects are equal;
+	 \noindent
+	We break the above written code down to its basics. Before we dive into it, we have to recall the functioning of the standard \lstinline|compareTo(Object o)| method, inherited from the \lstinline|Comparable| interface. This method returns \begin{itemize}
+		\item $0$ if the objects are equal;
 	 	\item $-1$ if \lstinline|this| object is lower then the parameter object;
 	 	\item $1$ if \lstinline|this| object is greater then the parameter object;
-	 \end{itemize}
+	\end{itemize}
  
- 	Now we can explain the code more in detail: \begin{itemize}
- 		\item lines \ref{54} :: \ref{57} initialize to 0 three counters, one for each return type of the \lstinline|compare| method;
- 		\item lines \ref{60} :: \ref{68} compare each field of the two maps (which have the same key) and increment the corresponding counter;
- 		\item lines \ref{72} :: \ref{78} check which of the three counter has the maximum value; if $-1$ is the maximum, the current object is lower that the parameter item, if $1$ is the maximum the parameter item is lower than the current object, otherwise the two items are considered to be equal.
+	\noindent
+	 Now we can explain the code more in detail: 
+	\begin{itemize}
+ 		\item Lines \ref{54} :: \ref{57} initialize to 0 three counters, one for each return type of the \lstinline|compare| method;
+ 		\item Lines \ref{60} :: \ref{68} compare each field of the two maps (which have the same key) and increment the corresponding counter;
+ 		\item Lines \ref{72} :: \ref{78} check which of the three counter has the maximum value; if $-1$ is the maximum, the current object is lower that the parameter item, if $1$ is the maximum the parameter item is lower than the current object, otherwise the two items are considered to be equal.
  	\end{itemize}
  	The comparison is run from the method \lstinline|SimilarityAnalysis.exec()|, which is responsible for generating the correlations between unknown text and known authors and reporting to file the final rank. We start the description of the class from specifying how affinities are calculated, and report the \lstinline|exec()| method code.
  	
@@ -597,7 +621,7 @@ private void exec() {
  	
  	\bigskip
  	\noindent
-	As specified just few lines above, an \lstinline|AffinityMap| instance contains a map from String to doubles. Data in this map are saved as the field-to-field difference of the maps of the authors we are analyzing. More in detail, if we have two authors $A$ and $B$ (i.e. two \lstinline|FreqMapEntry| instances), the map will contain the following values (lines \ref{43} to \ref{56}):
+	As specified just few lines above, an \lstinline|AffinityMap| instance contains a map from String to doubles. The data in this map are saved as the field-to-field difference of the maps of the authors we are analyzing. More in detail, if we have two authors $A$ and $B$ (i.e. two \lstinline|FreqMapEntry| instances), the map will contain the following values (lines \ref{43} to \ref{56}):
 	\begin{align*}
 		\begin{cases}
 			\text{articles} &= |A.\text{articles} - B.\text{articles}| \\
@@ -607,8 +631,10 @@ private void exec() {
 		\end{cases}
 	\end{align*}
 	
+	\noindent
 	Lines \ref{58b} to \ref{64b} sort the collection of \lstinline|AffinityMap| instances using the \lstinline|compare| method described in listing \ref{lst:comparemethod}.
 	
+	\noindent
 	The ranking is written to a new file in the HDFS (in directory \lstinline|OUTPUT_PATH|); the first position are the most similar, the last position are the smallest affinity pairs.
 	
 
@@ -622,13 +648,16 @@ private void exec() {
 	\item J. Abbott (with unknown texts marked as Unknown1, Unknown2 and Unknown3).
 \end{itemize}
 
+\noindent
 These texts are taken from the Project Gutenberg online library. The unknown writings are 5, two of them written by C.Dickens, and three by J.Abbott.
 
 \bigskip
 
+\noindent
 We used most common words used by authors as the most relevant parameter to check authorship. In this case all unknown texts are correctly recognized. If the most common words are the same in the unknown text and in more than one author ``dictionary'' of texts, this check is irrelevant. So we decided to consider period length as the second parameter of recognition. At last if the period length check is irrelevant too, we count each article, preposition, conjunction, pronoun, verb and punctuation mark frequency.
 
-Running the program on the known texts, we got the following informations:
+\noindent
+Running the program on the known texts, we got the following information:
 \begin{table}[h!]
 	\small
 	\begin{tabular}{cccccc}
@@ -645,7 +674,8 @@ Running the program on the known texts, we got the following informations:
 \end{table}
 \bigskip
 
-Running the program on unknown texts, we obtained the following datas:
+\noindent
+Running the program on unknown texts, we obtained the following data:
 \begin{table}[h!]
 	\small
 	\begin{tabular}{cccccc}

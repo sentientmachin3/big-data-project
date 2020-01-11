@@ -6,7 +6,7 @@
 \BOOKMARK [2][-]{subsection.3.1}{Project structure}{section.3}% 6
 \BOOKMARK [2][-]{subsection.3.2}{Map Reduce Job}{section.3}% 7
 \BOOKMARK [3][-]{subsubsection.3.2.1}{Run method}{subsection.3.2}% 8
-\BOOKMARK [3][-]{subsubsection.3.2.2}{Mapper implementation.}{subsection.3.2}% 9
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Mapper implementation}{subsection.3.2}% 9
 \BOOKMARK [3][-]{subsubsection.3.2.3}{Reducer implementation}{subsection.3.2}% 10
 \BOOKMARK [2][-]{subsection.3.3}{Frequency Calculations}{section.3}% 11
 \BOOKMARK [2][-]{subsection.3.4}{Similarity Analysis}{section.3}% 12
