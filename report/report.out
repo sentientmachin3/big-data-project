@@ -1,0 +1,21 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Background and System Description}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Cloudera Docker and system setup}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Map Reduce Framework}{section.2}% 4
+\BOOKMARK [1][-]{section.3}{Project workflow and structure}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{Project structure}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.2}{Map Reduce Job}{section.3}% 7
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Run method}{subsection.3.2}% 8
+\BOOKMARK [3][-]{subsubsection.3.2.2}{Mapper implementation.}{subsection.3.2}% 9
+\BOOKMARK [3][-]{subsubsection.3.2.3}{Reducer implementation}{subsection.3.2}% 10
+\BOOKMARK [2][-]{subsection.3.3}{Frequency Calculations}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.4}{Similarity Analysis}{section.3}% 12
+\BOOKMARK [1][-]{section.4}{Running on a sample}{}% 13
+\BOOKMARK [2][-]{subsection.4.1}{Extracted data}{section.4}% 14
+\BOOKMARK [2][-]{subsection.4.2}{Results and analysis}{section.4}% 15
+\BOOKMARK [3][-]{subsubsection.4.2.1}{Global Frequencies for all authors}{subsection.4.2}% 16
+\BOOKMARK [3][-]{subsubsection.4.2.2}{Frequencies between known and uknown authors}{subsection.4.2}% 17
+\BOOKMARK [3][-]{subsubsection.4.2.3}{Deltas differences between known and unknown authors}{subsection.4.2}% 18
+\BOOKMARK [1][-]{section.5}{Designing choices}{}% 19
+\BOOKMARK [2][-]{subsection.5.1}{Predefined paths and program running}{section.5}% 20
+\BOOKMARK [2][-]{subsection.5.2}{Performance considerations}{section.5}% 21
