@@ -74,6 +74,16 @@ public class FreqMap implements Iterable<FreqMapEntry> {
 
     }
 
+    public FreqMapEntry getGlobalEntryByAuthor(String author) {
+        for (FreqMapEntry entry: this) {
+            if (entry.getAuthor().equals(author)) {
+                return entry;
+            }
+        }
+
+        return null;
+    }
+
     private void removeNonGlobals() {
         for (FreqMapEntry entry: this.entries) {
             if (!entry.isGlobal() && !entry.isUnknown() ) {
