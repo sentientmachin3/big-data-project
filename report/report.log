@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.3)  14 JAN 2020 10:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.3)  14 JAN 2020 12:06
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1097,132 +1097,181 @@ Package csquotes Info: Trying to load configuration file 'csquotes.cfg'...
 Package csquotes Info: ... configuration file loaded successfully.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/csquotes/csquotes.cfg
 File: csquotes.cfg 
-)) (/usr/local/texlive/2014/texmf-dist/tex/latex/biblatex/biblatex.sty
+)) (/usr/local/texlive/2014/texmf-dist/tex/latex/tools/multicol.sty
+Package: multicol 2014/10/28 v1.8i multicolumn formatting (FMi)
+\c@tracingmulticols=\count177
+\mult@box=\box66
+\multicol@leftmargin=\dimen231
+\c@unbalance=\count178
+\c@collectmore=\count179
+\doublecol@number=\count180
+\multicoltolerance=\count181
+\multicolpretolerance=\count182
+\full@width=\dimen232
+\page@free=\dimen233
+Normal \dimen register pool exhausted, switching to extended pool.
+\premulticols=\dimen256
+\postmulticols=\dimen257
+\multicolsep=\skip62
+\multicolbaselineskip=\skip63
+\partial@page=\box67
+\last@line=\box68
+\maxbalancingoverflow=\dimen258
+\mult@rightbox=\box69
+\mult@grightbox=\box70
+\mult@gfirstbox=\box71
+\mult@firstbox=\box72
+\@tempa=\box73
+\@tempa=\box74
+\@tempa=\box75
+\@tempa=\box76
+\@tempa=\box77
+\@tempa=\box78
+\@tempa=\box79
+\@tempa=\box80
+\@tempa=\box81
+\@tempa=\box82
+\@tempa=\box83
+\@tempa=\box84
+\@tempa=\box85
+\@tempa=\box86
+\@tempa=\box87
+\@tempa=\box88
+\@tempa=\box89
+\c@columnbadness=\count183
+\c@finalcolumnbadness=\count184
+\last@try=\dimen259
+\multicolovershoot=\dimen260
+\multicolundershoot=\dimen261
+\mult@nat@firstbox=\box90
+\colbreak@box=\box91
+\mc@col@check@num=\count185
+) (/usr/local/texlive/2014/texmf-dist/tex/latex/biblatex/biblatex.sty
 Package: biblatex 2014/06/25 v2.9a programmable bibliographies (PK/JW/AB)
  (/usr/local/texlive/2014/texmf-dist/tex/latex/biblatex/biblatex1.sty
 Package: biblatex1 2014/06/25 v2.9a programmable bibliographies (bibtex) (PK/JW/AB)
  (/usr/local/texlive/2014/texmf-dist/tex/latex/logreq/logreq.sty
 Package: logreq 2010/08/04 v1.0 xml request logger
-\lrq@indent=\count177
+\lrq@indent=\count186
  (/usr/local/texlive/2014/texmf-dist/tex/latex/logreq/logreq.def
 File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
 ))
-\c@tabx@nest=\count178
-\c@listtotal=\count179
-\c@listcount=\count180
-\c@liststart=\count181
-\c@liststop=\count182
-\c@citecount=\count183
-\c@citetotal=\count184
-\c@multicitecount=\count185
-\c@multicitetotal=\count186
-\c@instcount=\count187
-\c@maxnames=\count188
-\c@minnames=\count189
-\c@maxitems=\count190
-\c@minitems=\count191
-\c@citecounter=\count192
-\c@savedcitecounter=\count193
-\c@uniquelist=\count194
-\c@uniquename=\count195
-\c@refsection=\count196
-\c@refsegment=\count197
-\c@maxextrayear=\count198
-\c@maxextraalpha=\count199
-\c@abbrvpenalty=\count200
-\c@highnamepenalty=\count201
-\c@lownamepenalty=\count202
-\c@maxparens=\count203
-\c@parenlevel=\count204
-\blx@tempcnta=\count205
-\blx@tempcntb=\count206
-\blx@tempcntc=\count207
-\blx@maxsection=\count208
-\blx@maxsegment=\count209
-\blx@notetype=\count210
-\blx@parenlevel@text=\count211
-\blx@parenlevel@foot=\count212
-\labelnumberwidth=\skip62
-\labelalphawidth=\skip63
-\shorthandwidth=\skip64
-\biblabelsep=\skip65
-\bibitemsep=\skip66
-\bibnamesep=\skip67
-\bibinitsep=\skip68
-\bibparsep=\skip69
-\bibhang=\skip70
+\c@tabx@nest=\count187
+\c@listtotal=\count188
+\c@listcount=\count189
+\c@liststart=\count190
+\c@liststop=\count191
+\c@citecount=\count192
+\c@citetotal=\count193
+\c@multicitecount=\count194
+\c@multicitetotal=\count195
+\c@instcount=\count196
+\c@maxnames=\count197
+\c@minnames=\count198
+\c@maxitems=\count199
+\c@minitems=\count200
+\c@citecounter=\count201
+\c@savedcitecounter=\count202
+\c@uniquelist=\count203
+\c@uniquename=\count204
+\c@refsection=\count205
+\c@refsegment=\count206
+\c@maxextrayear=\count207
+\c@maxextraalpha=\count208
+\c@abbrvpenalty=\count209
+\c@highnamepenalty=\count210
+\c@lownamepenalty=\count211
+\c@maxparens=\count212
+\c@parenlevel=\count213
+\blx@tempcnta=\count214
+\blx@tempcntb=\count215
+\blx@tempcntc=\count216
+\blx@maxsection=\count217
+\blx@maxsegment=\count218
+\blx@notetype=\count219
+\blx@parenlevel@text=\count220
+\blx@parenlevel@foot=\count221
+\labelnumberwidth=\skip64
+\labelalphawidth=\skip65
+\shorthandwidth=\skip66
+\biblabelsep=\skip67
+\bibitemsep=\skip68
+\bibnamesep=\skip69
+\bibinitsep=\skip70
+\bibparsep=\skip71
+\bibhang=\skip72
 \blx@auxin=\read3
 \blx@auxout=\write5
-\c@mincomprange=\count213
-\c@maxcomprange=\count214
-\c@mincompwidth=\count215
-\c@labelname=\count216
-\c@savedlabelname=\count217
-\c@author=\count218
-\c@savedauthor=\count219
-\c@shortauthor=\count220
-\c@savedshortauthor=\count221
-\c@editor=\count222
-\c@savededitor=\count223
-\c@editora=\count224
-\c@savededitora=\count225
-\c@editorb=\count226
-\c@savededitorb=\count227
-\c@editorc=\count228
-\c@savededitorc=\count229
-\c@shorteditor=\count230
-\c@savedshorteditor=\count231
-\c@bookauthor=\count232
-\c@savedbookauthor=\count233
+\c@mincomprange=\count222
+\c@maxcomprange=\count223
+\c@mincompwidth=\count224
+\c@labelname=\count225
+\c@savedlabelname=\count226
+\c@author=\count227
+\c@savedauthor=\count228
+\c@shortauthor=\count229
+\c@savedshortauthor=\count230
+\c@editor=\count231
+\c@savededitor=\count232
+\c@editora=\count233
 Normal \count register pool exhausted, switching to extended pool.
-\c@translator=\count277
-\c@savedtranslator=\count278
-\c@annotator=\count279
-\c@savedannotator=\count280
-\c@commentator=\count281
-\c@savedcommentator=\count282
-\c@introduction=\count283
-\c@savedintroduction=\count284
-\c@foreword=\count285
-\c@savedforeword=\count286
-\c@afterword=\count287
-\c@savedafterword=\count288
-\c@holder=\count289
-\c@savedholder=\count290
-\c@namea=\count291
-\c@savednamea=\count292
-\c@nameb=\count293
-\c@savednameb=\count294
-\c@namec=\count295
-\c@savednamec=\count296
-\c@institution=\count297
-\c@savedinstitution=\count298
-\c@language=\count299
-\c@savedlanguage=\count300
-\c@location=\count301
-\c@savedlocation=\count302
-\c@organization=\count303
-\c@savedorganization=\count304
-\c@origlocation=\count305
-\c@savedoriglocation=\count306
-\c@origpublisher=\count307
-\c@savedorigpublisher=\count308
-\c@pageref=\count309
-\c@savedpageref=\count310
-\c@publisher=\count311
-\c@savedpublisher=\count312
-\c@lista=\count313
-\c@savedlista=\count314
-\c@listb=\count315
-\c@savedlistb=\count316
-\c@listc=\count317
-\c@savedlistc=\count318
-\c@listd=\count319
-\c@savedlistd=\count320
-\c@liste=\count321
-\c@savedliste=\count322
-\c@listf=\count323
-\c@savedlistf=\count324
+\c@savededitora=\count277
+\c@editorb=\count278
+\c@savededitorb=\count279
+\c@editorc=\count280
+\c@savededitorc=\count281
+\c@shorteditor=\count282
+\c@savedshorteditor=\count283
+\c@bookauthor=\count284
+\c@savedbookauthor=\count285
+\c@translator=\count286
+\c@savedtranslator=\count287
+\c@annotator=\count288
+\c@savedannotator=\count289
+\c@commentator=\count290
+\c@savedcommentator=\count291
+\c@introduction=\count292
+\c@savedintroduction=\count293
+\c@foreword=\count294
+\c@savedforeword=\count295
+\c@afterword=\count296
+\c@savedafterword=\count297
+\c@holder=\count298
+\c@savedholder=\count299
+\c@namea=\count300
+\c@savednamea=\count301
+\c@nameb=\count302
+\c@savednameb=\count303
+\c@namec=\count304
+\c@savednamec=\count305
+\c@institution=\count306
+\c@savedinstitution=\count307
+\c@language=\count308
+\c@savedlanguage=\count309
+\c@location=\count310
+\c@savedlocation=\count311
+\c@organization=\count312
+\c@savedorganization=\count313
+\c@origlocation=\count314
+\c@savedoriglocation=\count315
+\c@origpublisher=\count316
+\c@savedorigpublisher=\count317
+\c@pageref=\count318
+\c@savedpageref=\count319
+\c@publisher=\count320
+\c@savedpublisher=\count321
+\c@lista=\count322
+\c@savedlista=\count323
+\c@listb=\count324
+\c@savedlistb=\count325
+\c@listc=\count326
+\c@savedlistc=\count327
+\c@listd=\count328
+\c@savedlistd=\count329
+\c@liste=\count330
+\c@savedliste=\count331
+\c@listf=\count332
+\c@savedlistf=\count333
 Package biblatex Info: Trying to load compatibility code...
 Package biblatex Info: ... file 'blx-compat.def' found.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/biblatex/blx-compat.def
@@ -1232,13 +1281,13 @@ Package biblatex Info: Trying to load generic definitions...
 Package biblatex Info: ... file 'biblatex.def' found.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/biblatex/biblatex.def
 File: biblatex.def 
-\c@textcitecount=\count325
-\c@textcitetotal=\count326
-\c@textcitemaxnames=\count327
-\c@biburlnumpenalty=\count328
-\c@biburlucpenalty=\count329
-\c@biburllcpenalty=\count330
-\c@smartand=\count331
+\c@textcitecount=\count334
+\c@textcitetotal=\count335
+\c@textcitemaxnames=\count336
+\c@biburlnumpenalty=\count337
+\c@biburlucpenalty=\count338
+\c@biburllcpenalty=\count339
+\c@smartand=\count340
 )
 Package biblatex Info: Trying to load bibliography style 'numeric'...
 Package biblatex Info: ... file 'numeric.bbx' found.
@@ -1248,8 +1297,8 @@ Package biblatex Info: Trying to load bibliography style 'standard'...
 Package biblatex Info: ... file 'standard.bbx' found.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/biblatex/bbx/standard.bbx
 File: standard.bbx 2014/06/25 v2.9a biblatex bibliography style (PK/JW/AB)
-\c@bbx:relatedcount=\count332
-\c@bbx:relatedtotal=\count333
+\c@bbx:relatedcount=\count341
+\c@bbx:relatedtotal=\count342
 ))
 Package biblatex Info: Trying to load citation style 'numeric'...
 Package biblatex Info: ... file 'numeric.cbx' found.
@@ -1272,7 +1321,7 @@ Package biblatex Info: ... file 'biblatex.cfg' found.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/biblatex/biblatex.cfg
 File: biblatex.cfg 
 )))
-Package hyperref Info: Option `colorlinks' set `true' on input line 43.
+Package hyperref Info: Option `colorlinks' set `true' on input line 44.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2014/09/06 1.5e listings language file
 )
@@ -1287,44 +1336,44 @@ File: english.lbx 2014/06/25 v2.9a biblatex localization (PK/JW/AB)
 ) (/home/matteo/Documenti/Uni_Magistrale/Primo_anno/Big Data/big-data-project/report/report.aux)
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 70.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 70.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 71.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 71.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 70.
-LaTeX Font Info:    ... okay on input line 70.
-LaTeX Font Info:    Try loading font information for OT1+LinuxLibertineT-TLF on input line 70.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 71.
+LaTeX Font Info:    ... okay on input line 71.
+LaTeX Font Info:    Try loading font information for OT1+LinuxLibertineT-TLF on input line 71.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/libertine/OT1LinuxLibertineT-TLF.fd
 File: OT1LinuxLibertineT-TLF.fd 2012/11/26 (autoinst) Font definitions for OT1/LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.95pt on input line 70.
+(Font)              scaled to size 10.95pt on input line 71.
  (/usr/local/texlive/2014/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count334
-\scratchdimen=\dimen231
-\scratchbox=\box66
-\nofMPsegments=\count335
-\nofMParguments=\count336
+\scratchcounter=\count343
+\scratchdimen=\dimen262
+\scratchbox=\box92
+\nofMPsegments=\count344
+\nofMParguments=\count345
 \everyMPshowfont=\toks47
-\MPscratchCnt=\count337
-\MPscratchDim=\dimen232
-\MPnumerator=\count338
-\makeMPintoPDFobject=\count339
+\MPscratchCnt=\count346
+\MPscratchDim=\dimen263
+\MPnumerator=\count347
+\makeMPintoPDFobject=\count348
 \everyMPtoPDFconversion=\toks48
 ) (/usr/local/texlive/2014/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
@@ -1342,7 +1391,7 @@ Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
-\c@lstlisting=\count340
+\c@lstlisting=\count349
  ABD: EveryShipout initializing macros
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -1378,18 +1427,18 @@ Package caption Info: End \AtBeginDocument code.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\AtBeginShipoutBox=\box67
-Package hyperref Info: Link coloring ON on input line 70.
+\AtBeginShipoutBox=\box93
+Package hyperref Info: Link coloring ON on input line 71.
 (/usr/local/texlive/2014/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
  (/usr/local/texlive/2014/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count341
+\c@section@level=\count350
 )
-LaTeX Info: Redefining \ref on input line 70.
-LaTeX Info: Redefining \pageref on input line 70.
-LaTeX Info: Redefining \nameref on input line 70.
+LaTeX Info: Redefining \ref on input line 71.
+LaTeX Info: Redefining \pageref on input line 71.
+LaTeX Info: Redefining \nameref on input line 71.
  (/home/matteo/Documenti/Uni_Magistrale/Primo_anno/Big Data/big-data-project/report/report.out) (/home/matteo/Documenti/Uni_Magistrale/Primo_anno/Big Data/big-data-project/report/report.out)
 \@outlinefile=\write6
 \openout6 = `report.out'.
@@ -1397,8 +1446,8 @@ LaTeX Info: Redefining \nameref on input line 70.
 
 Package pgfplots notification 'compat/show suggested version=true': document has been generated with the most recent feature set (\pgfplotsset{compat=1.12}).
 
-\c@mv@tabular=\count342
-\c@mv@boldtabular=\count343
+\c@mv@tabular=\count351
+\c@mv@boldtabular=\count352
 Package biblatex Info: Input encoding 'utf8' detected.
 Package biblatex Info: Automatic encoding selection.
 (biblatex)             Assuming data encoding 'utf8'.
@@ -1411,30 +1460,30 @@ Package biblatex Warning: Data encoding is 'utf8'.
 Package biblatex Info: Trying to load bibliographic data...
 Package biblatex Info: ... file 'report.bbl' found.
 (/home/matteo/Documenti/Uni_Magistrale/Primo_anno/Big Data/big-data-project/report/report.bbl)
-Package biblatex Info: Reference section=0 on input line 70.
-Package biblatex Info: Reference segment=0 on input line 70.
+Package biblatex Info: Reference section=0 on input line 71.
+Package biblatex Info: Reference segment=0 on input line 71.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/sc' will be
-(Font)              scaled to size 10.95pt on input line 74.
+(Font)              scaled to size 10.95pt on input line 75.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/sc' will be
-(Font)              scaled to size 17.28pt on input line 74.
+(Font)              scaled to size 17.28pt on input line 75.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/sc' will be
-(Font)              scaled to size 12.0pt on input line 76.
+(Font)              scaled to size 12.0pt on input line 77.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 20.74pt on input line 78.
+(Font)              scaled to size 20.74pt on input line 79.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 20.74pt on input line 78.
+(Font)              scaled to size 20.74pt on input line 79.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 80.
+(Font)              scaled to size 14.4pt on input line 81.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/sc' will be
-(Font)              scaled to size 14.4pt on input line 80.
+(Font)              scaled to size 14.4pt on input line 81.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 82.
+(Font)              scaled to size 12.0pt on input line 83.
  [1
 
 
 {/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 14.4pt on input line 93.
+(Font)              scaled to size 14.4pt on input line 94.
  (/home/matteo/Documenti/Uni_Magistrale/Primo_anno/Big Data/big-data-project/report/report.toc
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 10.95pt on input line 5.
@@ -1446,50 +1495,41 @@ File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 \openout7 = `report.toc'.
 
  [2]
-LaTeX Font Info:    Try loading font information for TS1+LinuxLibertineT-TLF on input line 98.
+LaTeX Font Info:    Try loading font information for TS1+LinuxLibertineT-TLF on input line 99.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/libertine/TS1LinuxLibertineT-TLF.fd
 File: TS1LinuxLibertineT-TLF.fd 2012/11/26 (autoinst) Font definitions for TS1/LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.95pt on input line 98.
+(Font)              scaled to size 10.95pt on input line 99.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 12.0pt on input line 112.
+(Font)              scaled to size 12.0pt on input line 113.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.95pt on input line 128.
+(Font)              scaled to size 10.95pt on input line 129.
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [3]
-LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 153.
+LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 154.
  (/usr/local/texlive/2014/texmf-dist/tex/latex/base/ts1cmtt.fd
 File: ts1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
-) [4] [5]
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[6]
+) [4]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 297.
- [7]
-Overfull \hbox (5.70062pt too wide) in paragraph at lines 323--324
+(Font)              scaled to size 10.0pt on input line 249.
+ [5]
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 9.0pt on input line 302.
+ [6]
+Overfull \hbox (5.70062pt too wide) in paragraph at lines 330--331
 [][][][][] \OT1/LinuxLibertineT-TLF/m/n/10.95 ([][][][][][][][][][][][][][][][][][][][][][][][]) is the in-put path for un-known
  []
 
-[8]
-Underfull \hbox (badness 10000) in paragraph at lines 409--410
-
- []
-
-[9] [10]
+[7] [8] [9] [10] [11] [12]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 478.
- [11] [12]
+(Font)              scaled to size 8.0pt on input line 655.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 632.
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.0pt on input line 632.
- [13] [14] [15]
+(Font)              scaled to size 6.0pt on input line 655.
+ [13] [14]
 PGFPlots: reading {csv-files/frequencies.csv}
 PGFPlots: reading {csv-files/frequencies.csv}
 PGFPlots: reading {csv-files/frequencies.csv}
@@ -1516,7 +1556,7 @@ PGFPlots: reading {csv-files/deltas-abbott.csv}
 PGFPlots: reading {csv-files/deltas-abbott.csv}
 PGFPlots: reading {csv-files/deltas-abbott.csv}
 PGFPlots: reading {csv-files/deltas-abbott.csv}
-[16]
+[15]
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
@@ -1528,47 +1568,47 @@ PGFPlots: reading {csv-files/deltas-dickens.csv}
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[17] [18]
-Overfull \hbox (6.85526pt too wide) in paragraph at lines 945--946
+[16] [17]
+Overfull \hbox (6.85526pt too wide) in paragraph at lines 965--966
 \OT1/LinuxLibertineT-TLF/m/n/10.95 the in-put file names \OT1/cmtt/m/n/10.95 author-title.txt\OT1/LinuxLibertineT-TLF/m/n/10.95 , and the un-known files as \OT1/cmtt/m/n/10.95 unknown-unknown.txt\OT1/LinuxLibertineT-TLF/m/n/10.95 . 
  []
 
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-[19
+[18
 
 ]
-Overfull \hbox (9.74063pt too wide) in paragraph at lines 972--972
+Overfull \hbox (9.74063pt too wide) in paragraph at lines 992--992
 []\OT1/LinuxLibertineT-TLF/m/n/10.95 M. Afzali, N. Singh, and S. Ku-mar. \  Hadoop-MapReduce: A plat-form for min-ing large datasets".
  []
 
-[20]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 978.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 978.
+[19]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 998.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 998.
  (/home/matteo/Documenti/Uni_Magistrale/Primo_anno/Big Data/big-data-project/report/report.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 978.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 978.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 998.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 998.
 Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: 0033433167B9B74B2AD77AB46036E21D;1545.
 Package logreq Info: Writing requests to 'report.run.xml'.
 \openout1 = `report.run.xml'.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 978.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 998.
  ) 
 Here is how much of TeX's memory you used:
- 41300 strings out of 493109
- 925540 string characters out of 6135011
- 1447958 words of memory out of 5000000
- 43838 multiletter control sequences out of 15000+600000
+ 41406 strings out of 493109
+ 927149 string characters out of 6135011
+ 1464193 words of memory out of 5000000
+ 43942 multiletter control sequences out of 15000+600000
  36124 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,19n,104p,1047b,3202s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,19n,104p,1016b,3204s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/libertine/lbtn_xogrpz.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/libertine/lbtn_c7kyj5.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/libertine/lbtn_lu7m2n.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/libertine/lbtn_tltjc6.enc}</usr/local/texlive/2014/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmitt10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/cm-super/sftt1095.pfb>
-Output written on "/home/matteo/Documenti/Uni_Magistrale/Primo_anno/Big Data/big-data-project/report/report.pdf" (20 pages, 429269 bytes).
+Output written on "/home/matteo/Documenti/Uni_Magistrale/Primo_anno/Big Data/big-data-project/report/report.pdf" (19 pages, 429866 bytes).
 PDF statistics:
- 490 PDF objects out of 1000 (max. 8388607)
- 450 compressed objects within 5 object streams
- 202 named destinations out of 1000 (max. 500000)
+ 486 PDF objects out of 1000 (max. 8388607)
+ 447 compressed objects within 5 object streams
+ 201 named destinations out of 1000 (max. 500000)
  181 words of extra memory for PDF output out of 10000 (max. 10000000)
 

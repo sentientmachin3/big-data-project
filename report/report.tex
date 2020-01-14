@@ -32,6 +32,7 @@
 \colorlet{lightgray}{gray!20}
 \usepackage{libertine}
 \usepackage{csquotes}
+\usepackage{multicol}
 \usepackage[backend=bibtex, style=numeric]{biblatex}
 \addbibresource{biblio.bib}
 \hypersetup{
@@ -221,8 +222,7 @@ escapeinside={(*@}{@*)}
 			\caption{MapReduce Model}
     		\label{tikz:mapred}
 		\end{figure}
-	
-	\newpage
+
 	\section{Project workflow and structure}\label{workflow}
 	The first step of the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. The program performs the calculation of the frequencies of english language parts most commonly used for each text and counts the most common words for each author, excluding the ones counted in the previous step.
 	
@@ -246,33 +246,36 @@ escapeinside={(*@}{@*)}
 	\subsection{Project structure}
 		The project main folder is divided in the following directories:
 		\begin{figure}[h!]
+			{\small
 			\dirtree{%
 				.1 big-data-project. 
-				.2 doc\DTcomment{generated javadoc folder}. 
 				.2 libs \DTcomment{Hadoop libraries}. 
 				.2 report\DTcomment{project report}. 
 				.2 src \DTcomment{code sources}. 
 				.3 main. 
 				.4 java. 
-				.5 analysis. 
-				.6 frequencies. 
+				.5 analysis \DTcomment{Hadoop output analysis}. 
+				.6 frequencies \DTcomment{frequencies calculations}. 
 				.7 CommonWord.java. 
 				.7 FreqMapEntry.java. 
 				.7 FreqMap.java. 
-				.6 ranking. 
+				.6 ranking \DTcomment{authors ranking}. 
 				.7 AffinityMap.java. 
 				.7 Pair.java. 
 				.7 Ranking.java. 
 				.7 SimilarityAnalysis.java. 
-				.5 hadoop. 
+				.5 hadoop \DTcomment{Hadoop MapReduce implementation}. 
 				.6 Authorship.java. 
 				.5 Main.java. 
-			}
+			}}
+			\caption{Directories organization}
+    		\label{fig:dir-org}
 		\end{figure}
 
 	\subsection{Map Reduce Job}
 		The project contains only a single MapReduce job, alongside with other classes to hold temporary data. The MapReduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface to the HDFS functions. These libraries are:
 		\begin{figure}[H]
+			{\small
 			\dirtree{%
 				.1 libs. 
 				.2 hadoop-annotations.jar. 
@@ -280,9 +283,12 @@ escapeinside={(*@}{@*)}
 				.2 hadoop-core-2.6.0-mr1-cdh5.7.0.jar. 
 				.2 hadoop-hdfs.jar. 
 				.2 log4j-1.2.17.jar. 
-			}
+			}}
+			\caption{Hadoop libraries}
+    		\label{fig:hadoop-libs}
 		\end{figure}
 
+		\noindent
 		Before diving into the implementation of the job, we have to assure that the current class (compiled into a \verb|jar| file), will run as an hadoop job. In order to do so, we have to add \lstinline|extends Configured implements Tool| to the class declaration.
 		
 		\bigskip
@@ -317,7 +323,8 @@ public int run(String[] args) throws Exception {
 }
 	\end{lstlisting}
 	
-		Note that several costants are used: \begin{itemize}
+		\noindent
+		Note that several constants are used: \begin{itemize}
 			\item \lstinline|INPUT_PATH| (\lstinline|/user/root/authorship/input/|) is the input path for known texts;
 			\item \lstinline|OUTPUT_PATH| (\lstinline|/user/root/authorship/output/|) is the reduce output path;
 			\item \lstinline|UNKNOWNS_INPUT_PATH| (\lstinline|/user/root/authorship/input/unknowns/|) is the input path for unknown texts (which are located in a subdirectory of \lstinline|INPUT_PATH|).
@@ -371,8 +378,10 @@ private static final IntWritable ONE = new IntWritable(1);
 	\end{itemize}
 	Besides this, we save additional information, such as the total number of words in the input and the total number of periods, so we can get the frequency over the total dimension of the input.
 
+	\noindent
 	In this section the previous pattern matchers are used to reach these words and write the corresponding \lstinline|ONE| in the job contest. 
 	
+	\noindent
 	We report an example for articles count: \begin{lstlisting}[firstnumber=85, caption={Articles counting in Map method}, captionpos=b]
 for (String word : WORD_BOUNDARY.split(lineText.toString())) {
 	String refWord = word.toLowerCase();
@@ -387,7 +396,7 @@ for (String word : WORD_BOUNDARY.split(lineText.toString())) {
 
 }
 	\end{lstlisting}
-	
+	\noindent
 	In short terms, for each article found in the input text, the mapper writes a string formatted as follows:\begin{center}
 		\texttt{author-title.txt*article<tab><value>} 
 	\end{center}
@@ -406,8 +415,10 @@ while (matcher.find()) {
 	...
 	\end{lstlisting}
 	
-	A \lstinline|Matcher| instance tries to match the pattern to an input line. As soon as the matcher finds occurences of the pattern in the text passed as parameter, the mapper writes a line similar to the previous one (i.e. formatted in the same way) to the context. The procedure repeats for punctuation marks, commas and periods delimitators. \\
+	\noindent
+	A \lstinline|Matcher| instance tries to match the pattern to an input line. As soon as the matcher finds occurences of the pattern in the text passed as parameter, the mapper writes a line similar to the previous one (i.e. formatted in the same way) to the context. The procedure repeats for punctuation marks, commas and periods delimitators. 
 	
+	\noindent
 	At last the mapper performs the count of the words which have not been counted in the previous matchings. The code running this task is the following:
 	\begin{lstlisting}[firstnumber=119, caption={Common words counting in the Map method.}, captionpos=b]
 Matcher commonWordsMatcher = COMMONS.matcher(lineText.toString());
@@ -439,8 +450,10 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 }
 	\end{lstlisting}
 	
+		\noindent
 		Since the context has now a lot of lines associated with same value (the \lstinline|IntWritable| instance for ``ones''), the combiner and the reducer are responsible for grouping lines with the same key and count these lines, writing the total into the context.
 		
+		\noindent
 		For the common words, the reducer counts all the occurrences of the same word for an author in a text.
 	
 	\subsection{Frequency Calculations}
@@ -455,27 +468,30 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 		\end{itemize}
 
 		\noindent
-		More in detail, the map from strings to float contains the following fields: \begin{itemize}
-			\item Frequency of articles;
-			\item Frequency of prepositions;
-			\item Frequency of conjunctions;
-			\item Frequency of verbs;
-			\item Frequency of pronouns;
-			\item Number of words in the input;
-			\item Number of periods in the input;
-			\item Frequency of punctuation marks;
-			\item Average period length.
-		\end{itemize}
+		More in detail, the map from strings to float contains the following fields: 
+		\begin{multicols}{2}
+			\begin{itemize}
+				\item Frequency of articles;
+				\item Frequency of prepositions;
+				\item Frequency of conjunctions;
+				\item Frequency of verbs;
+				\item Frequency of pronouns;
+				\item Number of words in the input;
+				\item Number of periods in the input;
+				\item Frequency of punctuation marks;
+				\item Average period length.
+			\end{itemize}
+		\end{multicols}
 
 		\noindent
-		Note that the frequency of articles, prepositions, conjunctions, verbs, pronouns and punctuation symbols is determined over the total number of words.
+		Note that the frequency of articles, prepositions, conjunctions, verbs, pronouns and punctuation symbols is determined over the total number of words in the considered text.
 		
 		\noindent
 		After this phase, we will have a frequency map for every text of every author, for example:
 
 	\begin{figure}[h!]
 		\centering
-		\begin{BVerbatim}[fontsize=\small]
+		\begin{BVerbatim}[fontsize=\footnotesize]
 ENTRY: dickens global
 	periods             5079.822
 	avg_period_length     23.619436
@@ -499,6 +515,8 @@ Common Words:
 	than    0.001152259
 	great   0.0011296555
 	\end{BVerbatim}
+	\caption{Example of frequencies calculations for global author}
+	\label{fig:freq-auth}
 \end{figure}
 
 		\noindent
@@ -520,6 +538,11 @@ Common Words:
 		At the end we will have in the beginning \lstinline|FreqMap| instance an entry for each text of each author and a global entry for every author.
 	
 	\subsection{Similarity Analysis}
+		We used most common words employed by authors as the most relevant parameter to check authorship. In this case all unknown texts are correctly recognized. If the most common words are the same in the unknown text and in more than one author ``dictionary'' of texts, this check is irrelevant. So we decided to consider period length as the second parameter of recognition. At last if the period length check is irrelevant too, we count each article, preposition, conjunction, pronoun, verb and punctuation mark frequency.
+
+		\bigskip
+
+		\noindent
 		The last phase of the working project is the design of the mechanism which allows to attribute an hypothetical author to an unknown text.
 		
 		\noindent
@@ -653,15 +676,12 @@ private void exec() {
 		\bigskip
 
 		\noindent
-		We used most common words used by authors as the most relevant parameter to check authorship. In this case all unknown texts are correctly recognized. If the most common words are the same in the unknown text and in more than one author ``dictionary'' of texts, this check is irrelevant. So we decided to consider period length as the second parameter of recognition. At last if the period length check is irrelevant too, we count each article, preposition, conjunction, pronoun, verb and punctuation mark frequency.
-
-		\noindent
 		Running the program on the known texts, we got the following information:
 		\begin{table}[h!]
 			\small
 			\begin{tabular}{lcccccc}
 				\toprule
-				Author   & Articles    & Conjunctions & Pronouns & Verbs & Prepositions &   Commas  \\
+				Author   & Articles    & Conjunctions & Pronouns & Verbs & Prepositions & Punctuation \\
 				\midrule
 				J.Abbott      & 0.082  & 0.065 & 0.117 & 0.067 & 0.134 & 0.076  \\
 				C.Dickens     & 0.067  & 0.058 & 0.116 & 0.054 & 0.114 & 0.084  \\
@@ -679,7 +699,7 @@ private void exec() {
 			\small
 			\begin{tabular}{cccccccc}
 				\toprule
-				Number & Articles & Conjunctions & Pronouns & Verbs & Prepositions & Commas \\
+				Number & Articles & Conjunctions & Pronouns & Verbs & Prepositions & Punctuation \\
 				\midrule
 				Unknown1 & 0.076 & 0.068 & 0.126 & 0.082 & 0.111 & 0.095 \\
 				Unknown2 & 0.092 & 0.062 & 0.105 & 0.057 & 0.149 & 0.071 \\
