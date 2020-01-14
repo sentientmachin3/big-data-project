@@ -3,6 +3,7 @@ package main.java.analysis.ranking;
 
 import main.java.analysis.frequencies.CommonWord;
 import main.java.analysis.frequencies.FreqMap;
+import main.java.analysis.frequencies.FreqMapEntry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +38,26 @@ public class AffinityMap implements Comparable {
 
     public String getUnknown() {
         return unknown;
+    }
+
+    public boolean isComparable() {
+        // check if the text's lengths are comparable
+        FreqMapEntry known = FreqMap.INSTANCE.getGlobalEntryByAuthor(this.author);
+        FreqMapEntry unknown = FreqMap.INSTANCE.getGlobalEntryByAuthor(this.unknown);
+
+        if (unknown.getFrequencies().get("nwords") < (known.getFrequencies().get("nwords") / 2)) {
+            return false;
+        }
+
+        for (String s: this.map.keySet()) {
+            if (!s.equals("nwords") && !s.equals("avg_period_length") && !s.equals("periods")) {
+                if (this.map.get(s) > 0.15f) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**

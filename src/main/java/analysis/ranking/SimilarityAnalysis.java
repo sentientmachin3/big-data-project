@@ -9,6 +9,7 @@ import org.apache.hadoop.fs.Path;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -19,6 +20,7 @@ public class SimilarityAnalysis {
     public static SimilarityAnalysis INSTANCE = new SimilarityAnalysis();
     private ArrayList<AffinityMap> deltas = new ArrayList<>();
     private ArrayList<Ranking> rankings = new ArrayList<>();
+    private ArrayList<AffinityMap> uncomparable = new ArrayList<>();
 
     /**
      * Generates an instance.
@@ -57,6 +59,16 @@ public class SimilarityAnalysis {
             }
         }
 
+        // remove invalid affinity maps
+        ArrayList<AffinityMap> clone = new ArrayList<>();
+        Collections.copy(clone, this.deltas);
+        for (AffinityMap map : clone) {
+            if (!map.isComparable()) {
+                this.uncomparable.add(map);
+                this.deltas.remove(map);
+            }
+        }
+
         for (FreqMapEntry entry : FreqMap.INSTANCE.getUnknownEntries()) {
             this.rankings.add(new Ranking(entry, FreqMap.INSTANCE.getKnownEntries()));
         }
@@ -76,6 +88,10 @@ public class SimilarityAnalysis {
 
         for (Ranking r : this.rankings) {
             sb.append(r.toString());
+        }
+
+        for (AffinityMap inv: this.uncomparable) {
+            sb.append(inv.getAuthor()).append("-").append(inv.getUnknown()).append("\t").append("uncomparable\n");
         }
 
         FSDataOutputStream outputStream = fs.create(outputPath);
