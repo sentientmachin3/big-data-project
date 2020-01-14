@@ -34,11 +34,11 @@ import java.util.regex.Pattern;
  */
 public class Authorship extends Configured implements Tool {
     // speech parts used in wordcount-like job
-    private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not", "but", "yet", "though", "when", "how", "so", "if"));
+    private static final List<String> CONJUNCTIONS = new ArrayList<>(Arrays.asList("and", "or", "not", "but", "yet", "though", "when", "how", "so", "if", "very", "then", "some", "no"));
     private static final List<String> ARTICLES = new ArrayList<>(Arrays.asList("the", "a", "an", "one"));
-    private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between", "at", "by", "like", "but", "as", "out", "about","there"));
-    private static final List<String> PRONOUNS = new ArrayList<>(Arrays.asList("i", "you", "he", "she", "it", "we", "they", "me", "him", "her", "his", "us", "them", "my", "your", "its", "our", "their", "that", "this", "which", "what", "where", "who", "all"));
-    private static final List<String> VERBS = new ArrayList<>(Arrays.asList("is", "are", "be", "been", "was", "were", "have", "has", "had", "do", "don't", "say", "said", "says", "would", "could"));
+    private static final List<String> PREPOSITIONS = new ArrayList<>(Arrays.asList("of", "to", "from", "in", "with", "on", "for", "between", "at", "by", "like", "but", "as", "out", "about","there", "up", "down", "now", "after", "little", "more", "over"));
+    private static final List<String> PRONOUNS = new ArrayList<>(Arrays.asList("i", "you", "he", "she", "it", "we", "they", "me", "him", "her", "his", "us", "them", "my", "your", "its", "our", "their", "that", "this", "these", "which", "what", "where", "who", "all", "any", "other", "into", "upon", "such", "himself"));
+    private static final List<String> VERBS = new ArrayList<>(Arrays.asList("is", "are", "be", "been", "was", "were", "have", "has", "had", "do", "don't", "say", "said", "says", "would", "could", "make", "made", "should", "did", "didn't", "go", "came", "will", "see", "went"));
 
     public static final String INPUT_PATH = "/user/root/authorship/input";
     public static final String OUTPUT_PATH = "/user/root/authorship/output";

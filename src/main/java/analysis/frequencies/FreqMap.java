@@ -8,6 +8,7 @@ import org.apache.hadoop.fs.Path;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -35,12 +36,13 @@ public class FreqMap implements Iterable<FreqMapEntry> {
         // for each entry computes the frequency of articles, conjunctions and prepositions by dividing the counted words
         // by the total number of words
 
+        DecimalFormat df = new DecimalFormat("#.###");
         for (FreqMapEntry entry : entries) {
             for (String field : entry.getFrequencies().keySet()) {
                 if (field.equals("articles") || field.equals("conjunctions") || field.equals("prepositions") ||
                         field.equals("commas") || field.equals("pronouns") || field.equals("verbs")) {
                     float upval = entry.getFrequencies().get(field) / entry.getFrequencies().get("nwords");
-                    entry.getFrequencies().put(field, upval);
+                    entry.getFrequencies().put(field, Float.valueOf(df.format(upval)));
                 }
             }
 
@@ -60,8 +62,6 @@ public class FreqMap implements Iterable<FreqMapEntry> {
             }
         }
 
-
-
         // call the method for global frequencies (average of author's parameters)
         ArrayList<FreqMapEntry> globals = new ArrayList<>();
         for (FreqMapEntry entry : this) {
@@ -70,8 +70,42 @@ public class FreqMap implements Iterable<FreqMapEntry> {
         }
 
         this.entries.addAll(globals);
+        this.removeNonGlobals();
 
     }
+
+    private void removeNonGlobals() {
+        for (FreqMapEntry entry: this.entries) {
+            if (!entry.isGlobal() && !entry.isUnknown() ) {
+                this.entries.remove(entry);
+            }
+        }
+    }
+
+    public ArrayList<FreqMapEntry> getUnknownEntries() {
+        ArrayList<FreqMapEntry> unknownEntries = new ArrayList<>();
+
+        for (FreqMapEntry e : this.entries) {
+            if (e.getAuthor().contains("unknown") && e.getTitle().contains("global")) {
+                unknownEntries.add(e);
+            }
+        }
+
+        return unknownEntries;
+    }
+
+    public ArrayList<FreqMapEntry> getKnownEntries() {
+        ArrayList<FreqMapEntry> knownEntries = new ArrayList<>();
+
+        for (FreqMapEntry e : this.entries) {
+            if (!e.getAuthor().contains("unknown") && e.getTitle().contains("global")) {
+                knownEntries.add(e);
+            }
+        }
+
+        return knownEntries;
+    }
+
 
     /**
      * Generates a global frequency for each author by computing the average values for each field in the frequency map.
@@ -113,8 +147,8 @@ public class FreqMap implements Iterable<FreqMapEntry> {
         }
 
         // average using number of entries
-        for (FreqMapEntry a: authorEntries) {
-            for (String s: global.getFrequencies().keySet()) {
+        for (FreqMapEntry a : authorEntries) {
+            for (String s : global.getFrequencies().keySet()) {
                 global.getFrequencies().put(s, global.getFrequencies().get(s) + a.getFrequencies().get(s));
 
             }
@@ -144,18 +178,18 @@ public class FreqMap implements Iterable<FreqMapEntry> {
         return global;
     }
 
-    //    public void toFile(FileSystem fs, Path path) throws IOException {
-    //        FSDataOutputStream outputStream = fs.create(path);
-    //        for (FreqMapEntry entry : this.entries) {
-    //            if (entry.isGlobal()) {
-    //                outputStream.writeBytes(entry.toString());
-    //                outputStream.flush();
-    //            }
-    //        }
-    //
-    //        outputStream.flush();
-    //        outputStream.close();
-    //    }
+    public void toFile(FileSystem fs, Path path) throws IOException {
+        FSDataOutputStream outputStream = fs.create(path);
+        for (FreqMapEntry entry : this.entries) {
+            if (entry.isGlobal()) {
+                outputStream.writeBytes(entry.toString());
+                outputStream.flush();
+            }
+        }
+
+        outputStream.flush();
+        outputStream.close();
+    }
 
     /**
      * Fetches a FreqMap instance from the job output file. This method also calls the
@@ -215,8 +249,8 @@ public class FreqMap implements Iterable<FreqMapEntry> {
     /**
      * Adds a new instance of common word to the FreqMapEntry the author and title refer.
      *
-     * @param author the author's name
-     * @param title the title of the writing
+     * @param author  the author's name
+     * @param title   the title of the writing
      * @param comWord the common word to be added
      */
     private void updateCommonWord(String author, String title, CommonWord comWord) {
@@ -234,7 +268,7 @@ public class FreqMap implements Iterable<FreqMapEntry> {
      * @return the common words as an ArrayList instance
      */
     public ArrayList<CommonWord> getCWSFromAuthor(String author) {
-        for (FreqMapEntry entry: this.entries) {
+        for (FreqMapEntry entry : this.entries) {
             if (entry.getAuthor().equals(author) && entry.isGlobal()) {
                 return entry.getHighestFrequencyList();
             }
