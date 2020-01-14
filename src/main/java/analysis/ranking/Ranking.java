@@ -1,12 +1,13 @@
 package main.java.analysis.ranking;
 
 import main.java.analysis.frequencies.CommonWord;
+import main.java.analysis.frequencies.FreqMap;
 import main.java.analysis.frequencies.FreqMapEntry;
 
 import java.util.*;
 
 public class Ranking {
-    private FreqMapEntry unknownEntry;
+    public FreqMapEntry unknownEntry;
     private ArrayList<Pair<FreqMapEntry, Integer>> ranking = new ArrayList<>();
 
     public Ranking(FreqMapEntry unknownEntry, ArrayList<FreqMapEntry> ranking) {
@@ -24,7 +25,7 @@ public class Ranking {
             commons = 0;
         }
 
-        // sorting the ranking for this unknown entry
+        // sort the ranking for this unknown entry
         this.sort();
     }
 
@@ -35,11 +36,30 @@ public class Ranking {
                 return -(o1.getSecond().compareTo(o2.getSecond()));
             }
         });
+
+        for (int i = 0; i < ranking.size() - 1; i++) {
+            Pair<FreqMapEntry, Integer> p1 = ranking.get(i);
+            Pair<FreqMapEntry, Integer> p2 = ranking.get(i + 1);
+
+            if (p1.getSecond().equals(p2.getSecond())) {
+                String auth1 = p1.getFirst().getAuthor();
+                String auth2 = p2.getFirst().getAuthor();
+                String unk = this.unknownEntry.getAuthor();
+                AffinityMap a1 = SimilarityAnalysis.INSTANCE.getByAuthors(auth1, unk);
+                AffinityMap a2 = SimilarityAnalysis.INSTANCE.getByAuthors(auth2, unk);
+
+                if (a1.compareTo(a2) < 0) {
+                    // swap the pairs (same number of common words)
+                    this.ranking.set(i, p2);
+                    this.ranking.set(i + 1, p1);
+                }
+            }
+        }
     }
 
     public ArrayList<String> getSortedRanking() {
         ArrayList<String> sortedRanking = new ArrayList<>();
-        for (Pair<FreqMapEntry, Integer> p: this.ranking) {
+        for (Pair<FreqMapEntry, Integer> p : this.ranking) {
             sortedRanking.add(p.getFirst().getAuthor());
         }
 
@@ -50,9 +70,10 @@ public class Ranking {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+
         sb.append(this.unknownEntry.getAuthor()).append(":");
-        for (Pair p: this.ranking) {
-            sb.append(((FreqMapEntry) p.getFirst()).getAuthor()).append("-");
+        for (String auth : this.getSortedRanking()) {
+            sb.append(auth).append(" - ");
         }
 
         sb.deleteCharAt(sb.length() - 1);

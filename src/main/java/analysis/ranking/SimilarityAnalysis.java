@@ -18,13 +18,12 @@ import java.util.Comparator;
 public class SimilarityAnalysis {
     public static SimilarityAnalysis INSTANCE = new SimilarityAnalysis();
     private ArrayList<AffinityMap> deltas = new ArrayList<>();
+    private ArrayList<Ranking> rankings = new ArrayList<>();
 
     /**
      * Generates an instance.
-     *
-     * */
+     */
     private SimilarityAnalysis() {
-        this.exec();
     }
 
     public ArrayList<AffinityMap> getDeltas() {
@@ -38,7 +37,7 @@ public class SimilarityAnalysis {
      * <li> Sorts the AffinityMap instances in order to have the most similar and the less similar in order.</li>
      * </ul>
      */
-    private void exec() {
+    public void exec() {
         // remove non globals values and sort entries
         ArrayList<FreqMapEntry> unknowns = new ArrayList<>();
         ArrayList<FreqMapEntry> knowns = new ArrayList<>();
@@ -58,13 +57,11 @@ public class SimilarityAnalysis {
             }
         }
 
-//        Collections.sort(this.deltas, new Comparator<AffinityMap>() {
-//            // comparison method between two affinity maps, used to sort the analysis
-//            @Override
-//            public int compare(AffinityMap affinityMap, AffinityMap t1) {
-//                return affinityMap.compareTo(t1);
-//            }
-//        });
+        for (FreqMapEntry entry : FreqMap.INSTANCE.getUnknownEntries()) {
+            this.rankings.add(new Ranking(entry, FreqMap.INSTANCE.getKnownEntries()));
+        }
+
+
     }
 
     /**
@@ -76,15 +73,8 @@ public class SimilarityAnalysis {
      */
     public void toFile(FileSystem fs, Path outputPath) throws IOException {
         StringBuilder sb = new StringBuilder();
-        ArrayList<Ranking> entries = new ArrayList<>();
 
-        for (AffinityMap a : this.deltas) {
-            if (!entries.contains(a.getRanking())) {
-                entries.add(a.getRanking());
-            }
-        }
-
-        for (Ranking r: entries) {
+        for (Ranking r : this.rankings) {
             sb.append(r.toString());
         }
 
@@ -111,10 +101,17 @@ public class SimilarityAnalysis {
                 af.append(field, Math.abs(kn.getFrequencies().get(field) - unk.getFrequencies().get(field)));
         }
 
-        // adding the ranking in order to have an author's rank
-        af.addRanking(new Ranking(unk, knowns));
-
         return af;
+    }
+
+    public AffinityMap getByAuthors(String knownAuthor, String unknownAuthor) {
+        for (AffinityMap affinityMap : this.deltas) {
+            if (affinityMap.getAuthor().equals(knownAuthor) && affinityMap.getUnknown().equals(unknownAuthor)) {
+                return affinityMap;
+            }
+        }
+
+        return null;
     }
 
     @Override

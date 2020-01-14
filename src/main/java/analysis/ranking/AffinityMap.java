@@ -4,6 +4,8 @@ package main.java.analysis.ranking;
 import main.java.analysis.frequencies.CommonWord;
 import main.java.analysis.frequencies.FreqMap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -12,11 +14,10 @@ import java.util.HashMap;
  * the previous analysis. The comparison proceeds by calculating a delta for each field each author's map.
  * </p>
  */
-public class AffinityMap {
+public class AffinityMap implements Comparable {
     private String author;
     private String unknown;
     private HashMap<String, Double> map;
-    private Ranking ranking;
 
     /**
      * Generates an instance with empty comparison map.
@@ -30,18 +31,12 @@ public class AffinityMap {
         this.map = new HashMap<>();
     }
 
-    public AffinityMap(String auth, String unk, FreqMap freqMap) {
-        this.author = auth;
-        this.unknown = unk;
-        this.map = new HashMap<>();
+    public String getAuthor() {
+        return author;
     }
 
-    public Ranking getRanking() {
-        return ranking;
-    }
-
-    public void addRanking(Ranking r) {
-        this.ranking = r;
+    public String getUnknown() {
+        return unknown;
     }
 
     /**
@@ -58,15 +53,38 @@ public class AffinityMap {
     public String toString() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(this.unknown).append(":");
-        for (String auth : this.ranking.getSortedRanking()) {
-            sb.append(auth).append(" - ");
+        for (String key : this.map.keySet()) {
+            sb.append(this.author).append("-").append(this.unknown).append("-").append(key).append("=").append(this.map.get(key)).append("\n");
         }
 
-        sb.deleteCharAt(sb.length()- 1);
-        sb.append("\n");
         return sb.toString();
     }
 
 
+    @Override
+    public int compareTo(Object o) {
+        AffinityMap other = (AffinityMap) o;
+        ArrayList<String> allowedFields = new ArrayList<>(Arrays.asList("articles", "verbs", "pronouns", "commas", "conjunctions", "prepositions"));
+
+        if (this.map.get("avg_period_length").intValue() == other.map.get("avg_period_length").intValue()) {
+            int lowerFields = 0;
+            for (String key : allowedFields) {
+                if (this.map.get(key) < other.map.get(key)) {
+                    lowerFields++;
+                }
+
+                if (lowerFields > 3) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
+
+        } else if (this.map.get("avg_period_length").intValue() < other.map.get("avg_period_length").intValue()) {
+            return -1;
+        }
+
+        return 1;
+
+    }
 }

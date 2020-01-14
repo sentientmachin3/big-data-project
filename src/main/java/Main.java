@@ -21,9 +21,13 @@ public class Main {
         Authorship authorship = new Authorship();
         ToolRunner.run(authorship, args);
         FileSystem fileSystem = FileSystem.get(authorship.getConf());
+
+        // parsing job output
         FreqMap.INSTANCE.load(fileSystem, new Path(Authorship.OUTPUT_PATH + "/part-r-00000"));
         FreqMap.INSTANCE.toFile(fileSystem, new Path(Authorship.OUTPUT_PATH + "/known-frequencies.txt"));
 
+        // generating rankings for unknown authors
+        SimilarityAnalysis.INSTANCE.exec();
         SimilarityAnalysis.INSTANCE.toFile(fileSystem, new Path(Authorship.OUTPUT_PATH + "/deltas.txt"));
 
     }
