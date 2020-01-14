@@ -637,61 +637,63 @@ private void exec() {
 	\noindent
 	The ranking is written to a new file in the HDFS (in directory \lstinline|OUTPUT_PATH|); the first position are the most similar, the last position are the smallest affinity pairs.
 	
-
-	
 	\newpage
 	\section{Running on a sample}\label{sample}
 	\subsection{Extracted data}
-	During the development process, we tested the program on a bunch of samples (155 files, more or less 70 MB) from 4 different authors: \begin{itemize}
-	\item M. Shelley;
-	\item C. Dickens (with unknown texts marked as Unknown4 and Unknown5);
-	\item J. Abbott (with unknown texts marked as Unknown1, Unknown2 and Unknown3).
-\end{itemize}
+	During the development process, we tested the program on a bunch of samples (240 files, more or less 97 MB) from 4 different authors: 
+	\begin{itemize}
+		\item Mary Wollstonecraft Shelley -- 6 texts;
+		\item Jacob Abbott -- 47 texts (plus three unknown texts marked as Unknown1, Unknown2 and Unknown3);
+		\item Charles Dickens -- 101 texts (plus two unknown texts marked as Unknown4 and Unknown5);
+		\item Robert Louis Stevenson -- 80 texts (plus one unknown text marked as Unknown6).
+	\end{itemize}
 
-\noindent
-These texts are taken from the Project Gutenberg online library. The unknown writings are 5, two of them written by C.Dickens, and three by J.Abbott.
+		\noindent
+		These texts are taken from the Project Gutenberg online library. Each text is formatted as an utf8 plain-text txt file.
 
-\bigskip
+		\bigskip
 
-\noindent
-We used most common words used by authors as the most relevant parameter to check authorship. In this case all unknown texts are correctly recognized. If the most common words are the same in the unknown text and in more than one author ``dictionary'' of texts, this check is irrelevant. So we decided to consider period length as the second parameter of recognition. At last if the period length check is irrelevant too, we count each article, preposition, conjunction, pronoun, verb and punctuation mark frequency.
+		\noindent
+		We used most common words used by authors as the most relevant parameter to check authorship. In this case all unknown texts are correctly recognized. If the most common words are the same in the unknown text and in more than one author ``dictionary'' of texts, this check is irrelevant. So we decided to consider period length as the second parameter of recognition. At last if the period length check is irrelevant too, we count each article, preposition, conjunction, pronoun, verb and punctuation mark frequency.
 
-\noindent
-Running the program on the known texts, we got the following information:
-\begin{table}[h!]
-	\small
-	\begin{tabular}{cccccc}
-		\toprule
-		Author   & Articles    & Conjunctions & Prepositions & Avg. Period Length & Commas \\
-		\midrule
-		J.Abbott   & 0.0946804   & 0.030357495  & 0.11384052   & 18.227755 & 0.09961549  \\
-		C.Dickens  & 0.081898294 & 0.027547827  & 0.09921892   & 17.166945 & 0.11376968 \\
-		M.Shelley  & 0.07756892  & 0.037609607  & 0.11023554   & 20.283638 & 0.079789676 \\
-		\bottomrule
-	\end{tabular}
-	\caption{Frequencies in known authors' texts}
-	\label{tab:known-freq}
-\end{table}
-\bigskip
+		\noindent
+		Running the program on the known texts, we got the following information:
+		\begin{table}[h!]
+			\small
+			\begin{tabular}{lcccccc}
+				\toprule
+				Author   & Articles    & Conjunctions & Pronouns & Verbs & Prepositions &   Commas  \\
+				\midrule
+				M.Shelley     & 0.075  & 0.059 & 0.130 & 0.051 & 0.131 & 0.066  \\
+				J.Abbott      & 0.082  & 0.065 & 0.117 & 0.067 & 0.134 & 0.076  \\
+				C.Dickens     & 0.067  & 0.058 & 0.116 & 0.054 & 0.114 & 0.084  \\
+				R.L.Stevenson & 0.079  & 0.059 & 0.110 & 0.053 & 0.119 & 0.074  \\
+				\bottomrule
+			\end{tabular}
+			\caption{Frequencies in known authors' texts}
+			\label{tab:known-freq}
+		\end{table}
+		\bigskip
 
-\noindent
-Running the program on unknown texts, we obtained the following data:
-\begin{table}[h!]
-	\small
-	\begin{tabular}{cccccc}
-		\toprule
-		Number & Articles & Conjunctions & Prepositions & Avg. Period Length & Commas \\
-		\midrule
-		Unknown 1 & 0.09512767  & 0.028265182  & 0.10064157   & 15.1724    & 0.09657056  \\
-		Unknown 2 & 0.10238273  & 0.028543063  & 0.10702407   & 14.196617  & 0.096401095 \\
-		Unknown 3 & 0.09730647  & 0.028921144  & 0.1361749    & 20.7383    & 0.09636771  \\
-		Unknown 4 & 0.09376974  & 0.021347687  & 0.09346865   & 12.885504  & 0.13776492  \\
-		Unknown 5 & 0.09391441  & 0.025601724  & 0.11509038   & 25.835533  & 0.11042987  \\
-		\bottomrule
-	\end{tabular}
-	\caption{Frequencies in unknown authors' texts}
-	\label{tab:unknown-freq}
-\end{table}
+		\noindent
+		Running the program on unknown texts, we obtained the following data:
+		\begin{table}[h!]
+			\small
+			\begin{tabular}{cccccccc}
+				\toprule
+				Number & Articles & Conjunctions & Pronouns & Verbs & Prepositions & Commas \\
+				\midrule
+				Unknown1 & 0.076 & 0.068 & 0.126 & 0.082 & 0.111 & 0.095 \\
+				Unknown2 & 0.092 & 0.062 & 0.105 & 0.057 & 0.149 & 0.071 \\
+				Unknown3 & 0.100 & 0.056 & 0.100 & 0.059 & 0.143 & 0.078 \\
+				Unknown4 & 0.058 & 0.063 & 0.141 & 0.058 & 0.114 & 0.107 \\
+				Unknown5 & 0.065 & 0.061 & 0.124 & 0.058 & 0.113 & 0.087 \\
+				Unknown6 & 0.097 & 0.076 & 0.132 & 0.075 & 0.109 & 0.075 \\
+				\bottomrule
+			\end{tabular}
+			\caption{Frequencies in unknown authors' texts}
+			\label{tab:unknown-freq}
+		\end{table}
 
 	\newpage
 	\subsection{Results and analysis}
