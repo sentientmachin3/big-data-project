@@ -42,11 +42,8 @@ public class Ranking {
             Pair<FreqMapEntry, Integer> p2 = ranking.get(i + 1);
 
             if (p1.getSecond().equals(p2.getSecond())) {
-                String auth1 = p1.getFirst().getAuthor();
-                String auth2 = p2.getFirst().getAuthor();
-                String unk = this.unknownEntry.getAuthor();
-                AffinityMap a1 = SimilarityAnalysis.INSTANCE.getByAuthors(auth1, unk);
-                AffinityMap a2 = SimilarityAnalysis.INSTANCE.getByAuthors(auth2, unk);
+                AffinityMap a1 = SimilarityAnalysis.INSTANCE.getByAuthors(p1.getFirst().getAuthor(), this.unknownEntry.getAuthor());
+                AffinityMap a2 = SimilarityAnalysis.INSTANCE.getByAuthors(p2.getFirst().getAuthor(), this.unknownEntry.getAuthor());
 
                 if (a1.compareTo(a2) < 0) {
                     // swap the pairs (same number of common words)
