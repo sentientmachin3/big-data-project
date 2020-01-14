@@ -640,9 +640,8 @@ private void exec() {
 	\newpage
 	\section{Running on a sample}\label{sample}
 	\subsection{Extracted data}
-	During the development process, we tested the program on a bunch of samples (240 files, more or less 97 MB) from 4 different authors: 
+	During the development process, we tested the program on a bunch of samples (240 files, more or less 94 MB) from 3 different authors: 
 	\begin{itemize}
-		\item Mary Wollstonecraft Shelley -- 6 texts;
 		\item Jacob Abbott -- 47 texts (plus three unknown texts marked as Unknown1, Unknown2 and Unknown3);
 		\item Charles Dickens -- 101 texts (plus two unknown texts marked as Unknown4 and Unknown5);
 		\item Robert Louis Stevenson -- 80 texts (plus one unknown text marked as Unknown6).
@@ -664,7 +663,6 @@ private void exec() {
 				\toprule
 				Author   & Articles    & Conjunctions & Pronouns & Verbs & Prepositions &   Commas  \\
 				\midrule
-				M.Shelley     & 0.075  & 0.059 & 0.130 & 0.051 & 0.131 & 0.066  \\
 				J.Abbott      & 0.082  & 0.065 & 0.117 & 0.067 & 0.134 & 0.076  \\
 				C.Dickens     & 0.067  & 0.058 & 0.116 & 0.054 & 0.114 & 0.084  \\
 				R.L.Stevenson & 0.079  & 0.059 & 0.110 & 0.053 & 0.119 & 0.074  \\
@@ -705,7 +703,7 @@ private void exec() {
 		\begin{tikzpicture}
 			\begin{axis}
 			[
-			legend entries={Abbott, Shelley, Dickens},
+			legend entries={Abbott, Dickens, Stevenson},
 			legend style={
 				at={(1.5,-0.2)},
 				anchor=north,
@@ -723,11 +721,11 @@ private void exec() {
 			legend pos=outer north east,
 			yticklabel={\pgfmathprintnumber{\tick}\,\%},
 			x tick label style={rotate=90},
-			xticklabels={articles,conjunctions,punctuation,prepositions},
+			xticklabels={articles,conjunctions,pronouns,verbs,prepositions,punctuation},
 			ylabel=Frequencies]
 			\addplot table [x=freq, y=abbott, col sep=comma] {csv-files/frequencies.csv};
-			\addplot table [x=freq, y=shelley, col sep=comma] {csv-files/frequencies.csv};
-			\addplot[mark=*, brown] table [x=freq, y=dickens, col sep=comma] {csv-files/frequencies.csv};
+			\addplot table [x=freq, y=dickens, col sep=comma] {csv-files/frequencies.csv};
+			\addplot[mark=*, brown] table [x=freq, y=stevenson, col sep=comma] {csv-files/frequencies.csv};
 			\end{axis}
 		\end{tikzpicture}
 		\caption{Language parts frequencies of all authors in all texts}
@@ -752,14 +750,14 @@ private void exec() {
 			},
 			grid=major,
 			height=9cm,
-			grid style={densely dotted},
+			grid style={thick,densely dotted},
 			yshift=0.5cm,
 			xshift=100,
 			xtick=data,
 			ytick={0, 3, ..., 19},
 			legend pos=outer north east,
 			yticklabel={\footnotesize\pgfmathprintnumber{\tick}},
-			xticklabels={articles,conjunctions,punctuation,prepositions}]
+			xticklabels={articles,conjunctions,pronouns,verbs,prepositions,punctuation}]
 			\addplot table [data cs=polarrad, x=freq, y=abbott, col sep=comma] {csv-files/abbott-unknown.csv};
 			\addplot table [data cs=polarrad, x=freq, y=unknown1, col sep=comma] {csv-files/abbott-unknown.csv};
 			\addplot table [data cs=polarrad, x=freq, y=unknown2, col sep=comma] {csv-files/abbott-unknown.csv};
@@ -788,12 +786,12 @@ private void exec() {
 			},
 			grid=major,
 			height=9cm,
-			grid style={densely dotted},
+			grid style={thick,densely dotted},
 			xtick=data,
 			ytick={0, 3, ..., 19},
 			legend pos=outer north east,
 			yticklabel={\footnotesize\pgfmathprintnumber{\tick}},
-			xticklabels={articles,conjunctions,punctuation,prepositions}]
+			xticklabels={articles,conjunctions,pronouns,verbs,prepositions,punctuation}]
 			\addplot table [data cs=polarrad, x=freq, y=dickens, col sep=comma] {csv-files/dickens-unknown.csv};
 			\addplot table [data cs=polarrad, x=freq, y=unknown4, col sep=comma] {csv-files/dickens-unknown.csv};
 			\addplot table [data cs=polarrad, x=freq, y=unknown5, col sep=comma] {csv-files/dickens-unknown.csv};
@@ -802,6 +800,37 @@ private void exec() {
 		\caption{Frequencies between Dickens and 2 unknowns\\
 		We can observe that there is quite a similarity between Dickens frequencies and the unknown authors' texts.}
 		\label{tikz:dickens-unk}
+	\end{figure}
+
+	\begin{figure}[h!]
+		\centering
+		\begin{tikzpicture}
+			\begin{polaraxis}
+			[
+			legend entries={Stevenson, Unknown6},
+			legend style={
+				at={(1.5,-0.2)},
+				anchor=north,
+				legend columns=1,
+				cells={anchor=west},
+				font=\footnotesize,
+				rounded corners=2pt,
+			},
+			grid=major,
+			height=9cm,
+			grid style={thick,densely dotted},
+			xtick=data,
+			ytick={0, 3, ..., 19},
+			legend pos=outer north east,
+			yticklabel={\footnotesize\pgfmathprintnumber{\tick}},
+			xticklabels={articles,conjunctions,pronouns,verbs,prepositions,punctuation}]
+			\addplot table [data cs=polarrad, x=freq, y=stevenson, col sep=comma] {csv-files/stevenson-unknown.csv};
+			\addplot table [data cs=polarrad, x=freq, y=unknown6, col sep=comma] {csv-files/stevenson-unknown.csv};
+			\end{polaraxis}
+		\end{tikzpicture}
+		\caption{Frequencies between Stevenson and 1 unknown\\
+		We can observe that there is quite a similarity between Stevenson frequencies and the unknown author's text.}
+		\label{tikz:stevenson-unk}
 	\end{figure}
 	
 	\subsubsection{Deltas differences between known and unknown authors}
