@@ -45,7 +45,7 @@ public class AffinityMap implements Comparable {
         FreqMapEntry known = FreqMap.INSTANCE.getGlobalEntryByAuthor(this.author);
         FreqMapEntry unknown = FreqMap.INSTANCE.getGlobalEntryByAuthor(this.unknown);
 
-        if (unknown.getFrequencies().get("nwords") < (known.getFrequencies().get("nwords") / 2)) {
+        if (unknown.getFrequencies().get("nwords") < 10000) {
             return false;
         }
 

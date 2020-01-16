@@ -97,16 +97,14 @@ public class FreqMapEntry implements Comparable {
 
     @Override
     public String toString() {
+        String header = this.author + "-" + this.title + "-";
         StringBuilder str = new StringBuilder();
-        str.append("\nENTRY: " + this.author + " " + this.title + "\n");
         for (String field : this.frequencies.keySet()) {
-            str.append("\t");
-            str.append(field).append("=").append(this.frequencies.get(field)).append("\n");
+            str.append(header).append(field).append("=").append(this.frequencies.get(field)).append("\n");
         }
 
-        str.append("------------------\n");
         for (CommonWord c : this.highestFrequencyList) {
-            str.append("\t").append(c).append("\n");
+            str.append(header).append("-").append(c).append("\n");
         }
         return str.toString();
 

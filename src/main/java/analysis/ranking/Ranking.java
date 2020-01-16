@@ -45,7 +45,7 @@ public class Ranking {
                 AffinityMap a1 = SimilarityAnalysis.INSTANCE.getByAuthors(p1.getFirst().getAuthor(), this.unknownEntry.getAuthor());
                 AffinityMap a2 = SimilarityAnalysis.INSTANCE.getByAuthors(p2.getFirst().getAuthor(), this.unknownEntry.getAuthor());
 
-                if (a1.compareTo(a2) < 0) {
+                if (a1 != null && a2 != null && (a1.compareTo(a2) < 0)) {
                     // swap the pairs (same number of common words)
                     this.ranking.set(i, p2);
                     this.ranking.set(i + 1, p1);
@@ -62,7 +62,6 @@ public class Ranking {
 
         return sortedRanking;
     }
-
 
     @Override
     public String toString() {
