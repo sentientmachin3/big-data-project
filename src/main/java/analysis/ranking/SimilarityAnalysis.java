@@ -9,9 +9,6 @@ import org.apache.hadoop.fs.Path;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 
 /**
  * The class contains the methods in order to run a similarity analysis between authors.
@@ -26,10 +23,6 @@ public class SimilarityAnalysis {
      * Generates an instance.
      */
     private SimilarityAnalysis() {
-    }
-
-    public ArrayList<AffinityMap> getDeltas() {
-        return this.deltas;
     }
 
     /**
@@ -60,9 +53,7 @@ public class SimilarityAnalysis {
         }
 
         // remove invalid affinity maps
-        ArrayList<AffinityMap> clone = new ArrayList<>();
-        Collections.copy(clone, this.deltas);
-        for (AffinityMap map : clone) {
+        for (AffinityMap map : new ArrayList<>(this.deltas)) {
             if (!map.isComparable()) {
                 this.uncomparable.add(map);
                 this.deltas.remove(map);
@@ -72,8 +63,6 @@ public class SimilarityAnalysis {
         for (FreqMapEntry entry : FreqMap.INSTANCE.getUnknownEntries()) {
             this.rankings.add(new Ranking(entry, FreqMap.INSTANCE.getKnownEntries()));
         }
-
-
     }
 
     /**
@@ -90,8 +79,12 @@ public class SimilarityAnalysis {
             sb.append(r.toString());
         }
 
+        for (AffinityMap a: this.deltas) {
+            sb.append(a.toString());
+        }
+
         for (AffinityMap inv: this.uncomparable) {
-            sb.append(inv.getAuthor()).append("-").append(inv.getUnknown()).append("\t").append("uncomparable\n");
+            sb.append(inv.getAuthor()).append("-").append(inv.getUnknown()).append("\t").append("incomparable\n");
         }
 
         FSDataOutputStream outputStream = fs.create(outputPath);
