@@ -5,7 +5,7 @@
 \usepackage{graphicx}
 \usepackage[justification=centering]{caption}
 \usepackage{fixltx2e}
-\usepackage{booktabs}
+\usepackage{dcolumn,booktabs}
 \usepackage{listings}
 \usepackage{enumitem}
 \usepackage{color}
@@ -55,6 +55,9 @@ breaklines=true,
 tabsize=2,
 escapeinside={(*@}{@*)}
 }
+
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+\newcommand\mc[1]{\multicolumn{1}{c}{#1}} % handy shortcut macro
 
 \pagestyle{fancy}
 \lhead{\nouppercase{\leftmark}}
@@ -132,7 +135,7 @@ escapeinside={(*@}{@*)}
 		Cloudera provides an HDFS (\textit{Hadoop Distributed FileSystem})\parencite{Hadoop-Mapreduce}, used to store files across server collections. The Hadoop version used in this project is \texttt{Hadoop 2.6.0-cdh5.7.0}. 
 		
 		\noindent
-		The distributed filesystem consists on two basic services: \begin{itemize}
+		The distributed filesystem consists in two basic services: \begin{itemize}
 			\item \textit{NameNode}: is a single instance service, running on a master node, which is responsible for files and directory maintenance within the filesystem itself;
 			
 			\item \textit{DataNode}: running on multiple nodes (many instances are allowed), are supposed to retrieve the application data when they are told by the NameNode.
@@ -171,12 +174,12 @@ escapeinside={(*@}{@*)}
 		
 
 	\subsection{Map Reduce Framework}
-		MapReduce is a programming paradigm which works on parallel platforms in order to process large amounts of data in the best possible way. The client has to implement a map function, which is supposed to take raw data as input and process them into intermediate \textit{key-value} pairs, and the reduce function, which aim is to regroup key-value pairs relying on the key and generate key-value output pairs. The MapReduce model is explained more in detail in the next section.
+		MapReduce is a programming paradigm which works on parallel platforms in order to process large amounts of data in the best possible way. The client has to implement a map function, which is supposed to take raw data as input and process them into intermediate \textit{key-value} pairs, and the reduce function, whose aim is to regroup key-value pairs relying on the key and generate key-value output pairs. The MapReduce model is explained more in detail in the next section.
 		
 		\bigskip
 
 		\noindent
-		This Programming Model consists of two main actions:
+		This Programming Model consists in two main actions:
 		\begin{itemize}
 			\item \textbf{Map}: application of a function to every object in a list. Each object (e.g.: document) is independent.
 			\begin{itemize}
@@ -233,10 +236,10 @@ escapeinside={(*@}{@*)}
 		\end{figure}
 
 	\section{Project workflow and structure}\label{workflow}
-	The first step of the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. The program performs the calculation of the frequencies of english language parts most commonly used for each text and counts the most common words for each author, excluding the ones counted in the previous step.
+	The first step of the project is to analyze an amount of manuscripts, extracting relevant information from them in order to create a ``dictionary'' of known authors. The program performs the calculation of the frequencies of English language parts most commonly used for each text and counts the most common words for each author, excluding the ones counted in the previous step.
 	
 	\noindent
-	Starting from these data, the following phases consist of taking unknown manuscripts as input and establishing the authorship by the comparing them with the ``dictionary'' previously created. 
+	Starting from these data, the following phases consist in taking unknown manuscripts as input and establishing the authorship by comparing them with the ``dictionary'' previously created. 
 	
 	\noindent
 	All the manuscripts are \texttt{utf8} plain-text \texttt{.txt} files taken from the Project Gutenberg \parencite{Gutenberg} online library.
@@ -251,7 +254,7 @@ escapeinside={(*@}{@*)}
 		\item Calculating the frequencies of language parts for each text.
 		\item Calculating the most common words for each author.
 		\item Obtaining an author ``identikit'' based on the texts that have been analyzed written by that specific author. The author characteristics are built merging the data resulting from the text analysis.
-		\item Analyzing unknown texts and comparing them to the known author in order to have a rank of similarity between the unknown texts and the known authors.
+		\item Analyzing unknown texts and comparing them with the known author in order to have a rank of similarity between the unknown texts and the known authors.
 	\end{enumerate}
 
 	\subsection{Project structure}
@@ -284,7 +287,7 @@ escapeinside={(*@}{@*)}
 		\end{figure}
 
 	\subsection{Map Reduce Job}
-		The project contains only a single MapReduce job, alongside with other classes to hold temporary data. The MapReduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface to the HDFS functions. These libraries are:
+		The project contains only a single MapReduce job, alongside with other classes to hold temporary data. The MapReduce job is implemented in a single class named \lstinline|Authorship|. In order to proceed with the implementation, the code has to import several libraries, which provide interface for HDFS functions. These libraries are:
 		\begin{figure}[H]
 			{\small
 			\dirtree{%
@@ -300,11 +303,11 @@ escapeinside={(*@}{@*)}
 		\end{figure}
 
 		\noindent
-		Before diving into the implementation of the job, we have to assure that the current class (compiled into a \verb|jar| file), will run as an hadoop job. In order to do so, we have to add \lstinline|extends Configured implements Tool| to the class declaration.
+		Before diving into the implementation of the job, we have to make sure that the current class (compiled into a \verb|jar| file), will run as a hadoop job. In order to do so, we have to add \lstinline|extends Configured implements Tool| to the class declaration.
 		
 		\bigskip
 		\noindent
-		As said in the previous sections, the client has to manually implement the map and the reduce functions, alongside with a \lstinline|run| method to configure the job itself.
+		As said in the previous sections, the client has to implement manually the Map and the Reduce functions, alongside with a \lstinline|run| method to configure the job itself.
 
 	\subsubsection{Run method}
 		It contains the job configuration where input and output paths are set.
@@ -359,10 +362,10 @@ public int run(String[] args) throws Exception {
 		
 	\subsubsection{Mapper implementation} 
 		
-		The mapper is implemented in an inner class, and we can summarize the content by dividing it in three sections.
+		The mapper is implemented in an inner class, and we can summarize the content dividing it into three sections.
 
 		\noindent
-		The first one contains the declaration of patterns during the analysis.
+		The first one contains the pattern declarations during the analysis.
 	
 	\begin{lstlisting}[firstnumber=73, caption={Declaration of Regular Expression Patterns}, captionpos=b]
 private static final Pattern WORD_BOUNDARY = Pattern.compile("\\s*\\b\\s *");
@@ -388,13 +391,13 @@ private static final IntWritable ONE = new IntWritable(1);
 		\item Average period length;
 		\item Punctuation mark frequency.
 	\end{itemize}
-	Besides this, we save additional information, such as the total number of words in the input and the total number of periods, so we can get the frequency over the total dimension of the input.
+	Moreover, we save additional information, such as the total number of words in the input and the total number of periods, so we can get the frequency over the total dimension of the input.
 
 	\noindent
-	In this section the previous pattern matchers are used to reach these words and write the corresponding \lstinline|ONE| in the job contest. 
+	In this section, the previous pattern matchers are used to reach these words and write the corresponding \lstinline|ONE| in the job contest. 
 	
 	\noindent
-	We report an example for articles count: \begin{lstlisting}[firstnumber=85, caption={Articles counting in Map method}, captionpos=b]
+	We report an example for article count: \begin{lstlisting}[firstnumber=85, caption={Articles counting in Map method}, captionpos=b]
 for (String word : WORD_BOUNDARY.split(lineText.toString())) {
 	String refWord = word.toLowerCase();
 	if (!word.isEmpty()) {
@@ -413,12 +416,12 @@ for (String word : WORD_BOUNDARY.split(lineText.toString())) {
 		\texttt{author-title.txt*article<tab><value>} 
 	\end{center}
 
-	This procedure applies in the same way to preposition, conjunctions and other language parts.
+	This procedure is applied in the same way to prepositions, conjunctions and other language parts.
 	
 	\bigskip
 	\noindent
 	For periods and punctuation we used a different method.
-	\begin{lstlisting}[firstnumber=109, caption={Periods counting in Map method}, captionpos=b]
+	\begin{lstlisting}[firstnumber=109, caption={Period counting in Map method}, captionpos=b]
 Matcher matcher = END_PERIOD.matcher(refLineText);
 while (matcher.find()) {
 	text.set(filePathString + "*periods");
@@ -428,10 +431,10 @@ while (matcher.find()) {
 	\end{lstlisting}
 	
 	\noindent
-	A \lstinline|Matcher| instance tries to match the pattern to an input line. As soon as the matcher finds occurrences of the pattern in the text passed as parameter, the mapper writes a line similar to the previous one (i.e. formatted in the same way) to the context. The procedure repeats for punctuation marks, commas and periods delimitators. 
+	A \lstinline|Matcher| instance tries to match the pattern to an input line. As soon as the matcher finds occurrences of the pattern in the text passed as parameter, the mapper writes in the context a line similar to the previous one (i.e. formatted in the same way) to the context. The procedure repeats for punctuation marks, commas and period delimitators. 
 	
 	\noindent
-	At last the mapper performs the count of the words which have not been counted in the previous matchings. The code running this task is the following:
+	Finally the mapper performs the count of the words which have not been counted in the previous matchings. The code running this task is the following:
 	\begin{lstlisting}[firstnumber=119, caption={Common words counting in the Map method.}, captionpos=b]
 Matcher commonWordsMatcher = COMMONS.matcher(lineText.toString());
 while (commonWordsMatcher.find()) {
@@ -468,17 +471,17 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 		Since the context has now a lot of lines associated with same value (the \lstinline|IntWritable| instance for ``ones''), the combiner and the reducer are responsible for grouping lines with the same key and count these lines, writing the total into the context.
 		
 		\noindent
-		For the common words, the reducer counts all the occurrences of the same word for an author in a text.
+		For the common words, the reducer counts all the occurrences of the same word of an author in a text.
 	
 	\subsection{Frequency Calculations}
 		Once the hadoop job has terminated, the control switches to a simple Java program. This section of the program generates an instance of the class \lstinline|FreqMap| (implemented as a singleton) which parses the reducer output file and builds a set of \lstinline|FreqMapEntries|.
 		
 		\noindent
-		A \lstinline|FreqMap| instance is a set of \lstinline|FreqMapEntry|, which are text-specific entries. More in detail an instance of \lstinline|FreqMapEntry| consists of: \begin{itemize}
+		A \lstinline|FreqMap| instance is a set of \lstinline|FreqMapEntry|, which are text-specific entries. More in detail an instance of \lstinline|FreqMapEntry| consists in: \begin{itemize}
 			\item A \lstinline|String| author name;
 			\item A \lstinline|String| text title;
 			\item A map \lstinline|String| $\to$ \lstinline|Float|, containing field names (text features extracted from the MapReduce framework) and their respective values;
-			\item  A list of \lstinline|String| instances, called \lstinline|highestFrequencyList|, which contains the most common words for each text. This list is created by considering the text's title specified in this object.
+			\item  A list of \lstinline|String| instances, called \lstinline|highestFrequencyList|, which contains the most common words for each text. This list is created considering the text title specified in this object.
 		\end{itemize}
 
 		\noindent
@@ -501,24 +504,24 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 		In \lstinline|FreqMap| Class there is a method called \lstinline|calculateFrequencies()|. This method performs the following instructions for each entry of the Frequency Map Entry (i. e. for each text):
 		\begin{enumerate}
 			\item Calculates the frequencies for each entry of the Map. Note that the frequency of articles, prepositions, conjunctions, verbs, pronouns and punctuation symbols is determined over the total number of words in the considered text;
-			\item Calculates the most common words frequency on the total number of words;
-			\item Computes the average period length by dividing the total number of words by the number of periods.
+			\item Calculates the most common word frequency on the total number of words;
+			\item Computes the average period length dividing the total number of words by the number of periods.
 		\end{enumerate}
 		After this phase, we will have a frequency map for every text of every author.
 
 		\bigskip
 
 		\noindent
-		What we need now is a map of frequencies relative to a single author, in order to generate a ``stylistic identikit''  of an author, so then we can compare any unknown text to that author.
+		What we need now is a map of frequencies related to a single author, in order to generate a ``stylistic identikit''  of an author, so then we can compare any unknown text with that author.
 
 		\noindent
-		In order to do so we pick all the information we got about every known text of every author and we merge this maps into a single one, which is relative to an author. That is, if we have multiple texts of the same author, we generate a new \lstinline|FreqMapEntry|, were the author remains the same, but we set as title a \lstinline|String| set to the value \lstinline|"global"|, in order to identify that map as the author identikit we were talking some lines above.
+		In order to do so we pick all the information we got about every known text of every author and we merge these maps into a single one, which is related to an author. That is, if we have multiple texts of the same author, we generate a new \lstinline|FreqMapEntry|, were the author remains the same, but we set as title a \lstinline|String| set to the value \lstinline|"global"|, in order to identify that map as the author identikit we were talking about in the previous lines.
 
 		\bigskip
 		\noindent
 		The global entries are generated with the method named \lstinline|globalAuthorFrequency()|, which performs, in order, the following tasks: 
 		\begin{enumerate}
-			\item Merges all the common words from the same author into a one, huge list, orders these words by their frequency and keeps the first top ten most used common words. This is done by creating a map \lstinline|String| $\to$ \lstinline|Float| for each author and collecting each common word's frequency for the selected author;
+			\item Merges all the common words from the same author into a one, huge list. Orders these words by their frequency and keeps the first top ten most used common words. This is done creating a map \lstinline|String| $\to$ \lstinline|Float| for each author and collecting each common word frequency for the selected author;
 			\item Calculates, for each field of the map, the average values for the different language parts, and fills the global entry with the average values;
 			\item Creates a new \lstinline|FreqMapEntry| with the results of points 1 and 2.
 		\end{enumerate}
@@ -564,12 +567,12 @@ protected void reduce(Text key, Iterable<IntWritable> values, Context context) t
 		\noindent
 		The task is done through the following steps: 
 		\begin{enumerate}
-			\item Generating a partial comparison between every couple of unknown text-known author;
+			\item Generating a partial comparison between every couple of unknown text and a known author;
 			\item Sorting this comparisons in order to get the most similar couples as the most correlated author to each unknown text.
 		\end{enumerate}
 
 		\noindent
-		This steps are implemented in \lstinline|SimilarityAnalysis| and \lstinline|AffinityMap| classes.
+		These steps are implemented in \lstinline|SimilarityAnalysis| and \lstinline|AffinityMap| classes.
 
 		\bigskip
 
@@ -618,18 +621,18 @@ public void exec() {
 
 		\subsubsection{Affinity Map}
 		\noindent
-		An \lstinline|AffinityMap| instance represents a comparison of authors, the first is known and the second is not. The compared fields are represented as a map \lstinline|String| $\to$ \lstinline|Double|, as in the previous classes. 
+		An \lstinline|AffinityMap| instance represents a comparison of authors, the first is known and the second is unknown. The compared fields are represented as a map \lstinline|String| $\to$ \lstinline|Double|, as in the previous classes. 
 		
 		\noindent
 		The \lstinline|AffinityMap| instance implements the \lstinline|Comparable| interface, in order to be able to compare two instances and determine a sort of ``hierarchy''. As previously said, an affinity map can be Comparable or not Comparable. In this class there is a method called \lstinline|isComparable()| which performs the following checks:
 		\begin{itemize}
-			\item Check if the text's lengths are comparable. We decided that if the number of words in the unknown text is lower than 10000, the map is not comparable;
-			\item Check if the computed delta values are reasonable. If there is a significant difference between the known and unknown text's parts (e.g. the known text is not written in English) we decided that the map is not comparable. The maximum accepted value for deltas is set to 15\%. When a the difference is above this value, it is not comparable. 
+			\item Checks if the text lengths are comparable. We decided that if the number of words in the unknown text is lower than 10000, the map is not comparable;
+			\item Checks if the computed delta values are reasonable. If there is a significant difference between the known and unknown text parts (e.g. the known text is not written in English) we decided that the map is not comparable. The maximum accepted value for deltas is set to 15\%. When the difference is above this value, it is not comparable. 
 		\end{itemize}
 
 		\begin{lstlisting}[firstnumber=43,caption={AffinityMap isComparable method}, captionpos=b, label={lst:iscomparablemethod}]
 public boolean isComparable() {
-	// check if the text's lengths are comparable
+	// check if the text lengths are comparable
 	FreqMapEntry known = FreqMap.INSTANCE.getGlobalEntryByAuthor(this.author);
 	FreqMapEntry unknown = FreqMap.INSTANCE.getGlobalEntryByAuthor(this.unknown);
 
@@ -661,7 +664,7 @@ public boolean isComparable() {
 	\end{align*}
 
 	\noindent
-	These calculations are performed in the before used method \lstinline|computeDelta| of \lstinline|SimilarityAnalysis| class:
+	These calculations are performed in the method \lstinline|computeDelta| of \lstinline|SimilarityAnalysis| class used before:
 	\begin{lstlisting}[firstnumber=104,caption={SimilarityAnalysis computeDelta method}, captionpos=b, label={lst:computeDelta}]
 private AffinityMap computeDelta(FreqMapEntry kn, FreqMapEntry unk, ArrayList<FreqMapEntry> knowns) {
 	AffinityMap af = new AffinityMap(kn.getAuthor(), unk.getAuthor());
@@ -680,13 +683,13 @@ private AffinityMap computeDelta(FreqMapEntry kn, FreqMapEntry unk, ArrayList<Fr
 		This class contains two attributes:
 		\begin{itemize}
 			\item An unknown entry FreqMapEntry;
-			\item A list of Pairs that represents the ranking of the authors. A Pair is a couple of \lstinline|<FreqMapEntry, Integer>| values, in which the Integer values represents the number of common words that are used both in the known and in the unknown author.
+			\item A list of Pairs that represents the ranking of the authors. A Pair is a couple of \lstinline|<FreqMapEntry, Integer>| values, in which the Integer values represent the number of common words that are used both in the known and in the unknown author.
 		\end{itemize}
 		This object is called for each unknown entry text and performs a comparison establishing which author is more similar to the unknown given text.
 
 		\bigskip
 		\noindent
-		The constructor of this object calculates the words in common with unknown author considering its highestFrequencyList and creates a new Ranking entry. Then it calls the \lstinline|sort()| method which sorts the ranking for the considered unknown text.
+		The constructor of this object calculates the words in common with the unknown author considering its highestFrequencyList and creates a new Ranking entry. Then it calls the \lstinline|sort()| method which sorts the ranking for the considered unknown text.
 		
 		\noindent
 		This method is implemented as follows:
@@ -719,7 +722,7 @@ private void sort() {
 		\end{lstlisting}
 
 		\noindent
-		We used most common words employed by authors as the most relevant parameter to check authorship. If the most common words are the same in the unknown text and in more than one author ``dictionary'' of texts, this check is irrelevant. So we decided to consider period length as the second parameter of recognition. At last if the period length check is irrelevant too, we count each article, preposition, conjunction, pronoun, verb and punctuation mark frequency.
+		We used most common words employed by authors as the most relevant parameter to check authorship. If the most common words are the same in the unknown text and in more than one author ``dictionary'' of texts, this check is irrelevant. So we decided to consider period length as the second parameter of recognition. Finally if the period length check is irrelevant too, we count each article, preposition, conjunction, pronoun, verb and punctuation mark frequency.
 
 		\bigskip
 
@@ -768,7 +771,7 @@ public int compareTo(Object o) {
 		\end{itemize} 	
 	
 	\noindent
-	The ranking is written to a new file in the HDFS (in directory \lstinline|OUTPUT_PATH|); the first position are the most similar, the last position are the smallest affinity pairs.
+	The ranking is written in a new file in the HDFS (in directory \lstinline|OUTPUT_PATH|); the first positions are the most similar, the last positions are the smallest affinity pairs.
 
 	\newpage
 	\section{Running on a sample}\label{sample}
@@ -789,9 +792,9 @@ public int compareTo(Object o) {
 		Running the program on the known texts, we got the following information:
 		\begin{table}[h!]
 			\small
-			\begin{tabular}{lcccccc}
+			\begin{tabular}{l * {6}{d{1.3}}}
 				\toprule
-				Author   & Articles    & Conjunctions & Pronouns & Verbs & Prepositions & Punctuation \\
+				Author   & \mc{Articles}    & \mc{Conjunctions} & \mc{Pronouns} & \mc{Verbs} & \mc{Prepositions} & \mc{Punctuation} \\
 				\midrule
 				J.Abbott      & 0.082  & 0.065 & 0.117 & 0.067 & 0.134 & 0.076  \\
 				C.Dickens     & 0.067  & 0.058 & 0.116 & 0.054 & 0.114 & 0.084  \\
@@ -801,15 +804,30 @@ public int compareTo(Object o) {
 			\caption{Frequencies in known authors' texts}
 			\label{tab:known-freq}
 		\end{table}
+		\begin{table}[h!]
+			\small
+			\begin{tabular}{l * {3}{d{6.3}}}
+				\toprule
+				Author   & \mc{Average Period Length} & \mc{Number of Periods} & \mc{Total Number of Words} \\
+				\midrule
+				J.Abbott      & 23.544 & 2381.489 & 56743.254\\
+				C.Dickens     & 23.619 & 5079.822 & 110616.180\\
+				R.L.Stevenson & 28.690 & 3544.325 & 85958.46 \\
+				\bottomrule
+			\end{tabular}
+			\caption{Frequencies in known authors' texts}
+			\label{tab:known-freqq}
+		\end{table}
+
 		\bigskip
 
 		\noindent
 		Running the program on unknown texts, we obtained the following data:
 		\begin{table}[h!]
 			\small
-			\begin{tabular}{cccccccc}
+			\begin{tabular}{l * {6}{d{1.3}}}
 				\toprule
-				Number & Articles & Conjunctions & Pronouns & Verbs & Prepositions & Punctuation \\
+				Number & \mc{Articles} & \mc{Conjunctions} & \mc{Pronouns} & \mc{Verbs} & \mc{Prepositions} & \mc{Punctuation} \\
 				\midrule
 				Unknown1 & 0.076 & 0.068 & 0.126 & 0.082 & 0.111 & 0.095 \\
 				Unknown2 & 0.092 & 0.062 & 0.105 & 0.057 & 0.149 & 0.071 \\
@@ -823,10 +841,53 @@ public int compareTo(Object o) {
 			\label{tab:unknown-freq}
 		\end{table}
 
+		\begin{table}[h!]
+			\small
+			\begin{tabular}{l * {3}{d{1.3}}}
+				\toprule
+				Number & \mc{Average Period Length} & \mc{Number of Periods} & \mc{Total Number of Words} \\
+				\midrule
+				Unknown1 & 19.570 & 2094.0 & 40981.0 \\
+				Unknown2 & 27.521 & 2391.0 & 65803.0 \\
+				Unknown3 & 26.013 & 2623.0 & 68233.0 \\
+				Unknown4 & 18.536 & 2308.0 & 42782.0 \\
+				Unknown5 & 19.096 & 4137.0 & 79002.0 \\
+				Unknown6 & 20.064 &  883.0 & 17717.0 \\
+				\bottomrule
+			\end{tabular}
+			\caption{Frequencies in unknown authors' texts}
+			\label{tab:unknown-freq}
+		\end{table}
+
 	\newpage
+	\clearpage
 	\subsection{Results and analysis}
 
-	The program output is a \texttt{.txt} file which presents the similarity analysis results as a list. 
+	The program output is a \texttt{.txt} file which presents the similarity analysis results as a list. This represents the authorship list. Each line contains the following information
+	\begin{itemize}
+		\item The name of the unknown text;
+		\item The most similar author recognized by the program;
+		\item The other authors ordered from the most similar to the least similar.
+	\end{itemize}
+
+	\begin{figure}[h!]
+		\centering
+		\begin{BVerbatim}[commandchars=\\\{\}]
+\textcolor{red!60!black}{unknown3:dickens} - abbott - stevenson -
+\textcolor{green!50!black}{unknown1:abbott} - dickens - stevenson -
+\textcolor{green!50!black}{unknown2:abbott} - dickens - stevenson -
+\textcolor{green!50!black}{unknown4:dickens} - stevenson - abbott -
+\textcolor{green!50!black}{unknown5:dickens} - stevenson - abbott -
+\textcolor{green!50!black}{unknown6:stevenson} - dickens - abbott -
+	\end{BVerbatim}
+	\caption{Example of the program output}
+	\label{fig:output}
+\end{figure}
+	\noindent
+	As we can see, the program correctly recognized the authors of 5 texts out of 6. So we have an error margin of 16.7\%. Considering the total amount of files, we recognize it as a significant result. 
+	
+	\noindent
+	In the following sections we provide the plots of the data extracted from the performed analysis.
 
 	\subsubsection{Global Frequencies for all authors}
 
@@ -845,7 +906,7 @@ public int compareTo(Object o) {
 				rounded corners=2pt,
 			},
 			grid=major,
-			height=7cm,
+			height=8cm,
 			grid style={densely dotted},
 			ymin=1,
 			xtick=data,
@@ -864,6 +925,7 @@ public int compareTo(Object o) {
 		\label{tikz:frequencies}
 	\end{figure}
 
+	\newpage
 	\subsubsection{Frequencies between known and uknown authors}
 
 	\begin{figure}[h!]
@@ -897,7 +959,7 @@ public int compareTo(Object o) {
 			\end{polaraxis}
 		\end{tikzpicture}
 		\caption{Frequencies between Abbott and 3 unknowns.\\
-		We can observe that there is quite a similarity between Abbott frequencies and the unknown authors' texts. The only difference is the use in prepositions in the Unknown3 text, but it is still included in deltas intervals.}
+		We can observe that there is quite a similarity between Abbott frequencies and the unknown authors' texts. The only difference is the use of prepositions in the Unknown3 text, but it is still included in delta intervals.}
 		\label{tikz:abbott-unk}
 	\end{figure}
 	  
@@ -964,93 +1026,6 @@ public int compareTo(Object o) {
 		We can observe that there is quite a similarity between Stevenson frequencies and the unknown author's text.}
 		\label{tikz:stevenson-unk}
 	\end{figure}
-	
-	\subsubsection{Deltas differences between known and unknown authors}
-	\begin{figure}[h!]
-		\centering
-		\begin{tikzpicture}
-			\begin{axis}
-			[
-			legend entries={Abbott, Unknown1, Unknown2, Unknown3},
-			legend style={
-				at={(1.5,-0.2)},
-				anchor=north,
-				legend columns=1,
-				cells={anchor=west},
-				font=\footnotesize,
-				rounded corners=2pt,
-			},
-			grid=major,
-			height=8cm,
-			grid style={densely dotted},
-			ymin=-1,
-			xtick=data,
-			ytick={0, 3, ..., 16},
-			legend pos=outer north east,
-			yticklabel={\pgfmathprintnumber{\tick}\,\%},
-			x tick label style={rotate=90},
-			xticklabels={articles,conjunctions,punctuation,prepositions},
-			ylabel=Deltas]
-			
-			\addplot[ultra thick, black] table [mark=none, x=freq, y=abbott, col sep=comma] {csv-files/deltas-abbott.csv};
-			\addplot[mark=none,blue] table [ x=freq, y=unknown1, col sep=comma] {csv-files/deltas-abbott.csv};
-			\addplot[mark=none,red] table [ x=freq, y=unknown2, col sep=comma] {csv-files/deltas-abbott.csv};
-			\addplot[mark=none,green] table [ x=freq, y=unknown3, col sep=comma] {csv-files/deltas-abbott.csv};
-			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
-				error mark options={mark=none} ] table [x=freq, y=abbott, y error minus expr=\thisrow{abbott}-\thisrow{unknown1},
-				col sep=comma ] {csv-files/deltas-abbott.csv};
-			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
-				error mark options={mark=none} ] table [x=freq, y=abbott, y error minus expr=\thisrow{abbott}-\thisrow{unknown2},
-				col sep=comma ] {csv-files/deltas-abbott.csv};
-			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
-				error mark options={mark=none} ] table [x=freq, y=abbott, y error minus expr=\thisrow{abbott}-\thisrow{unknown3},
-				col sep=comma ] {csv-files/deltas-abbott.csv};
-			\end{axis}
-		\end{tikzpicture}
-		\caption{Abbott differences between Abbott known texts and other Abbott texts marked as unknown}
-		\label{tikz:abbott-deltas}
-	\end{figure}
-
-	\begin{figure}[h!]
-		\centering
-		\begin{tikzpicture}
-			\begin{axis}
-			[
-			legend entries={Dickens, Unknown4, Unknown5},
-			legend style={
-				at={(1.5,-0.2)},
-				anchor=north,
-				legend columns=1,
-				cells={anchor=west},
-				font=\footnotesize,
-				rounded corners=2pt,
-			},
-			grid=major,
-			height=8cm,
-			grid style={densely dotted},
-			ymin=-1,
-			xtick=data,
-			ytick={0, 3, ..., 16},
-			legend pos=outer north east,
-			yticklabel={\pgfmathprintnumber{\tick}\,\%},
-			x tick label style={rotate=90},
-			xticklabels={articles,conjunctions,punctuation,prepositions},
-			ylabel=Deltas]
-			
-			\addplot[ultra thick, black] table [mark=none, x=freq, y=dickens, col sep=comma] {csv-files/deltas-dickens.csv};
-			\addplot[thick,mark=none,blue] table [ x=freq, y=unknown4, col sep=comma] {csv-files/deltas-dickens.csv};
-			\addplot[thick,mark=none,green] table [ x=freq, y=unknown5, col sep=comma] {csv-files/deltas-dickens.csv};
-			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
-			 error mark options={mark=none} ] table [x=freq, y=dickens, y error minus expr=\thisrow{dickens}-\thisrow{unknown5},
-				col sep=comma ] {csv-files/deltas-dickens.csv};
-			\addplot[error bars/.cd, y explicit, y dir=minus, error bar style={dashed,red, line width=1pt},
-				error mark options={mark=none}] table [x=freq, y=dickens, y error minus expr=\thisrow{dickens}-\thisrow{unknown4},
-				col sep=comma] {csv-files/deltas-dickens.csv};
-			\end{axis}
-		\end{tikzpicture}
-		\caption{Deltas differences between Dickens known texts and other Dickens texts marked as unknown}
-		\label{tikz:dickens-deltas}
-	\end{figure}
 
 	\clearpage
 	
@@ -1060,7 +1035,7 @@ public int compareTo(Object o) {
 	\begin{itemize}
 		\item \textbf{Environment:} we spent quite some time to make hadoop work on linux. In fact, there seem to be some problems in running hadoop on Arch-based distributions (expecially the webserver part). 
 		
-		Besides that, we noticed that some particular hardware configuration make hadoop crash or not work properly, we fixed by manually changing the amount of memory reserved to hadoop, in its configuration files. In particular in the machine 1, with 8 GB of Memory, we had to configure the \texttt{/etc/hadoop/conf/yarn-site.xml} file adding the following options: 
+		Moreover, we noticed that some particular hardware configurations make hadoop crash or not work properly, we fixed them manually changing the amount of memory reserved to hadoop, in its configuration files. In particular in the machine 1, with 8 GB of Memory, we had to configure the \texttt{/etc/hadoop/conf/yarn-site.xml} file adding the following options: 
 		\begin{itemize}
 			\item Maximum percentage of disk utilization with value 100.0;
 			\item Minimum percentage of disk utilization with value 0.0;
@@ -1074,11 +1049,11 @@ public int compareTo(Object o) {
 		
 		\item \textbf{Virtualized filesystem access:} the access to the effective filesystem needed in order to manipulate files is quite tricky, in fact the filesystem reserved to the process is retrievable only by a specific call to the job configuration and the documentation is quite difficult to understand.
 		
-		\item \textbf{Input file naming format:} due to difficulties in the parsing process, we decide to format the input file names \texttt{author-title.txt}, and the unknown files as \texttt{unknown-unknown.txt}.
+		\item \textbf{Input file naming format:} due to difficulties in the parsing process, we decided to format the input file names \texttt{author-title.txt}, and the unknown files as \texttt{unknown-unknown.txt}.
 	\end{itemize}
 
 	\subsection{Predefined paths and program running}
-	Since we embedded input and output paths directly in the code, we have to give the directory structure we used throughout the development process. 
+	Since we embedded input and output paths directly in the code, we had to give the directory structure we used throughout the development process. 
 	\begin{figure}[h!]
 		\dirtree{%
 			.1 user.
@@ -1091,9 +1066,11 @@ public int compareTo(Object o) {
 	\caption{Hadoop directory tree.}
 	\end{figure}
 
-	With this directory structure, a possible user has just to place the files in the right directory (\lstinline|unknowns| if the text is unknown or in \lstinline|input| if the author is known) simply run the program.
+	\noindent
+	Given this directory structure, a possible user has just to place the files in the right directory (\lstinline|unknowns| if the text is unknown or in \lstinline|input| if the author is known) and simply run the program.
 	
-	In order to run the program we wrote down a quick script, named \lstinline|exec.sh| which deletes the output directory, runs the jar file and cats the output properly ``grepped''.
+	\noindent
+	In order to run the program we wrote down a quick script, named \lstinline|exec.sh| which deletes the output directory, runs the jar file and prints the output properly ``grepped''.
 
 	\subsection{Performance considerations} % 7m24s
 	The running time of the whole job is around 7 minutes. The number of mappers is always equal to the number of input texts and there is always only one reducer.

@@ -34,13 +34,11 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {4.1}Extracted data}{16}{subsection.4.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {4.2}Results and analysis}{17}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.2}Results and analysis}{18}{subsection.4.2}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {4.2.1}Global Frequencies for all authors}{17}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.1}Global Frequencies for all authors}{18}{subsubsection.4.2.1}
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {4.2.2}Frequencies between known and uknown authors}{17}{subsubsection.4.2.2}
-\defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {4.2.3}Deltas differences between known and unknown authors}{17}{subsubsection.4.2.3}
+\contentsline {subsubsection}{\numberline {4.2.2}Frequencies between known and uknown authors}{19}{subsubsection.4.2.2}
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {5}Designing choices}{21}{section.5}
 \defcounter {refsection}{0}\relax 
